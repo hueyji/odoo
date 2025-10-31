@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="store_inventory_rule_batch_company" model="ir.rule">
+        <field name="name">批次-按公司过滤</field>
+        <field name="model_id" ref="model_store_inventory_batch"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+        <field name="domain_force">[("company_id", "in", user.company_ids.ids)]</field>
+    </record>
+
+    <record id="store_inventory_rule_move_company" model="ir.rule">
+        <field name="name">库存动作-按公司过滤</field>
+        <field name="model_id" ref="model_store_inventory_move"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+        <field name="domain_force">[("company_id", "in", user.company_ids.ids)]</field>
+    </record>
+
+    <record id="store_inventory_rule_transfer_company" model="ir.rule">
+        <field name="name">调拨-按公司过滤</field>
+        <field name="model_id" ref="model_store_inventory_transfer"/>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+        <field name="domain_force">[("source_company_id", "in", user.company_ids.ids)]</field>
+    </record>
+</odoo>

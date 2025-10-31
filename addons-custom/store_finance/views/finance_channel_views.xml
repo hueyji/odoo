@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_store_finance_channel_tree" model="ir.ui.view">
+        <field name="name">store.finance.channel.tree</field>
+        <field name="model">store.finance.channel</field>
+        <field name="arch" type="xml">
+            <list string="支付渠道">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="channel_type"/>
+                <field name="sequence"/>
+                <field name="company_id"/>
+                <field name="auto_reconcile"/>
+                <field name="active"/>
+                <field name="transaction_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_finance_channel_form" model="ir.ui.view">
+        <field name="name">store.finance.channel.form</field>
+        <field name="model">store.finance.channel</field>
+        <field name="arch" type="xml">
+            <form string="支付渠道">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object"
+                                name="action_view_transactions"
+                                class="oe_stat_button"
+                                icon="fa-line-chart"
+                                invisible="transaction_count == 0">
+                            <span class="o_stat_text">相关流水</span>
+                            <span class="o_stat_value">
+                                <field name="transaction_count" widget="statinfo"/>
+                            </span>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code" readonly="1"/>
+                            <field name="channel_type"/>
+                            <field name="company_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="auto_reconcile"/>
+                            <field name="active"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_finance_channel_search" model="ir.ui.view">
+        <field name="name">store.finance.channel.search</field>
+        <field name="model">store.finance.channel</field>
+        <field name="arch" type="xml">
+            <search string="搜索支付渠道">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="channel_type"/>
+                <filter name="filter_active" string="已停用" domain="[('active', '=', False)]"/>
+                <group expand="0" string="分组">
+                    <filter name="group_by_company" string="按公司" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_by_type" string="按类型" context="{'group_by': 'channel_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_finance_channel" model="ir.actions.act_window">
+        <field name="name">支付渠道配置</field>
+        <field name="res_model">store.finance.channel</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_store_finance_channel_search"/>
+        <field name="help" type="html">
+            <p>
+                维护门店可用的支付渠道，包含现金、储值、POS、第三方及内部结算。
+            </p>
+            <p>渠道编码自动生成，同一公司下不得重复。</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_store_finance_channel"
+              name="支付渠道"
+              parent="menu_store_finance_root"
+              action="action_store_finance_channel"
+              sequence="20"/>
+</odoo>

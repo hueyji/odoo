@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_store_performance_refresh" model="ir.cron">
+        <field name="name">刷新提成业绩</field>
+        <field name="model_id" ref="store_performance.model_store_performance_record"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_rebuild_performance()</field>
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

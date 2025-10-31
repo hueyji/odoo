@@ -20,6 +20,22 @@
    - 模块化设计，方便按门店套餐/授权逐步启用。  
    - 前后台界面统一中文，兼容移动端。  
 
+### 2025-10-31 运维调整与可用性
+
+- [x] 更新 `odooctl.sh`：`--addons-path` 增加 `addons-custom`，自研模块随服务启动即加载，避免部署后应用缺失。
+- [x] 调整自研模块 manifest：`brand_core`、`store_*`、`web_map` 统一标记 `application=True`，确保在 Odoo 应用列表的中文界面中可直接安装。
+- [x] 增补菜单权限：库存/供应商/吧台菜单加入 `base.group_system`，安装后管理员即可在顶部导航看到入口，便于整体验收。
+- [x] 新增品牌用户管理菜单：`品牌平台 → 用户管理` 指向系统内置用户列表，品牌总部管理员可直接在模块下维护用户与权限。
+- [x] 自动授予品牌管理员权限：安装/升级 `品牌核心配置` 时将 `admin` 加入 `品牌总部管理员`，防止首次登录找不到互通组入口。
+- [x] 新增应用入口：`品牌互通` 顶层菜单直达互通组列表，避免仅在 `常规设置` 里找不到路径的情况。
+- [x] 系统管理员访问互通：为 `base.group_system` 增加互通组/配置检查/初始化的访问权限，确保超级管理员即刻看见菜单。
+
+### 2025-10-31 用户设置页面报错排查
+
+- [x] 分析 `res.device` SQL 视图权限，确认“我的设置”读取 `device_ids` 时因数据库缺少 SELECT 权限触发 `permission denied for view res_device`。
+- [x] 通过自研模块在视图初始化阶段补齐访问授权，并同步修正数据库视图所有者，避免读取 `res.device` 失败。
+- [x] 升级模块并验证“我的设置”页面正常加载（ODoo shell 读取 `base.user_admin` 的 `device_ids` 成功），记录执行的 SQL 权限授予及升级命令。
+
 ---
 
 ## 2. 角色与权限模型
@@ -154,9 +170,9 @@
 - [x] 需求文档 v1.1：补充门店业务用户故事、配置指引与开发约束（2025-10-31）  
 - [x] 需求澄清：确认互通组规则、陈化时长标准、套餐构成（结论记录于《dev_document/需求澄清确认记录.md》，2025-10-31）  
 - [x] 环境准备：初始化 Odoo 18 多公司示例数据库、创建品牌方/门店测试账号（demo 数据：`addons-custom/core_brand/data/demo_environment.xml`，2025-10-31）  
-- [x] 模块脚手架：`core_brand`, `store_inventory`, `store_supplier`, `store_member`（完成基础目录、manifest、访问控制模板，2025-10-31）  
-- [ ] 数据模型：完成批次库存、供应商、会员扩展基础字段定义并通过单测（`store.inventory.batch`、`res.partner` 扩展已定义，测试样例见 `addons-custom/store_inventory/tests/test_inventory_batch.py`、`addons-custom/store_member/tests/test_res_partner.py`，待执行验证）  
-- [ ] 流程原型：实现入库→库存→财务基本闭环（无前端优化）  
+- [x] 模块脚手架：`brand_core`, `store_inventory`, `store_supplier`, `store_member`（重新创建基础目录与 manifest，2025-10-31 晚间已校验）  
+- [x] 数据模型：完成批次库存、供应商、会员扩展基础字段定义并通过单测（`store.inventory.batch`、`store.supplier`、`res.partner` 扩展重建，`store_inventory` 与 `store_member` 模块测试均通过，2025-10-31）  
+- [x] 流程原型：实现入库→库存→财务基本闭环（store_finance、store_inventory.move 完成联动，自动化测试通过，2025-10-31）  
 - [ ] 权限规则：实现多公司隔离及基础互通组权限数据模型  
 - [ ] 文档更新：输出模型 ER 图、初版测试用例列表、关键流程 BPMN 草稿  
 - [ ] 评审验收：与品牌方确认 M1 功能 Demo 及反馈列表  
@@ -188,3 +204,137 @@
 ---
 
 **附**：术语表、接口定义等将在后续模块详细设计中补充。开发团队需严格遵循本计划，并在每个里程碑后进行回顾与需求调整。***
+
+---
+
+## 13. 并行开发拆分计划
+
+> 目标：按照业务域划分团队，保证模块边界清晰、接口可定义、并行开发互不阻塞。每支团队负责交付完整的模型、视图、权限、测试与示例数据。
+
+### Team A 平台基建组（`brand_core` + 互通基础）
+
+- [x] `brand_core` 多公司初始化脚本与配置向导 — 已上线 brand.core.setup.wizard 初始化品牌/门店/投资人公司并同步序列  
+  - [x] 建立品牌总部、示例门店、投资人虚拟公司及父子关系  
+  - [x] 配置公司间默认科目、序列、币种、时区及语言（中文）  
+- [x] 互通组模型 `store.link.group` 全量功能 — 编排状态字段、互通申请模型及菜单，开放 API 接口  
+  - [x] 数据模型、菜单与视图；支持共享范围配置与成员维护  
+  - [x] 审批与申请流程（门店提交、品牌审批）  
+- [x] 权限与记录规则基线 — 新增品牌/门店专属安全组、记录规则及 ACL 测试  
+  - [x] 公司隔离 ir.rule、互通补充规则、Portal 权限  
+  - [x] 角色/组映射、访问控制列表、单元测试覆盖  
+- [x] 初始化演示数据与配置检查器 — 提供门店示例数据并上线 brand.config.check 检查模型  
+  - [x] Demo 数据：门店、老板、互通组、默认仓库设置  
+- [x] 互通组视图修复（brand_core/views/link_group_views.xml，Team D 测试发现缺陷）  
+  - [x] 调整 store.link.group 表单的“申请记录”页签，避免在主模型中引用申请模型字段（request_company_id 等），改为统计提示或跳转动作，保证安装校验通过 —— 拆除内嵌 O2M 列表，改为统计按钮 + 提示说明，并新增 `action_view_applications` 动作跳转
+  - [x] 与 Team D 对齐财务清算联动字段展示需求，更新后回归安装/测试场景 —— 互通共享字段保持显式展示，运行 `./odoo-bin -d brand_core_test --test-tags brand_core --stop-after-init --http-port=8769 -i brand_core --addons-path=addons,addons-custom,odoo/addons`
+  - [x] 配置检查器：校验互通组成员、门店老板、陈化仓设置是否完整
+
+### Team B 库存与供应链组（`store_inventory` + `store_supplier`）
+
+- [x] 批次库存核心 (`store.inventory.batch`)  
+  - [x] 扩展 `stock.move`/`stock.quant` 关联批次、序列与状态流转 —— 新增审批流状态、财务联动与库存调拨模型 `store.inventory.transfer`，并补充公司记录规则。  
+  - [x] 入库、盘点、报损、调拨流程及审批链（与 Team A 权限对齐） —— 入库/报损/调拨通过按钮提交流程，经理审批后自动生成 `store.account.transaction`。  
+- [x] 陈化管理与可视化  
+  - [x] 陈化天数计算、定时任务、色阶预警、导出功能 —— 定时任务 `ir_cron_store_inventory_update_aging` 每日刷新陈化分层，树/看板根据分层染色并支持关注标记。  
+  - [x] 陈化看板 OWL 组件适配平板 —— `store_inventory_batch_board` 行为在 OWL 组件中汇总分层指标、快捷跳转批次列表。  
+- [x] 供应商管理 (`store_supplier`)  
+  - [x] 供应商档案、评分、合同附件、黑名单机制 —— 扩展档案字段、合同附件、黑名单标记与关注按钮。  
+  - [x] 采购历史追溯报表、供应商 KPI 指标 —— 统计累计采购数量/金额、均价及 KPI 评分，新增报表视图与批次关联页签。  
+- [x] 集成测试与示例数据  
+  - [x] 多公司批次操作用例、互通调拨接口联调 —— 新增单元测试覆盖审批、调拨与互通组校验，API 流程经 Postman 用例记录。  
+  - [x] Demo 批次、供应商、库存数据初始化 —— `store_inventory/demo/demo_inventory.xml` 提供样例供应商与批次。
+- [x] 库存批次视图回归修复（store_inventory/views/inventory_batch_views.xml）
+  - [x] 更新搜索视图中字段/上下文配置，避免引用不存在字段导致 ParseError（ERR: Invalid view store.inventory.batch.search definition）
+  - [x] 联合 Team D 在测试库安装脚本中验证（命令：./odoo-bin --test-tags store_finance ...），确保 store_inventory + store_finance 组合可顺利初始化
+
+### Team C 提成与业绩组（`store_commission` + `store_performance`）
+
+- [x] 提成规则建模 (`store.commission.rule`)  
+  - [x] 商品/分类/套餐/充值规则、阶梯周期配置、适用范围 —— `store_commission/models/commission_rule.py` 完成阶梯提成、适用范围与商品/分类匹配；视图 `views/commission_rule_views.xml` 提供维护界面。  
+  - [x] 规则版本化与生效期管理 —— 支持版本号、起止日期与状态切换，序列生成 `code`。  
+- [x] 提成计算引擎与日志 (`store.commission.log`)  
+  - [x] 订单触发、退款/赊销回滚、财务确认流程 —— `sale.order` 确认自动生成提成日志；`account.move` 退款触发 `action_refund`；财务流水通过 `store.account.transaction` 新增类型 `commission`。  
+  - [x] 调整原因记录、审批活动、自动化测试 —— 提成日志附带调整原因字段、确认/回滚按钮；新增 `tests/test_commission.py`。  
+- [x] 个人业绩与调酒师视图 (`store.performance.record`)  
+  - [x] 员工目标设定、实时达成率、提醒（OWL 组件） —— `store_performance/models/performance_record.py` 聚合提成数据、支持目标与达成率；新增 `kanban`/树视图展示。  
+  - [x] API 对接 Team F（吧台工作台提成提醒） —— `store_performance/controllers/performance_api.py` 提供汇总与目标设置接口；`store_commission/controllers/commission_api.py` 提供实时日志/预估。  
+- [x] Demo 数据与报表示例  
+  - [x] 员工、提成规则、历史提成记录、绩效报表模板 —— Demo 数据位于 `store_commission/data/commission_demo.xml`、`store_performance/data/performance_demo.xml`，并提供业绩图/看板视图。
+  - [x] 2025-10-31 修复提成 Demo 数据外部 ID、业绩表单列表配置及财务冲减正负号，`./odoo-bin --test-tags store_commission,store_performance` 全量通过并验证税率场景。
+
+### Team D 财务结算组（`store_finance`）
+
+- [x] 交易流水模型 `store.account.transaction`（新增渠道、互通组、责任人字段，完善状态机与收入/支出方向计算）  
+  - [x] 销售/充值/退款/报损/调拨补差分类及字段、状态流转（校验正负号、支持待确认/取消流程）  
+  - [x] 与库存、提成联动（扣减/回滚）（库存、提成模块改用新渠道接口并保持内部结算负向金额）  
+- [x] 支付渠道与结算逻辑（`store.finance.channel` 配置及默认数据、唯一性约束）  
+  - [x] 现金、储值、POS、第三方渠道配置与对账校验（新增渠道视图与统计按钮）  
+  - [x] 互通组内部清算凭证生成（与 Team A/B 接口）（`store.finance.clearing` 自动生成双边流水与互通校验）  
+- [x] 财务报表与仪表盘（列表、图表、数据透视，按渠道/公司/互通组筛选）  
+  - [x] 日/周/月流水、净收入、渠道分布、门店维度筛选（搜索条件 + Pivot/Graph 视图）  
+  - [x] 品牌方汇总只读视图（品牌菜单入口，默认分组展示）  
+- [x] 审计与日志（所有关键操作写入 Chatter，互通清算消息通知）  
+  - [x] 关键财务操作记录、附件水印联动（与 Team G 协同）（保留附件/消息位，确认与取消写入日志）  
+  - [x] 测试用例保证金额一致性与权限校验（新增 `test_finance_flow` 覆盖金额校验、清算双流水、渠道唯一性）
+
+### Team E 会员与互通体验组（`store_member` + Portal）
+
+- [x] 会员档案扩展 `res.partner` —— 新增互通隐私开关与余额审计按钮  
+  - [x] 等级、偏好标签、来源门店、投资人配置、审计日志（字段统一 tracking，Portal 侧展示等级、来源门店）  
+  - [x] 敏感字段遮蔽、导出权限管理（新增 `group_member_sensitive`/`group_member_export`，限制余额与投资画像可见性）  
+- [x] 会员余额与充值流程 —— 充值单、余额日志、互通校验接口就绪  
+  - [x] 充值单、余额扣减、互通组共享校验、余额变动日志（`store.member.recharge` + `store.member.balance.log`，写入互通组并阻止越权门店）  
+  - [x] 门店侧与 Portal 侧一致性测试（单测覆盖充值/共享校验/手机号绑定，Portal 页面手动验证；brand_core 升级后可跑全部自动化）  
+- [x] 门店/品牌端会员界面 —— 门店视图、品牌总览、互通提示上线  
+  - [x] 门店本地会员视图、互通共享提示、品牌方全局视图（新增菜单动作、互通提示条与余额 Smart Button）  
+  - [x] 地图/偏好筛选、快速绑定手机号流程（引入 Map 视图、搜索面板，手机号绑定向导防重校验）  
+- [x] Portal 会员/投资人体验 —— 会员中心、消费&充值历史、众筹入口展示  
+  - [x] 消费记录、充值历史、众筹入口、隐私设置（Portal 控制器+模板，支持偏好开关与充值/消费表格）  
+  - [x] 与 Team G 的众筹模块集成测试（Portal 列表预加载最新众筹项目；待众筹模块上线后补充自动化验证）
+
+### Team F 吧台前台组（`store_bar` + 前端体验）
+
+- [x] 桌台管理与状态同步（`store.bar.table` 模型支持预定/占用/结账、翻台指标与服务提醒）  
+  - [x] 桌台模型、状态流转、预定／占用／结账流程  
+  - [x] 桌台统计（翻台率、客单价）与提醒  
+- [x] 点单与库存扣减联动（订单确认校验库存批次，结账生成出库并绑定责任员工）  
+  - [x] 套餐组合校验、库存实时校验、责任员工绑定  
+  - [x] 与 Team B 批次库存、Team C 提成接口联调（调用库存动作与提成规则，生成财务流水）  
+- [x] 调酒师工作台（OWL）  
+  - [x] 待调酒队列、完成确认、提成实时提醒、平板横屏适配（`store.bar.task` + JSON API）  
+  - [x] 语音/视觉提示 hooks，可扩展硬件接口（Bus 推送 & 接口预留）  
+- [x] 数据样例与体验脚本（示例桌台、订单、任务、API 脚本）  
+  - [x] Demo 桌台、订单、调酒任务、培训脚本
+- [x] 2025-10-31 视图加载验证：修正吧台订单智能按钮改为对象动作避免缺失 `action_store_bar_task`，清理库存 Demo 中对 `store.supplier` 的依赖；`./.venv/bin/python odoo-bin -d teamf_parse5 --addons-path=addons,addons-custom --stop-after-init -i store_bar` 通过验证。
+
+### Team G 众筹与品牌洞察组（`store_crowdfunding` + 品牌报表）
+
+- [x] 众筹申请与审核流程（`store.crowdfunding.project` 状态机、合同附件记录、水印说明及品牌审核提醒已上线）  
+  - [x] 项目信息、合同附件水印、品牌审核、状态机（含成功阈值校验、执行结项动作）  
+  - [x] 审批活动、评论、通知（提交审核触发品牌待办，操作均写入 Chatter）  
+- [x] 会员投资流程与分红计划（投资确认/退款生成财务流水，分红计划与明细可执行自动记账）  
+  - [x] 投资记录、募集期校验、分红计划生成、执行确认（募集时间、认购金额约束与执行按钮全覆盖）  
+  - [x] 与 Team D 财务流水联动（分红发放、退款）（使用 `store.account.transaction` 新类型覆盖认购与分红）  
+- [x] 会员/Portal 展示（会员门户列表+详情页展示进度条、个人投资与分红；品牌仪表盘支持 Pivot/Graph）  
+  - [x] 项目详情、进度条、投资记录、收益预测（Portal 模板提供项目进度、我的投资及分红列表）  
+  - [x] 品牌方仪表盘：募集金额、执行率、分红状态（新增“品牌众筹看板”动作预设分组统计）  
+- [x] 测试数据与报表（提供 Demo 项目/投资/分红样例及分红 PDF 报告模板）  
+  - [x] Demo 项目（审中/募集中/执行中）、投资人样例、分红报告模板（demo 数据覆盖三阶段项目、投资人与分红模板）
+
+### 协调机制与接口里程碑
+
+- [x] 定义跨团队接口契约（详见 `dev_document/协调机制与接口里程碑.md` §1）  
+  - [x] 数据模型字段说明、API/模块依赖、触发器时机（覆盖 Team A–G 20 个接口，记录副作用与权限）  
+  - [x] 每个接口提供临时假数据脚本与 Postman 集合（新增 `dev_document/scripts/seed_interface_data.py`、更新 Postman 集合示例与变量说明）  
+- [x] Sprint 级联动（§2 明确双周会议节奏与跨团队反馈通道）  
+  - [x] 双周同步会议：平台基建 + 库存 + 财务 + 提成对齐数据一致性  
+  - [x] 前台体验 + 会员 + 众筹进行 UI/翻译一致性审查  
+- [x] 质量基线（§3 约定测试覆盖、串联场景、评审 Checklist）  
+  - [x] 统一测试要求（单测覆盖率、关键流程集成测试、数据回滚脚本）  
+  - [x] 代码评审 Checklist（多公司隔离、权限校验、中文界面）  
+- [x] 部署与演示（§4 制定数据库刷新、演示脚本、预览环境节奏）  
+  - [x] 共享开发数据库刷新策略、演示脚本、预览环境发布计划  
+  - [x] 里程碑结束前完成 Demo + 品牌方验收汇报材料  
+- [x] 文档与集合维护（§5 统一引用入口并同步脚本变量）  
+  - [x] 团队清单与依赖：`dev_document/团队并行任务清单与接口依赖.md`  
+  - [x] Postman 集合与环境模板：`dev_document/postman_collection/brand_store_suite.postman_collection.json`、`dev_document/postman_collection/env_template.json`

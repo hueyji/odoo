@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report
+        id="report_store_crowdfunding_dividend"
+        model="store.crowdfunding.dividend"
+        string="分红报告"
+        name="store_crowdfunding.report_crowdfunding_dividend"
+        report_type="qweb-pdf"
+        file="store_crowdfunding.report_crowdfunding_dividend"
+    />
+
+    <template id="report_crowdfunding_dividend">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="plan">
+                <t t-call="store_crowdfunding.report_crowdfunding_dividend_plan">
+                    <t t-set="plan" t-value="plan"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_crowdfunding_dividend_plan">
+        <div class="page">
+            <h2 class="text-center">众筹项目分红报告</h2>
+            <p><strong>项目名称：</strong><t t-esc="plan.project_id.display_name"/></p>
+            <p><strong>计划编号：</strong><t t-esc="plan.name"/></p>
+            <p><strong>计划执行日期：</strong><t t-esc="plan.plan_date"/></p>
+            <p><strong>状态：</strong><t t-esc="dict(plan._fields['state'].selection).get(plan.state)"/></p>
+            <p><strong>计划金额：</strong><t t-esc="format_amount(plan.amount_total, plan.currency_id)"/></p>
+            <p><strong>已支付金额：</strong><t t-esc="format_amount(plan.amount_paid, plan.currency_id)"/></p>
+            <hr/>
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th>投资编号</th>
+                        <th>投资人</th>
+                        <th class="text-end">计划金额</th>
+                        <th class="text-end">已支付</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-if="not plan.line_ids">
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">暂无分红明细。</td>
+                        </tr>
+                    </t>
+                    <t t-else="">
+                        <t t-foreach="plan.line_ids" t-as="line">
+                            <tr>
+                                <td><t t-esc="line.investment_id.name"/></td>
+                                <td><t t-esc="line.partner_id.display_name"/></td>
+                                <td class="text-end"><t t-esc="format_amount(line.amount, line.currency_id)"/></td>
+                                <td class="text-end"><t t-esc="format_amount(line.amount_paid, line.currency_id)"/></td>
+                                <td><t t-esc="'已完成' if line.is_paid else '待支付'"/></td>
+                            </tr>
+                        </t>
+                    </t>
+                </tbody>
+            </table>
+            <p><strong>备注：</strong><t t-esc="plan.execution_note or '无'"/></p>
+        </div>
+    </template>
+</odoo>

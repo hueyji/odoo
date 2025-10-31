@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="transaction_demo_sale" model="store.account.transaction">
+        <field name="name">TRX0001-DEMO</field>
+        <field name="date">2025-01-15 20:30:00</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" eval="env['res.company'].browse(ref('base.main_company')).currency_id.id"/>
+        <field name="transaction_type">sale</field>
+        <field name="channel_id" ref="store_finance.channel_cash_main_company"/>
+        <field name="amount">580.00</field>
+        <field name="state">confirmed</field>
+        <field name="description">Demo 销售收入</field>
+    </record>
+
+    <record id="transaction_demo_recharge" model="store.account.transaction">
+        <field name="name">TRX0002-DEMO</field>
+        <field name="date">2025-01-16 19:05:00</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" eval="env['res.company'].browse(ref('base.main_company')).currency_id.id"/>
+        <field name="transaction_type">recharge</field>
+        <field name="channel_id" ref="store_finance.channel_stored_value_main_company"/>
+        <field name="amount">1000.00</field>
+        <field name="state">confirmed</field>
+        <field name="description">Demo 会员储值</field>
+    </record>
+
+    <record id="transaction_demo_refund" model="store.account.transaction">
+        <field name="name">TRX0003-DEMO</field>
+        <field name="date">2025-01-18 22:10:00</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="currency_id" eval="env['res.company'].browse(ref('base.main_company')).currency_id.id"/>
+        <field name="transaction_type">refund</field>
+        <field name="channel_id" ref="store_finance.channel_pos_main_company"/>
+        <field name="amount">-120.00</field>
+        <field name="state">confirmed</field>
+        <field name="description">Demo POS 退款</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="partner_brand_ceo" model="res.partner">
+        <field name="name">雪茄品牌总部</field>
+        <field name="company_type">company</field>
+        <field name="lang">zh_CN</field>
+        <field name="tz">Asia/Shanghai</field>
+    </record>
+
+    <record id="partner_owner_liu" model="res.partner">
+        <field name="name">刘建国</field>
+        <field name="lang">zh_CN</field>
+        <field name="tz">Asia/Shanghai</field>
+        <field name="phone">13800000001</field>
+    </record>
+
+    <record id="partner_owner_wang" model="res.partner">
+        <field name="name">王诗涵</field>
+        <field name="lang">zh_CN</field>
+        <field name="tz">Asia/Shanghai</field>
+        <field name="phone">13800000002</field>
+    </record>
+
+    <record id="company_brand_demo" model="res.company">
+        <field name="name">雪茄威士忌品牌总部</field>
+        <field name="partner_id" ref="brand_core.partner_brand_ceo"/>
+        <field name="company_role">brand</field>
+        <field name="is_brand_template">1</field>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <record id="company_store_shanghai" model="res.company">
+        <field name="name">雪茄威士忌·上海旗舰店</field>
+        <field name="company_role">store</field>
+        <field name="parent_id" ref="brand_core.company_brand_demo"/>
+        <field name="store_owner_partner_id" ref="brand_core.partner_owner_liu"/>
+        <field name="aging_area_note">徐汇陈化仓 A 区</field>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <record id="company_store_wuhan" model="res.company">
+        <field name="name">雪茄威士忌·武汉光谷店</field>
+        <field name="company_role">store</field>
+        <field name="parent_id" ref="brand_core.company_brand_demo"/>
+        <field name="store_owner_partner_id" ref="brand_core.partner_owner_wang"/>
+        <field name="aging_area_note">光谷陈化仓 B 区</field>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <record id="link_group_demo" model="store.link.group">
+        <field name="name">沪鄂互通联盟</field>
+        <field name="brand_company_id" ref="brand_core.company_brand_demo"/>
+        <field name="owner_id" ref="brand_core.partner_owner_liu"/>
+        <field name="member_company_ids" eval="[(6, 0, [ref('brand_core.company_store_shanghai'), ref('brand_core.company_store_wuhan')])]"/>
+        <field name="share_inventory">1</field>
+        <field name="share_member">1</field>
+        <field name="share_finance">0</field>
+        <field name="state">active</field>
+    </record>
+
+    <function model="res.company" name="write">
+        <value eval="[ref('brand_core.company_store_shanghai')]"/>
+        <value eval="{'default_link_group_id': ref('brand_core.link_group_demo')}"/>
+    </function>
+
+    <function model="res.company" name="write">
+        <value eval="[ref('brand_core.company_store_wuhan')]"/>
+        <value eval="{'default_link_group_id': ref('brand_core.link_group_demo')}"/>
+    </function>
+</odoo>

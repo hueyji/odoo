@@ -1,0 +1,9 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_store_bar_table_manager","store_bar_table_manager","model_store_bar_table","store_bar.group_store_bar_manager",1,1,1,1
+"access_store_bar_table_user","store_bar_table_user","model_store_bar_table","store_bar.group_store_bar_user",1,0,0,0
+"access_store_bar_order_manager","store_bar_order_manager","model_store_bar_order","store_bar.group_store_bar_manager",1,1,1,1
+"access_store_bar_order_user","store_bar_order_user","model_store_bar_order","store_bar.group_store_bar_user",1,1,1,0
+"access_store_bar_order_line_manager","store_bar_order_line_manager","model_store_bar_order_line","store_bar.group_store_bar_manager",1,1,1,1
+"access_store_bar_order_line_user","store_bar_order_line_user","model_store_bar_order_line","store_bar.group_store_bar_user",1,1,1,0
+"access_store_bar_task_manager","store_bar_task_manager","model_store_bar_task","store_bar.group_store_bar_manager",1,1,1,1
+"access_store_bar_task_bartender","store_bar_task_bartender","model_store_bar_task","store_bar.group_store_bar_bartender",1,1,0,0

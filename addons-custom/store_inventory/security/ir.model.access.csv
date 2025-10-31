@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_store_inventory_batch_user,库存批次-用户,model_store_inventory_batch,stock.group_stock_user,1,1,1,0
+access_store_inventory_batch_manager,库存批次-经理,model_store_inventory_batch,stock.group_stock_manager,1,1,1,1
+access_store_inventory_move_user,库存动作-用户,model_store_inventory_move,stock.group_stock_user,1,1,1,0
+access_store_inventory_move_manager,库存动作-经理,model_store_inventory_move,stock.group_stock_manager,1,1,1,1
+access_store_inventory_transfer_user,库存调拨-用户,model_store_inventory_transfer,stock.group_stock_user,1,1,1,0
+access_store_inventory_transfer_manager,库存调拨-经理,model_store_inventory_transfer,stock.group_stock_manager,1,1,1,1

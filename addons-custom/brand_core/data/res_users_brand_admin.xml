@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="base.user_admin" model="res.users">
+        <field name="groups_id" eval="[(4, ref('brand_core.group_brand_admin'))]"/>
+    </record>
+</odoo>

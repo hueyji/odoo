@@ -1,0 +1,8 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_store_commission_rule_manager","store_commission_rule_manager","model_store_commission_rule","store_commission.group_store_commission_manager",1,1,1,1
+"access_store_commission_rule_user","store_commission_rule_user","model_store_commission_rule","store_commission.group_store_commission_user",1,0,0,0
+"access_store_commission_rule_ladder_manager","store_commission_rule_ladder_manager","model_store_commission_rule_ladder","store_commission.group_store_commission_manager",1,1,1,1
+"access_store_commission_rule_ladder_user","store_commission_rule_ladder_user","model_store_commission_rule_ladder","store_commission.group_store_commission_user",1,0,0,0
+"access_store_commission_log_manager","store_commission_log_manager","model_store_commission_log","store_commission.group_store_commission_manager",1,1,1,1
+"access_store_commission_log_user","store_commission_log_user","model_store_commission_log","store_commission.group_store_commission_user",1,1,1,0
+"access_store_commission_log_auditor","store_commission_log_auditor","model_store_commission_log","store_commission.group_store_commission_auditor",1,0,0,0

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_store_account_transaction_tree" model="ir.ui.view">
+        <field name="name">store.account.transaction.tree</field>
+        <field name="model">store.account.transaction</field>
+        <field name="arch" type="xml">
+            <list string="门店财务流水" decoration-danger="state == 'cancelled'" decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date" widget="datetime"/>
+                <field name="company_id"/>
+                <field name="transaction_type"/>
+                <field name="channel_id"/>
+                <field name="member_id"/>
+                <field name="link_group_id"/>
+                <field name="amount_in" sum="总收入"/>
+                <field name="amount_out" sum="总支出"/>
+                <field name="balance_direction"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_account_transaction_form" model="ir.ui.view">
+        <field name="name">store.account.transaction.form</field>
+        <field name="model">store.account.transaction</field>
+        <field name="arch" type="xml">
+            <form string="门店财务流水" create="true" edit="true">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_set_pending"
+                                type="object"
+                                class="oe_stat_button"
+                                groups="base.group_user"
+                                invisible="state != 'draft'">
+                            <span class="o_stat_text">提交待确认</span>
+                        </button>
+                        <button name="action_confirm"
+                                type="object"
+                                class="oe_stat_button"
+                                invisible="state != 'pending'">
+                            <span class="o_stat_text">确认入账</span>
+                        </button>
+                        <button name="action_cancel"
+                                type="object"
+                                class="oe_stat_button text-danger"
+                                invisible="state in ['cancelled', 'draft']">
+                            <span class="o_stat_text">标记取消</span>
+                        </button>
+                        <button name="action_reset_to_draft"
+                                type="object"
+                                class="oe_stat_button text-warning"
+                                invisible="state != 'cancelled'">
+                            <span class="o_stat_text">恢复草稿</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                            <field name="transaction_type"/>
+                            <field name="balance_direction" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="channel_id"/>
+                            <field name="member_id" options="{'no_open': False}"/>
+                            <field name="user_id"/>
+                            <field name="link_group_id" options="{'no_create': True}"/>
+                            <field name="clearing_id" readonly="1" options="{'no_open': False}"/>
+                            <field name="reference" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="金额">
+                        <field name="currency_id"/>
+                        <field name="amount"/>
+                        <field name="amount_in" readonly="1"/>
+                        <field name="amount_out" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_account_transaction_search" model="ir.ui.view">
+        <field name="name">store.account.transaction.search</field>
+        <field name="model">store.account.transaction</field>
+        <field name="arch" type="xml">
+            <search string="搜索财务流水">
+                <field name="name"/>
+                <field name="transaction_type"/>
+                <field name="channel_id"/>
+                <field name="member_id"/>
+                <field name="link_group_id"/>
+                <filter string="未确认" name="filter_state_pending" domain="[('state', 'in', ('draft', 'pending'))]"/>
+                <filter string="今日" name="filter_today" domain="[('date', '&gt;=', context_today()), ('date', '&lt;', context_today() + relativedelta(days=1))]"/>
+                <filter string="最近 7 天" name="filter_last_seven" domain="[('date', '&gt;=', (context_today() - relativedelta(days=7)))]"/>
+                <group expand="0" string="分组">
+                    <filter name="group_by_state" string="按状态" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_channel" string="按渠道" context="{'group_by': 'channel_id'}"/>
+                    <filter name="group_by_company" string="按公司" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_by_type" string="按类型" context="{'group_by': 'transaction_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_store_account_transaction_pivot" model="ir.ui.view">
+        <field name="name">store.account.transaction.pivot</field>
+        <field name="model">store.account.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="财务汇总">
+                <field name="amount_in" type="measure"/>
+                <field name="amount_out" type="measure"/>
+                <field name="transaction_type" type="row"/>
+                <field name="channel_id" type="row"/>
+                <field name="date" type="col" interval="month"/>
+                <field name="company_id" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_store_account_transaction_graph" model="ir.ui.view">
+        <field name="name">store.account.transaction.graph</field>
+        <field name="model">store.account.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="渠道收入走势" type="bar">
+                <field name="amount_in" type="measure"/>
+                <field name="amount_out" type="measure"/>
+                <field name="date" type="row" interval="day"/>
+                <field name="channel_id" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_store_account_transaction" model="ir.actions.act_window">
+        <field name="name">门店财务流水</field>
+        <field name="res_model">store.account.transaction</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="search_view_id" ref="view_store_account_transaction_search"/>
+        <field name="context">{'search_default_group_by_channel': 1}</field>
+        <field name="help" type="html">
+            <p>
+                该视图用于门店级财务对账，可快速查看销售、充值、退款及内部清算流水。
+            </p>
+            <p>
+                使用顶部筛选器按渠道或互通组分组，结合图表与数据透视表完成日/周/月统计。
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_store_finance_root"
+              name="门店财务"
+              parent="brand_core.menu_brand_core_root"
+              sequence="40"/>
+
+    <menuitem id="menu_store_finance_transaction"
+              name="流水总览"
+              parent="menu_store_finance_root"
+              action="action_store_account_transaction"
+              sequence="10"/>
+</odoo>

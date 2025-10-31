@@ -1,0 +1,82 @@
+<odoo>
+    <data noupdate="0">
+        <record id="store_bar_table_demo_main" model="store.bar.table">
+            <field name="name">吧台桌台 A1</field>
+            <field name="area">bar</field>
+            <field name="capacity">4</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="reminder_threshold_minutes">60</field>
+        </record>
+
+        <record id="store_bar_product_template_demo" model="product.template">
+            <field name="name">调制威士忌示例</field>
+            <field name="type">product</field>
+            <field name="list_price">198</field>
+            <field name="standard_price">120</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">True</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="store_bar_product_demo" model="product.product">
+            <field name="product_tmpl_id" ref="store_bar_product_template_demo"/>
+        </record>
+
+        <record id="store_bar_inventory_batch_demo" model="store.inventory.batch">
+            <field name="product_id" ref="store_bar_product_demo"/>
+            <field name="qty_initial">50</field>
+            <field name="qty_available">50</field>
+            <field name="purchase_price">120</field>
+            <field name="currency_id" ref="base.CNY"/>
+            <field name="aging_start_date">2024-01-01</field>
+            <field name="state">in_stock</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="store_bar_member_demo" model="res.partner">
+            <field name="name">示例会员</field>
+            <field name="member_balance">1000</field>
+            <field name="member_balance_currency_id" ref="base.CNY"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="store_bar_channel_cash_demo" model="store.finance.channel">
+            <field name="name">吧台现金收款</field>
+            <field name="code">BAR-CASH</field>
+            <field name="channel_type">cash</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="store_bar_order_demo" model="store.bar.order">
+            <field name="table_id" ref="store_bar_table_demo_main"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">draft</field>
+            <field name="member_id" ref="store_bar_member_demo"/>
+            <field name="amount_service">20</field>
+            <field name="payment_channel_id" ref="store_bar_channel_cash_demo"/>
+        </record>
+
+        <record id="store_bar_order_line_demo" model="store.bar.order.line">
+            <field name="order_id" ref="store_bar_order_demo"/>
+            <field name="product_id" ref="store_bar_product_demo"/>
+            <field name="batch_id" ref="store_bar_inventory_batch_demo"/>
+            <field name="quantity">2</field>
+            <field name="price_unit">198</field>
+            <field name="requires_preparation">True</field>
+        </record>
+
+        <record id="store_bar_task_demo" model="store.bar.task">
+            <field name="order_id" ref="store_bar_order_demo"/>
+            <field name="order_line_id" ref="store_bar_order_line_demo"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="name">调制威士忌示例</field>
+            <field name="sequence">10</field>
+            <field name="state">pending</field>
+            <field name="expected_commission_amount">15</field>
+        </record>
+    </data>
+</odoo>

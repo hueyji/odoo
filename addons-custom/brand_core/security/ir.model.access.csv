@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_store_link_group_operator,互通组-品牌运营,model_store_link_group,brand_core.group_brand_operator,1,0,0,0
+access_store_link_group_store_manager,互通组-门店负责人,model_store_link_group,brand_core.group_store_manager,1,0,0,0
+access_store_link_group_admin,互通组-品牌管理员,model_store_link_group,brand_core.group_brand_admin,1,1,1,1
+access_store_link_group_system,互通组-系统管理员,model_store_link_group,base.group_system,1,1,1,1
+access_store_link_group_application_store,互通申请-门店负责人,model_store_link_group_application,brand_core.group_store_manager,1,1,1,0
+access_store_link_group_application_admin,互通申请-品牌管理员,model_store_link_group_application,brand_core.group_brand_admin,1,1,1,1
+access_store_link_group_application_system,互通申请-系统管理员,model_store_link_group_application,base.group_system,1,1,1,1
+access_brand_config_check_operator,配置检查-品牌运营,model_brand_config_check,brand_core.group_brand_operator,1,1,1,0
+access_brand_config_check_admin,配置检查-品牌管理员,model_brand_config_check,brand_core.group_brand_admin,1,1,1,1
+access_brand_config_check_system,配置检查-系统管理员,model_brand_config_check,base.group_system,1,1,1,1
+access_brand_core_setup_wizard_admin,多公司初始化向导,model_brand_core_setup_wizard,brand_core.group_brand_admin,1,1,1,1
+access_brand_core_setup_wizard_system,多公司初始化向导-系统管理员,model_brand_core_setup_wizard,base.group_system,1,1,1,1

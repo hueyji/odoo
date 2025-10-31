@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="job_demo_bartender" model="hr.job">
+            <field name="name">演示调酒师</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="employee_demo_bartender" model="hr.employee">
+            <field name="name">演示调酒师</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="job_id" ref="store_commission.job_demo_bartender"/>
+        </record>
+
+        <record id="employee_demo_waiter" model="hr.employee">
+            <field name="name">演示服务员</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="product_demo_whisky" model="product.template">
+            <field name="name">演示威士忌套餐</field>
+            <field name="list_price">588.0</field>
+            <field name="type">consu</field>
+            <field name="sale_ok">True</field>
+        </record>
+
+        <record id="commission_rule_demo_whisky" model="store.commission.rule">
+            <field name="name">威士忌套餐调酒师提成</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="rule_type">product</field>
+            <field name="rate_type">percent</field>
+            <field name="rate_value">8.0</field>
+            <field name="scope_type">job</field>
+            <field name="job_ids" eval="[(6, 0, [ref('store_commission.job_demo_bartender')])]" />
+            <field name="product_ids" model="product.template" eval="[(6, 0, [obj(ref('store_commission.product_demo_whisky')).product_variant_id.id])]" />
+            <field name="state">active</field>
+            <field name="start_date">2024-01-01</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,28 @@
+{
+    "name": "品牌核心配置",
+    "summary": "品牌总部与门店基础配置、互通组模型。",
+    "version": "1.0.0",
+    "category": "Brand",
+    "sequence": 10,
+    "author": "多门店项目组",
+    "website": "https://example.com",
+    "license": "LGPL-3",
+    "depends": [
+        "base",
+        "mail",
+    ],
+    "data": [
+        "security/brand_core_security.xml",
+        "security/ir_rule.xml",
+        "data/ir_sequence_data.xml",
+        "data/res_users_brand_admin.xml",
+        "security/ir.model.access.csv",
+        "views/setup_wizard_views.xml",
+        "views/link_group_views.xml",
+        "views/config_check_views.xml",
+        "views/menu_views.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": True,
+}

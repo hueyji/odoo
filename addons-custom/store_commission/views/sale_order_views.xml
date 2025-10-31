@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_store_commission" model="ir.ui.view">
+        <field name="name">sale.order.form.store.commission</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group" position="inside">
+                <field name="responsible_employee_id"/>
+                <field name="assistant_employee_ids" widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="提成" name="commission_tab">
+                    <group>
+                        <field name="commission_state" readonly="1"/>
+                        <field name="commission_total_amount" readonly="1"/>
+                        <button name="action_recompute_commission" type="object" string="重新计算提成" class="btn-secondary" invisible="state not in ['sale', 'done']"/>
+                    </group>
+                    <field name="commission_log_ids" readonly="1">
+                        <list string="提成日志" decoration-danger="state == 'draft'">
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="employee_id"/>
+                            <field name="rule_id"/>
+                            <field name="commission_amount"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

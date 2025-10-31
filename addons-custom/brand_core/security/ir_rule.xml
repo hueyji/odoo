@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_store_link_group_brand_scope" model="ir.rule">
+        <field name="name">互通组 - 品牌与成员可见</field>
+        <field name="model_id" ref="model_store_link_group"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_operator')), (4, ref('brand_core.group_store_manager'))]"/>
+        <field name="domain_force">['|', ('brand_company_id', 'in', user.company_ids.ids), ('member_company_ids', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_store_link_group_admin" model="ir.rule">
+        <field name="name">互通组 - 品牌管理员全权限</field>
+        <field name="model_id" ref="model_store_link_group"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="rule_store_link_group_application_store" model="ir.rule">
+        <field name="name">互通申请 - 门店可见与编辑</field>
+        <field name="model_id" ref="model_store_link_group_application"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_store_manager'))]"/>
+        <field name="domain_force">['|', ('request_company_id', 'in', user.company_ids.ids), ('requested_member_ids', 'in', user.company_ids.ids)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_store_link_group_application_admin" model="ir.rule">
+        <field name="name">互通申请 - 品牌管理员</field>
+        <field name="model_id" ref="model_store_link_group_application"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_admin'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

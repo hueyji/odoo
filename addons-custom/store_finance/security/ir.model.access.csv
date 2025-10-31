@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_store_account_transaction_user,门店财务流水-用户,model_store_account_transaction,base.group_user,1,1,1,0
+access_store_account_transaction_manager,门店财务流水-管理员,model_store_account_transaction,base.group_system,1,1,1,1
+access_store_finance_channel_user,门店支付渠道-用户,model_store_finance_channel,base.group_user,1,1,1,0
+access_store_finance_channel_manager,门店支付渠道-管理员,model_store_finance_channel,base.group_system,1,1,1,1
+access_store_finance_clearing_user,互通清算单-用户,model_store_finance_clearing,base.group_user,1,1,1,0
+access_store_finance_clearing_manager,互通清算单-管理员,model_store_finance_clearing,base.group_system,1,1,1,1

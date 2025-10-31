@@ -1,0 +1,31 @@
+{
+    "name": "门店提成管理",
+    "summary": "管理雪茄威士忌门店的提成规则与实时提成日志。",
+    "version": "1.0.0",
+    "category": "Sales",
+    "sequence": 30,
+    "author": "多门店项目组",
+    "website": "https://example.com",
+    "license": "LGPL-3",
+    "depends": [
+        "sale_management",
+        "account",
+        "hr",
+        "mail",
+        "store_finance",
+    ],
+    "data": [
+        "security/store_commission_security.xml",
+        "security/ir.model.access.csv",
+        "data/commission_sequence.xml",
+        "views/commission_rule_views.xml",
+        "views/commission_log_views.xml",
+        "views/sale_order_views.xml",
+        "views/menu_views.xml",
+    ],
+    "demo": [
+        "data/commission_demo.xml",
+    ],
+    "installable": True,
+    "application": True,
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_brand_admin" model="res.groups">
+        <field name="name">品牌总部管理员</field>
+        <field name="comment">拥有品牌级配置、互通审批的全部权限。</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+    <record id="group_brand_operator" model="res.groups">
+        <field name="name">品牌总部运营</field>
+        <field name="comment">可查看品牌范围的互通配置与审批状态。</field>
+        <field name="category_id" ref="base.module_category_human_resources"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_store_manager" model="res.groups">
+        <field name="name">门店负责人</field>
+        <field name="comment">门店店长/老板，负责互通申请与门店配置。</field>
+        <field name="category_id" ref="base.module_category_sales"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

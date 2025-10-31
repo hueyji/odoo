@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_store_crowdfunding_investment_list" model="ir.ui.view">
+        <field name="name">store.crowdfunding.investment.list</field>
+        <field name="model">store.crowdfunding.investment</field>
+        <field name="arch" type="xml">
+            <list string="投资记录" decoration-muted="state == 'cancelled'" decoration-danger="state == 'refunded'">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="amount" sum="总认购"/>
+                <field name="amount_confirmed" sum="已确认"/>
+                <field name="amount_refunded" sum="已退款"/>
+                <field name="state"/>
+                <field name="investment_date"/>
+                <field name="transaction_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_investment_form" model="ir.ui.view">
+        <field name="name">store.crowdfunding.investment.form</field>
+        <field name="model">store.crowdfunding.investment</field>
+        <field name="arch" type="xml">
+            <form string="投资记录">
+                <header>
+                    <button name="action_confirm"
+                            string="确认到账"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_refund"
+                            string="执行退款"
+                            type="object"
+                            class="btn-warning"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel"
+                            string="取消"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state not in ['draft', 'confirmed']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,refunded,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="project_id" options="{'no_create': True}"/>
+                            <field name="partner_id" options="{'no_quick_create': True}"/>
+                            <field name="contact_phone" readonly="1"/>
+                            <field name="investment_date"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="amount_confirmed" readonly="1"/>
+                            <field name="amount_refunded" readonly="1"/>
+                            <field name="transaction_id" readonly="1" options="{'no_open': False}"/>
+                            <field name="refund_transaction_id" readonly="1" options="{'no_open': False}"/>
+                        </group>
+                    </group>
+                    <group string="分红明细">
+                        <field name="dividend_line_ids" readonly="1" widget="one2many_list">
+                            <list string="分红明细">
+                                <field name="dividend_id"/>
+                                <field name="amount"/>
+                                <field name="amount_paid"/>
+                                <field name="is_paid"/>
+                                <field name="payout_transaction_id"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_investment_search" model="ir.ui.view">
+        <field name="name">store.crowdfunding.investment.search</field>
+        <field name="model">store.crowdfunding.investment</field>
+        <field name="arch" type="xml">
+            <search string="搜索投资记录">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="project_id"/>
+                <field name="state"/>
+                <filter string="未确认" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="已确认未分红" name="filter_need_dividend" domain="[('state', '=', 'confirmed'), ('dividend_line_ids', '=', False)]"/>
+                <group expand="0" string="分组">
+                    <filter name="group_by_project" string="按项目" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_by_partner" string="按投资人" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_by_state" string="按状态" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_crowdfunding_investment" model="ir.actions.act_window">
+        <field name="name">投资记录</field>
+        <field name="res_model">store.crowdfunding.investment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_store_crowdfunding_investment_search"/>
+        <field name="context">{'default_state': 'draft'}</field>
+        <field name="help" type="html">
+            <p>记录会员投资众筹项目的全过程，支持退款与分红追踪。</p>
+            <p>确认投资后系统将自动生成财务流水并更新项目进度。</p>
+        </field>
+    </record>
+</odoo>

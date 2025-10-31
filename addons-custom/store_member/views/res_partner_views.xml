@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 会员档案扩展 -->
+    <record id="view_res_partner_form_store_member" model="ir.ui.view">
+        <field name="name">res.partner.form.store.member</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[contains(@class, 'oe_button_box')]" position="inside">
+                <button name="action_open_member_balance_log"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-credit-card"
+                        groups="store_member.group_member_sensitive">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="member_balance"
+                                   widget="monetary"
+                                   options="{'currency_field': 'member_balance_currency_id'}"/>
+                        </span>
+                        <span class="o_stat_text">储值余额</span>
+                    </div>
+                </button>
+                <button name="action_open_member_recharge"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-plus-circle"
+                        groups="store_member.group_member_sensitive">
+                    <span class="o_stat_text">充值记录</span>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="会员档案">
+                    <group>
+                        <group string="基础信息">
+                            <field name="member_level"/>
+                            <field name="origin_store_id" groups="store_member.group_member_sensitive"/>
+                            <field name="preference_tag_ids" widget="many2many_tags"/>
+                            <field name="share_with_group_ids" groups="store_member.group_member_sensitive"/>
+                            <field name="portal_privacy_opt_out"/>
+                            <field name="enable_investment"/>
+                        </group>
+                        <group string="储值与投资" groups="store_member.group_member_sensitive">
+                            <field name="member_balance" widget="monetary"/>
+                            <field name="member_balance_currency_id"/>
+                            <field name="investor_profile"/>
+                            <label for="investor_profile"/>
+                        </group>
+                    </group>
+                    <separator string="快捷操作"/>
+                    <div class="alert alert-warning" role="alert"
+                         invisible="not portal_privacy_opt_out">
+                        会员已拒绝共享偏好数据，互通门店仅可查看储值余额。
+                    </div>
+                    <button name="action_open_phone_bind_wizard"
+                            type="object"
+                            string="快速绑定手机号"
+                            class="btn btn-secondary"
+                            invisible="mobile"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 会员树视图 -->
+    <record id="view_store_member_partner_tree" model="ir.ui.view">
+        <field name="name">res.partner.list.store.member</field>
+        <field name="model">res.partner</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="会员列表" default_order="write_date desc">
+                <field name="name"/>
+                <field name="member_level"/>
+                <field name="origin_store_id"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="member_balance" groups="store_member.group_member_sensitive"/>
+                <field name="share_with_group_ids" widget="many2many_tags"/>
+                <field name="write_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 会员 Kanban -->
+    <record id="view_store_member_partner_kanban" model="ir.ui.view">
+        <field name="name">res.partner.kanban.store.member</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <kanban string="会员卡片" class="o_kanban_small_column">
+                <field name="member_level"/>
+                <field name="origin_store_id"/>
+                <field name="mobile"/>
+                <field name="member_balance"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('res.partner', 'image_128', record.id.value)" alt="会员头像"/>
+                            </div>
+                            <div class="o_kanban_details">
+                                <strong t-esc="record.name.value"/>
+                                <div class="text-muted">
+                                    <span>等级：</span>
+                                    <span t-esc="record.member_level.display_name or '标准会员'"/>
+                                </div>
+                                <div t-if="record.origin_store_id.value" class="text-muted">
+                                    <span>首访门店：</span>
+                                    <span t-esc="record.origin_store_id.value"/>
+                                </div>
+                                <div t-if="record.mobile.value" class="text-muted">
+                                    <span>手机号：</span>
+                                    <span t-esc="record.mobile.value"/>
+                                </div>
+                                <div class="text-success" t-if="record.member_balance.value">
+                                    <span>余额：</span>
+                                    <span t-esc="record.member_balance.value"/>
+                                    <t t-if="record.member_balance_currency_id.value">
+                                        <span class="ms-1" t-esc="record.member_balance_currency_id.value"/>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_footer" t-if="record.share_with_group_ids.raw_value">
+                                <span class="badge text-bg-info">互通</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- 会员搜索 -->
+    <record id="view_store_member_partner_search" model="ir.ui.view">
+        <field name="name">res.partner.search.store.member</field>
+        <field name="model">res.partner</field>
+        <field name="type">search</field>
+        <field name="groups_id" eval="[(6, 0, [ref('base.group_user')])]"/>
+        <field name="arch" type="xml">
+            <search string="搜索会员">
+                <field name="name"/>
+                <field name="member_level"/>
+                <field name="origin_store_id" groups="store_member.group_member_sensitive"/>
+                <filter string="互通共享" name="filter_shared" domain="[('share_with_group_ids', '!=', False)]"/>
+                <filter string="拒绝共享" name="filter_privacy" domain="[('portal_privacy_opt_out', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- 门店视图 -->
+    <record id="action_store_member_local" model="ir.actions.act_window">
+        <field name="name">门店会员</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="domain">['|', ('origin_store_id', '=', context.get('current_company_id')), ('share_with_group_ids.member_company_ids', 'in', [context.get('current_company_id')])]</field>
+        <field name="search_view_id" ref="store_member.view_store_member_partner_search"/>
+        <field name="context">{'default_company_type': 'person', 'current_company_id': user.company_id.id}</field>
+    </record>
+
+    <record id="action_store_member_local_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="store_member.view_store_member_partner_tree"/>
+        <field name="act_window_id" ref="store_member.action_store_member_local"/>
+    </record>
+    <record id="action_store_member_local_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="store_member.view_store_member_partner_kanban"/>
+        <field name="act_window_id" ref="store_member.action_store_member_local"/>
+    </record>
+    <!-- 品牌视图 -->
+    <record id="action_store_member_brand" model="ir.actions.act_window">
+        <field name="name">品牌会员总览</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="search_view_id" ref="store_member.view_store_member_partner_search"/>
+        <field name="context">{'default_company_type': 'person'}</field>
+    </record>
+
+    <record id="action_store_member_brand_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="store_member.view_store_member_partner_tree"/>
+        <field name="act_window_id" ref="store_member.action_store_member_brand"/>
+    </record>
+    <record id="action_store_member_brand_view_kanban" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="store_member.view_store_member_partner_kanban"/>
+        <field name="act_window_id" ref="store_member.action_store_member_brand"/>
+    </record>
+    <!-- 菜单 -->
+    <menuitem id="menu_store_member_root"
+              name="会员互通"
+              parent="contacts.menu_contacts"
+              sequence="30"/>
+
+    <menuitem id="menu_store_member_local"
+              name="门店会员"
+              parent="menu_store_member_root"
+              action="store_member.action_store_member_local"
+              sequence="10"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_store_member_brand"
+              name="品牌会员总览"
+              parent="menu_store_member_root"
+              action="store_member.action_store_member_brand"
+              sequence="20"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator"/>
+</odoo>

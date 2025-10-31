@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_store_crowdfunding_project_tree" model="ir.ui.view">
+        <field name="name">store.crowdfunding.project.tree</field>
+        <field name="model">store.crowdfunding.project</field>
+        <field name="arch" type="xml">
+            <list string="众筹项目" decoration-danger="state == 'cancelled'" decoration-success="state == 'executing' or state == 'closed'">
+                <field name="code" optional="hide"/>
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="brand_company_id" optional="hide"/>
+                <field name="state"/>
+                <field name="target_amount" sum="总目标"/>
+                <field name="amount_confirmed" sum="已到账"/>
+                <field name="funding_progress"/>
+                <field name="funding_end_date"/>
+                <field name="investment_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_project_form" model="ir.ui.view">
+        <field name="name">store.crowdfunding.project.form</field>
+        <field name="model">store.crowdfunding.project</field>
+        <field name="arch" type="xml">
+            <form string="众筹项目">
+                <header>
+                    <button name="action_submit_review"
+                            string="提交品牌审核"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve"
+                            string="品牌通过"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'review'"/>
+                    <button name="action_reject"
+                            string="驳回"
+                            type="object"
+                            class="btn-warning"
+                            invisible="state != 'review'"/>
+                    <button name="action_start_execution"
+                            string="进入执行"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'funding'"/>
+                    <button name="action_mark_closed"
+                            string="标记结项"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state not in ['funding', 'executing']"/>
+                    <button name="action_cancel"
+                            string="取消项目"
+                            type="object"
+                            class="btn-danger"
+                            invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="action"
+                                class="oe_stat_button"
+                                icon="fa-line-chart"
+                                name="%(action_store_crowdfunding_investment)d"
+                                context="{'search_default_project_id': active_id, 'default_project_id': active_id}">
+                            <span class="o_stat_value"><field name="investment_count"/></span>
+                            <span class="o_stat_text">投资记录</span>
+                        </button>
+                        <button type="action"
+                                class="oe_stat_button"
+                                icon="fa-money"
+                                name="%(action_store_crowdfunding_dividend)d"
+                                context="{'search_default_project_id': active_id, 'default_project_id': active_id}">
+                            <span class="o_stat_value"><field name="dividend_count"/></span>
+                            <span class="o_stat_text">分红计划</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code" readonly="1"/>
+                            <field name="company_id" options="{'no_create': True}"/>
+                            <field name="brand_company_id" readonly="1"/>
+                            <field name="company_contact_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="target_amount"/>
+                            <field name="min_invest_amount"/>
+                            <field name="max_invest_amount"/>
+                            <field name="min_success_ratio"/>
+                            <field name="portal_visible"/>
+                            <field name="link_group_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group string="募集计划">
+                        <field name="funding_start_date"/>
+                        <field name="funding_end_date"/>
+                        <field name="execution_start_date"/>
+                        <field name="execution_end_date"/>
+                    </group>
+                    <group string="进度">
+                        <field name="amount_confirmed" readonly="1"/>
+                        <field name="amount_pledged" readonly="1"/>
+                        <field name="funding_progress" widget="progressbar" options="{'max_value': 100}"/>
+                        <field name="investment_count" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="项目详情">
+                            <field name="description"/>
+                        </page>
+                        <page string="风险提示">
+                            <field name="risk_note"/>
+                        </page>
+                        <page string="合同附件">
+                            <field name="contract_watermark"/>
+                            <field name="contract_attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_project_kanban" model="ir.ui.view">
+        <field name="name">store.crowdfunding.project.kanban</field>
+        <field name="model">store.crowdfunding.project</field>
+        <field name="arch" type="xml">
+            <kanban class="o_crowdfunding_kanban" default_group_by="state">
+                <field name="name"/>
+                <field name="funding_progress"/>
+                <field name="amount_confirmed"/>
+                <field name="target_amount"/>
+                <field name="funding_end_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_title">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <div class="o_kanban_project_info">
+                                <span class="text-muted">目标</span>
+                                <field name="target_amount"/>
+                            </div>
+                            <div class="o_kanban_project_info">
+                                <span class="text-muted">已到账</span>
+                                <field name="amount_confirmed"/>
+                            </div>
+                            <div class="o_progress mt-2">
+                                <field name="funding_progress" widget="progressbar" options="{'max_value': 100}"/>
+                            </div>
+                            <div class="o_kanban_project_footer">
+                                <span class="text-secondary">
+                                    截止：
+                                    <field name="funding_end_date"/>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_project_search" model="ir.ui.view">
+        <field name="name">store.crowdfunding.project.search</field>
+        <field name="model">store.crowdfunding.project</field>
+        <field name="arch" type="xml">
+            <search string="搜索众筹项目">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="brand_company_id"/>
+                <field name="state"/>
+                <filter string="募集中" name="filter_funding" domain="[('state', '=', 'funding')]"/>
+                <filter string="执行中" name="filter_executing" domain="[('state', '=', 'executing')]"/>
+                <filter string="本月截止" name="filter_deadline" domain="[('funding_end_date', '&gt;=', context_today()), ('funding_end_date', '&lt;', context_today() + relativedelta(months=1))]"/>
+                <group expand="0" string="分组">
+                    <filter name="group_by_state" string="按状态" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_company" string="按门店" context="{'group_by': 'company_id'}"/>
+                    <filter name="group_by_brand" string="按品牌" context="{'group_by': 'brand_company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_project_pivot" model="ir.ui.view">
+        <field name="name">store.crowdfunding.project.pivot</field>
+        <field name="model">store.crowdfunding.project</field>
+        <field name="arch" type="xml">
+            <pivot string="众筹汇总">
+                <field name="amount_confirmed" type="measure"/>
+                <field name="target_amount" type="measure"/>
+                <field name="funding_progress" type="measure"/>
+                <field name="company_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="funding_start_date" type="col" interval="month"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_store_crowdfunding_project_graph" model="ir.ui.view">
+        <field name="name">store.crowdfunding.project.graph</field>
+        <field name="model">store.crowdfunding.project</field>
+        <field name="arch" type="xml">
+            <graph string="募集进度" type="bar">
+                <field name="amount_confirmed" type="measure"/>
+                <field name="target_amount" type="measure"/>
+                <field name="funding_start_date" type="row" interval="month"/>
+                <field name="company_id" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_store_crowdfunding_project" model="ir.actions.act_window">
+        <field name="name">众筹项目</field>
+        <field name="res_model">store.crowdfunding.project</field>
+        <field name="view_mode">kanban,tree,form,pivot,graph</field>
+        <field name="view_ids" eval="[(0, 0, {'sequence': 1, 'view_mode': 'kanban', 'view_id': ref('view_store_crowdfunding_project_kanban')}), (0, 0, {'sequence': 2, 'view_mode': 'tree', 'view_id': ref('view_store_crowdfunding_project_tree')}), (0, 0, {'sequence': 3, 'view_mode': 'form', 'view_id': ref('view_store_crowdfunding_project_form')})]"/>
+        <field name="search_view_id" ref="view_store_crowdfunding_project_search"/>
+        <field name="help" type="html">
+            <p>管理众筹项目的全生命周期：门店提交、品牌审核、募集执行与分红。</p>
+            <p>使用看板查看不同阶段，结合透视表掌握品牌范围募集数据。</p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 演示门店与联系人 -->
+    <record id="demo_store_company_crowdfunding" model="res.company">
+        <field name="name">演示门店 - 众筹</field>
+        <field name="parent_id" ref="base.main_company"/>
+        <field name="partner_id" eval="ref('base.main_company').partner_id.id"/>
+    </record>
+
+    <record id="demo_store_contact_crowdfunding" model="res.partner">
+        <field name="name">张众筹</field>
+        <field name="mobile">13800001111</field>
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+    </record>
+
+    <!-- 演示投资人 -->
+    <record id="demo_investor_alpha" model="res.partner">
+        <field name="name">李雪茄</field>
+        <field name="mobile">13900002222</field>
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+    </record>
+
+    <record id="demo_investor_bravo" model="res.partner">
+        <field name="name">王威士忌</field>
+        <field name="mobile">13700003333</field>
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+    </record>
+
+    <!-- 众筹项目 demo -->
+    <record id="demo_crowdfunding_project_review" model="store.crowdfunding.project">
+        <field name="name">旗舰店扩建 - 审核中</field>
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+        <field name="brand_company_id" ref="base.main_company"/>
+        <field name="company_contact_id" ref="demo_store_contact_crowdfunding"/>
+        <field name="target_amount">200000</field>
+        <field name="min_invest_amount">10000</field>
+        <field name="min_success_ratio">0.7</field>
+        <field name="funding_start_date">2025-10-01</field>
+        <field name="funding_end_date">2025-12-31</field>
+        <field name="state">review</field>
+        <field name="description"><![CDATA[<p>用于旗舰店 VIP 包厢装修，预计提升高客单服务体验。</p>]]></field>
+        <field name="risk_note"><![CDATA[<p>资金仅用于装修开支，施工期间注意门店现场安全。</p>]]></field>
+    </record>
+
+    <record id="demo_crowdfunding_project_funding" model="store.crowdfunding.project">
+        <field name="name">雪茄恒温柜升级 - 募集中</field>
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+        <field name="brand_company_id" ref="base.main_company"/>
+        <field name="company_contact_id" ref="demo_store_contact_crowdfunding"/>
+        <field name="target_amount">150000</field>
+        <field name="funding_start_date">2025-09-01</field>
+        <field name="funding_end_date">2025-11-30</field>
+        <field name="state">funding</field>
+        <field name="description"><![CDATA[<p>计划引入新一代恒温恒湿雪茄柜，保障陈化品质。</p>]]></field>
+    </record>
+
+    <record id="demo_crowdfunding_project_executing" model="store.crowdfunding.project">
+        <field name="name">威士忌主题店 - 执行中</field>
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+        <field name="brand_company_id" ref="base.main_company"/>
+        <field name="company_contact_id" ref="demo_store_contact_crowdfunding"/>
+        <field name="target_amount">300000</field>
+        <field name="funding_start_date">2025-06-01</field>
+        <field name="funding_end_date">2025-08-15</field>
+        <field name="execution_start_date">2025-08-20</field>
+        <field name="state">executing</field>
+        <field name="description"><![CDATA[<p>打造威士忌主题体验区，配套音乐与吧台升级。</p>]]></field>
+    </record>
+
+    <!-- 演示投资流水 -->
+    <record id="demo_crowdfunding_txn_alpha" model="store.account.transaction">
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+        <field name="transaction_type">crowdfunding</field>
+        <field name="amount">80000</field>
+        <field name="member_id" ref="demo_investor_alpha"/>
+        <field name="state">confirmed</field>
+        <field name="description">恒温柜升级投资-李雪茄</field>
+    </record>
+
+    <record id="demo_crowdfunding_investment_alpha" model="store.crowdfunding.investment">
+        <field name="project_id" ref="demo_crowdfunding_project_funding"/>
+        <field name="partner_id" ref="demo_investor_alpha"/>
+        <field name="state">confirmed</field>
+        <field name="amount">80000</field>
+        <field name="amount_confirmed">80000</field>
+        <field name="investment_date">2025-09-15</field>
+        <field name="transaction_id" ref="demo_crowdfunding_txn_alpha"/>
+    </record>
+
+    <record id="demo_crowdfunding_txn_bravo" model="store.account.transaction">
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+        <field name="transaction_type">crowdfunding</field>
+        <field name="amount">120000</field>
+        <field name="member_id" ref="demo_investor_bravo"/>
+        <field name="state">confirmed</field>
+        <field name="description">主题店建设投资-王威士忌</field>
+    </record>
+
+    <record id="demo_crowdfunding_investment_bravo" model="store.crowdfunding.investment">
+        <field name="project_id" ref="demo_crowdfunding_project_executing"/>
+        <field name="partner_id" ref="demo_investor_bravo"/>
+        <field name="state">confirmed</field>
+        <field name="amount">120000</field>
+        <field name="amount_confirmed">120000</field>
+        <field name="investment_date">2025-06-20</field>
+        <field name="transaction_id" ref="demo_crowdfunding_txn_bravo"/>
+    </record>
+
+    <!-- 分红计划 demo -->
+    <record id="demo_crowdfunding_dividend_plan" model="store.crowdfunding.dividend">
+        <field name="project_id" ref="demo_crowdfunding_project_executing"/>
+        <field name="plan_date">2025-12-15</field>
+        <field name="state">scheduled</field>
+        <field name="description">首期收益分红，按照投资比例发放。</field>
+    </record>
+
+    <record id="demo_crowdfunding_dividend_line_bravo" model="store.crowdfunding.dividend.line">
+        <field name="dividend_id" ref="demo_crowdfunding_dividend_plan"/>
+        <field name="investment_id" ref="demo_crowdfunding_investment_bravo"/>
+        <field name="amount">15000</field>
+        <field name="amount_paid">0</field>
+    </record>
+
+    <record id="demo_crowdfunding_dividend_plan_done" model="store.crowdfunding.dividend">
+        <field name="project_id" ref="demo_crowdfunding_project_executing"/>
+        <field name="plan_date">2025-10-01</field>
+        <field name="state">done</field>
+        <field name="execution_note">样板分红计划已执行。</field>
+    </record>
+
+    <record id="demo_crowdfunding_dividend_payout_txn" model="store.account.transaction">
+        <field name="company_id" ref="demo_store_company_crowdfunding"/>
+        <field name="transaction_type">crowdfunding_dividend</field>
+        <field name="amount">-5000</field>
+        <field name="member_id" ref="demo_investor_alpha"/>
+        <field name="state">confirmed</field>
+        <field name="description">威士忌主题店 - 首次分红</field>
+    </record>
+
+    <record id="demo_crowdfunding_dividend_line_alpha" model="store.crowdfunding.dividend.line">
+        <field name="dividend_id" ref="demo_crowdfunding_dividend_plan_done"/>
+        <field name="investment_id" ref="demo_crowdfunding_investment_alpha"/>
+        <field name="amount">5000</field>
+        <field name="amount_paid">5000</field>
+        <field name="payout_transaction_id" ref="demo_crowdfunding_dividend_payout_txn"/>
+    </record>
+</odoo>

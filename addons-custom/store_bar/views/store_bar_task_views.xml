@@ -1,0 +1,62 @@
+<odoo>
+    <record id="view_store_bar_task_list" model="ir.ui.view">
+        <field name="name">store.bar.task.list</field>
+        <field name="model">store.bar.task</field>
+        <field name="arch" type="xml">
+            <list default_order="state asc, sequence">
+                <field name="name"/>
+                <field name="state" widget="badge"/>
+                <field name="order_id"/>
+                <field name="table_id"/>
+                <field name="assigned_employee_id"/>
+                <field name="expected_commission_amount"/>
+                <field name="start_time"/>
+                <field name="complete_time"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_bar_task_form" model="ir.ui.view">
+        <field name="name">store.bar.task.form</field>
+        <field name="model">store.bar.task</field>
+        <field name="arch" type="xml">
+            <form string="调酒任务">
+                <header>
+                    <button name="action_start" type="object" string="开始" class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_done" type="object" string="完成" class="oe_highlight" invisible="state not in ['pending', 'in_progress']"/>
+                    <button name="action_reset" type="object" string="重置" invisible="state not in ['in_progress', 'done']"/>
+                    <button name="action_cancel" type="object" string="取消" invisible="state not in ['pending', 'in_progress']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,done,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="order_id" readonly="1"/>
+                            <field name="order_line_id" readonly="1"/>
+                            <field name="table_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="responsible_employee_id"/>
+                            <field name="assigned_employee_id"/>
+                            <field name="expected_commission_amount" readonly="1"/>
+                            <field name="start_time" readonly="1"/>
+                            <field name="complete_time" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_bar_task" model="ir.actions.act_window">
+        <field name="name">调酒任务</field>
+        <field name="res_model">store.bar.task</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_group_state": 1}</field>
+    </record>
+</odoo>

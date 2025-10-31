@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seq_store_finance_clearing" model="ir.sequence">
+        <field name="name">互通内部清算单</field>
+        <field name="code">store.finance.clearing</field>
+        <field name="prefix">CL%(y)s</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

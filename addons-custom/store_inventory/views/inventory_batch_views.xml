@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_store_inventory_batch_list" model="ir.ui.view">
+        <field name="name">store.inventory.batch.list</field>
+        <field name="model">store.inventory.batch</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="attention_flag" decoration-success="aging_stage == 'lt_30'" decoration-warning="aging_stage in ('91_180', '181_365', 'gt_365')">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="company_id" optional="show"/>
+                <field name="warehouse_id" optional="show"/>
+                <field name="location_id" optional="show"/>
+                <field name="aging_stage_label" string="陈化阶段"/>
+                <field name="aging_days" optional="show"/>
+                <field name="qty_available" sum="可售库存" string="可售数量"/>
+                <field name="state"/>
+                <field name="attention_flag" widget="boolean_toggle" optional="show" string="重点关注"/>
+                <field name="last_move_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_inventory_batch_kanban" model="ir.ui.view">
+        <field name="name">store.inventory.batch.kanban</field>
+        <field name="model">store.inventory.batch</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <div class="o_kanban_primary_left">
+                                <strong t-esc="record.name.value"/>
+                                <span class="badge" t-if="record.attention_flag.raw_value">重点关注</span>
+                                <div class="text-muted" t-esc="record.product_id.value"/>
+                            </div>
+                            <div class="o_kanban_primary_right">
+                                <div class="o_stat_value">
+                                    <span class="o_value" t-esc="record.qty_available.value"/>
+                                    <small>件</small>
+                                </div>
+                                <span class="badge badge-secondary" t-esc="record.aging_stage_label.value"/>
+                            </div>
+                            <div class="o_kanban_secondary">
+                                <span>
+                                    <t t-esc="record.company_id.value"/>
+                                </span>
+                                <span t-if="record.aging_days.raw_value">已陈化：<t t-esc="record.aging_days.value"/> 天</span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_store_inventory_batch_form" model="ir.ui.view">
+        <field name="name">store.inventory.batch.form</field>
+        <field name="model">store.inventory.batch</field>
+        <field name="arch" type="xml">
+            <form string="库存批次" create="1" edit="1">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_moves" class="oe_stat_button" icon="fa-random" help="查看批次相关库存动作">
+                            <field name="move_ids" widget="statinfo" string="库存动作"/>
+                        </button>
+                        <button type="object" name="action_toggle_attention" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="attention_flag" widget="statinfo" string="重点关注"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="product_id"/>
+                            <field name="supplier_id"/>
+                            <field name="purchase_price"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="qty_initial"/>
+                            <field name="qty_available"/>
+                            <field name="aging_start_date"/>
+                            <field name="aging_days" readonly="1"/>
+                            <field name="aging_stage_label" readonly="1"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="warehouse_id"/>
+                            <field name="location_id"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="attention_flag"/>
+                            <field name="note" colspan="2" nolabel="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_inventory_batch_search" model="ir.ui.view">
+        <field name="name">store.inventory.batch.search</field>
+        <field name="model">store.inventory.batch</field>
+        <field name="arch" type="xml">
+            <search string="批次搜索">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="company_id"/>
+                <filter name="filter_in_stock" string="待售" domain="[('state', '=', 'in_stock')]"/>
+                <filter name="filter_transit" string="调拨中" domain="[('state', '=', 'transit')]"/>
+                <filter name="filter_attention" string="重点关注" domain="[('attention_flag', '=', True)]"/>
+                <group expand="0" string="陈化分层">
+                    <filter name="group_lt_30" string="&lt;30 天" domain="[('aging_stage', '=', 'lt_30')]"/>
+                    <filter name="group_31_90" string="31-90 天" domain="[('aging_stage', '=', '31_90')]"/>
+                    <filter name="group_91_180" string="91-180 天" domain="[('aging_stage', '=', '91_180')]"/>
+                    <filter name="group_181_365" string="181-365 天" domain="[('aging_stage', '=', '181_365')]"/>
+                    <filter name="group_gt_365" string="&gt;365 天" domain="[('aging_stage', '=', 'gt_365')]"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_inventory_batch" model="ir.actions.act_window">
+        <field name="name">库存批次</field>
+        <field name="res_model">store.inventory.batch</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="view_id" ref="view_store_inventory_batch_list"/>
+        <field name="search_view_id" ref="view_store_inventory_batch_search"/>
+        <field name="context">{"search_default_filter_in_stock": 1}</field>
+    </record>
+
+    <record id="action_store_inventory_batch_board" model="ir.actions.client">
+        <field name="name">陈化看板</field>
+        <field name="tag">store_inventory_batch_board</field>
+    </record>
+
+    <record id="action_store_inventory_batch_export_csv" model="ir.actions.server">
+        <field name="name">导出批次 CSV</field>
+        <field name="model_id" ref="model_store_inventory_batch"/>
+        <field name="binding_model_id" ref="model_store_inventory_batch"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">action = env['store.inventory.batch'].browse(env.context.get('active_ids', [])).action_export_csv()</field>
+    </record>
+</odoo>

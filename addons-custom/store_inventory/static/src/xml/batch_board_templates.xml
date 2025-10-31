@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="store_inventory.BatchAgingBoardTemplate">
+        <div class="o_store_inventory_board">
+            <div class="o_board_header">
+                <h2>库存陈化看板</h2>
+                <span class="text-muted" t-if="state.updated">
+                    <i class="fa fa-clock-o"/> 更新时间：
+                    <t t-esc="state.updated"/>
+                </span>
+            </div>
+            <div class="o_board_body">
+                <t t-if="state.metrics.length">
+                    <div class="o_board_cards">
+                        <t t-foreach="state.metrics" t-as="metric" t-key="metric.stage">
+                            <div class="o_board_card" t-att-class="'o_color_' + metric.color" t-on-click="() => openStage(metric.stage)">
+                                <div class="o_card_header">
+                                    <span class="o_stage_label" t-esc="metric.label"/>
+                                    <span class="o_stage_count">
+                                        <t t-esc="metric.count"/> 批次
+                                    </span>
+                                </div>
+                                <div class="o_card_body">
+                                    <div class="o_metric_value">
+                                        <t t-esc="metric.qty"/> <span>件</span>
+                                    </div>
+                                    <div class="o_metric_attention" t-if="metric.attention_count">
+                                        <i class="fa fa-exclamation-triangle"/> 重点关注：
+                                        <t t-esc="metric.attention_count"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="alert alert-info">暂无批次需要展示。</div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

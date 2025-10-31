@@ -1,0 +1,92 @@
+<odoo>
+    <record id="view_store_bar_table_list" model="ir.ui.view">
+        <field name="name">store.bar.table.list</field>
+        <field name="model">store.bar.table</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence">
+                <field name="sequence" invisible="1"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="area"/>
+                <field name="capacity"/>
+                <field name="state" widget="badge" options="{'class': 'oe_highlight'}"/>
+                <field name="responsible_employee_id"/>
+                <field name="current_order_id"/>
+                <field name="occupancy_minutes"/>
+                <field name="need_service_reminder" widget="boolean_toggle"/>
+                <field name="today_turnover_count"/>
+                <field name="today_avg_ticket"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_bar_table_form" model="ir.ui.view">
+        <field name="name">store.bar.table.form</field>
+        <field name="model">store.bar.table</field>
+        <field name="arch" type="xml">
+            <form string="桌台">
+                <sheet>
+                    <group>
+                        <group string="基本信息">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="area"/>
+                            <field name="capacity"/>
+                            <field name="responsible_employee_id"/>
+                            <field name="reminder_threshold_minutes"/>
+                        </group>
+                        <group string="当前状态">
+                            <field name="state" widget="statusbar" statusbar_visible="available,reserved,seated,billing,maintenance"/>
+                            <field name="current_order_id"/>
+                            <field name="current_session_start"/>
+                            <field name="occupancy_minutes" readonly="1"/>
+                            <field name="need_service_reminder" readonly="1"/>
+                            <field name="last_checkout_at"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="今日表现">
+                            <group col="4">
+                                <field name="today_turnover_count" readonly="1"/>
+                                <field name="today_sales_total" readonly="1"/>
+                                <field name="today_avg_ticket" readonly="1"/>
+                                <field name="today_turnover_rate" readonly="1"/>
+                                <field name="turnover_target"/>
+                            </group>
+                        </page>
+                        <page string="预定">
+                            <group>
+                                <field name="reserve_partner_id"/>
+                                <field name="reserve_mobile"/>
+                                <field name="reserve_start"/>
+                                <field name="reserve_end"/>
+                            </group>
+                        </page>
+                        <page string="历史订单">
+                            <field name="order_ids" mode="list" create="0">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="amount_total"/>
+                                    <field name="closed_at"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="备注">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_bar_table" model="ir.actions.act_window">
+        <field name="name">桌台管理</field>
+        <field name="res_model">store.bar.table</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"search_default_group_state": 1}</field>
+    </record>
+</odoo>

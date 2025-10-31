@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_brand_core_setup_wizard_form" model="ir.ui.view">
+        <field name="name">brand.core.setup.wizard.form</field>
+        <field name="model">brand.core.setup.wizard</field>
+        <field name="arch" type="xml">
+            <form string="品牌多公司初始化">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="brand_name"/>
+                            <field name="investor_name"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="store_names" placeholder="示例：&#10;雪茄威士忌·上海旗舰店&#10;雪茄威士忌·外滩会所"/>
+                            <field name="ensure_sequences"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="开始初始化" type="object" name="action_initialize" class="btn-primary"/>
+                        <button string="取消" special="cancel" class="btn-secondary"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

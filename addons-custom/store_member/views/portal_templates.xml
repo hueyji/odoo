@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_member_dashboard" name="会员中心">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs">
+                <li class="breadcrumb-item">
+                    <a href="/my/home">我的工作台</a>
+                </li>
+                <li class="breadcrumb-item active">会员中心</li>
+            </t>
+            <div class="o_portal_wrapper">
+                <div class="alert alert-success" role="alert" t-if="success">
+                    偏好设置已更新。
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header fw-bold">会员档案</div>
+                    <div class="card-body row g-3 align-items-center">
+                        <div class="col-md-4">
+                            <h4 class="mb-1" t-esc="member_partner.name"/>
+                            <p class="text-muted mb-0">
+                                等级：
+                                <span t-esc="member_level_label"/>
+                            </p>
+                            <p class="text-muted" t-if="member_partner.origin_store_id">
+                                首访门店：<span t-esc="member_partner.origin_store_id.name"/>
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-secondary">储值余额</div>
+                            <div class="display-6 text-primary">
+                                <t t-if="member_partner.member_balance_currency_id">
+                                    <span t-esc="member_partner.member_balance_currency_id.symbol"/>
+                                </t>
+                                <span t-esc="formatLang(member_partner.member_balance, currency_obj=member_partner.member_balance_currency_id)"/>
+                            </div>
+                            <p class="mb-0 text-muted" t-if="member_partner.share_with_group_ids">
+                                余额可在以下互通门店使用：
+                                <span t-esc="', '.join(member_partner.share_with_group_ids.mapped('name'))"/>
+                            </p>
+                            <p class="mb-0 text-danger" t-if="member_partner.portal_privacy_opt_out">
+                                您已关闭互通偏好共享，仅保留余额可见。
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <form action="/my/member/preferences" method="post" class="vstack gap-2">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="privacySwitch" name="portal_privacy_opt_out" t-att-checked="'checked' if member_partner.portal_privacy_opt_out else None"/>
+                                    <label class="form-check-label" for="privacySwitch">关闭互通偏好共享</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="investmentSwitch" name="enable_investment" t-att-checked="'checked' if member_partner.enable_investment else None"/>
+                                    <label class="form-check-label" for="investmentSwitch">允许参与众筹项目</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary">保存偏好</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header fw-bold">最近充值</div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>时间</th>
+                                            <th>金额</th>
+                                            <th>门店</th>
+                                            <th>备注</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="recharge_logs" t-as="log">
+                                            <td t-esc="format_datetime(log.create_date)"/>
+                                            <td class="text-success">
+                                                <span t-esc="log.currency_id.symbol if log.currency_id else ''"/>
+                                                <span t-esc="formatLang(log.delta_amount, currency_obj=log.currency_id)"/>
+                                            </td>
+                                            <td t-esc="log.company_id.name"/>
+                                            <td t-esc="log.note or '-'"/>
+                                        </tr>
+                                        <tr t-if="not recharge_logs">
+                                            <td colspan="4" class="text-center text-muted py-3">暂无充值记录</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header fw-bold">最近消费</div>
+                            <div class="card-body p-0">
+                                <table class="table table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>时间</th>
+                                            <th>金额</th>
+                                            <th>门店</th>
+                                            <th>备注</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="consume_logs" t-as="log">
+                                            <td t-esc="format_datetime(log.create_date)"/>
+                                            <td class="text-danger">
+                                                <span t-esc="log.currency_id.symbol if log.currency_id else ''"/>
+                                                <span t-esc="formatLang(abs(log.delta_amount), currency_obj=log.currency_id)"/>
+                                            </td>
+                                            <td t-esc="log.company_id.name"/>
+                                            <td t-esc="log.note or '-'"/>
+                                        </tr>
+                                        <tr t-if="not consume_logs">
+                                            <td colspan="4" class="text-center text-muted py-3">暂无消费记录</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">众筹项目</span>
+                        <a class="btn btn-outline-primary btn-sm" href="/my/crowdfunding" role="button">进入众筹专区</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3" t-if="crowdfunding_projects">
+                            <div class="col-md-4" t-foreach="crowdfunding_projects" t-as="project">
+                                <div class="border rounded p-3 h-100">
+                                    <h6 class="fw-bold" t-esc="project.name"/>
+                                    <p class="mb-1 text-muted" t-if="project.company_id">
+                                        门店：<span t-esc="project.company_id.name"/>
+                                    </p>
+                                    <p class="mb-1" t-if="hasattr(project, 'goal_amount')">
+                                        目标金额：
+                                        <span t-esc="formatLang(project.goal_amount, currency_obj=project.currency_id)"/>
+                                    </p>
+                                    <p class="mb-0 text-muted" t-if="hasattr(project, 'state')">
+                                        状态：<span t-esc="project.state"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0" t-if="not crowdfunding_projects">
+                            暂无正在进行的众筹项目，敬请期待品牌方发布。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

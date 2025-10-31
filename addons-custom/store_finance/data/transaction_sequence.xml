@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="seq_store_account_transaction" model="ir.sequence">
+        <field name="name">门店财务流水</field>
+        <field name="code">store.account.transaction</field>
+        <field name="prefix">TRX%(y)s</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

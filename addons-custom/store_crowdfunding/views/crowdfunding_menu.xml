@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_store_crowdfunding_root"
+              name="众筹与品牌洞察"
+              parent="brand_core.menu_brand_core_root"
+              sequence="80"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator,brand_core.group_store_manager"/>
+
+    <menuitem id="menu_store_crowdfunding_project"
+              name="众筹项目"
+              parent="menu_store_crowdfunding_root"
+              action="action_store_crowdfunding_project"
+              sequence="10"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator,brand_core.group_store_manager"/>
+
+    <menuitem id="menu_store_crowdfunding_investment"
+              name="投资记录"
+              parent="menu_store_crowdfunding_root"
+              action="action_store_crowdfunding_investment"
+              sequence="20"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator,brand_core.group_store_manager"/>
+
+    <menuitem id="menu_store_crowdfunding_dividend"
+              name="分红计划"
+              parent="menu_store_crowdfunding_root"
+              action="action_store_crowdfunding_dividend"
+              sequence="30"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator"/>
+
+    <menuitem id="menu_store_crowdfunding_dashboard"
+              name="品牌众筹看板"
+              parent="menu_store_crowdfunding_root"
+              action="action_store_crowdfunding_dashboard"
+              sequence="40"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator"/>
+</odoo>

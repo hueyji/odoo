@@ -80,7 +80,7 @@ start_odoo() {
 
     # 启动服务器
     nohup "$PYTHON_BIN" odoo-bin \
-        --addons-path=addons,$ODDO_DIR/addons \
+        --addons-path=addons,$ODDO_DIR/addons,odoo/addons,$ODDO_DIR/addons-custom \
         -d $DB_NAME \
         --db_host=$DB_HOST \
         --db_port=$DB_PORT \

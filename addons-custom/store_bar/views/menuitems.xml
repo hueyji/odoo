@@ -1,0 +1,6 @@
+<odoo>
+    <menuitem id="menu_store_bar_root" name="吧台运营" parent="sales_team.menu_sales" sequence="25" groups="store_bar.group_store_bar_user,store_bar.group_store_bar_manager,base.group_system"/>
+    <menuitem id="menu_store_bar_table" name="桌台管理" parent="menu_store_bar_root" action="action_store_bar_table" sequence="10" groups="store_bar.group_store_bar_user,store_bar.group_store_bar_manager,base.group_system"/>
+    <menuitem id="menu_store_bar_order" name="吧台订单" parent="menu_store_bar_root" action="action_store_bar_order" sequence="20" groups="store_bar.group_store_bar_user,store_bar.group_store_bar_manager,base.group_system"/>
+    <menuitem id="menu_store_bar_task" name="调酒任务" parent="menu_store_bar_root" action="action_store_bar_task" sequence="30" groups="store_bar.group_store_bar_bartender,store_bar.group_store_bar_user,store_bar.group_store_bar_manager,base.group_system"/>
+</odoo>

@@ -1,0 +1,667 @@
+{
+  "info": {
+    "_postman_id": "4bf61f8e-8f68-4b0f-a8f5-560462b74b3a",
+    "name": "雪茄威士忌多门店接口集合",
+    "description": "品牌总部与加盟门店多模块接口示例，覆盖互通组、库存、提成、财务、会员、吧台与众筹模块。所有请求默认携带 `Authorization: Bearer {{token}}`，基准域名请使用环境变量 `base_url`。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "互通基础（Team A）",
+      "item": [
+        {
+          "name": "获取互通组列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/link-groups",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "link-groups"
+              ]
+            },
+            "description": "查询当前登录主体可见的互通组列表。字段说明见《dev_document/协调机制与接口里程碑.md》。运行 `dev_document/scripts/seed_interface_data.py` 后可直接使用 `link_group_id` 调试。"
+          }
+        },
+        {
+          "name": "提交互通组申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": {{link_group_id}},\n  \"requested_member_ids\": [\n    {{store_company_id}},\n    {{target_company_id}}\n  ],\n  \"share_inventory\": true,\n  \"share_member\": true,\n  \"share_finance\": false,\n  \"description\": \"演示数据：门店申请加入互通组\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/link-groups/apply",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "link-groups",
+                "apply"
+              ]
+            },
+            "description": "门店向品牌方发起互通组申请。示例依赖脚本生成的 `link_group_id`、`store_company_id`、`target_company_id`。"
+          }
+        },
+        {
+          "name": "更新互通组配置",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/link-groups/{{link_group_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "link-groups",
+                "{{link_group_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"share_finance\": true\n}\n"
+            },
+            "description": "品牌管理员更新互通组共享策略或状态，仅 `base.group_system` 成员可用。示例开启财务共享。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "库存与供应链（Team B）",
+      "item": [
+        {
+          "name": "创建批次入库",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": {{product_id}},\n  \"supplier_id\": {{supplier_partner_id}},\n  \"supplier_record_id\": {{supplier_record_id}},\n  \"qty_initial\": 40,\n  \"purchase_price\": 185,\n  \"aging_start_date\": \"2024-09-01\",\n  \"company_id\": {{store_company_id}},\n  \"note\": \"演示接口：批次入库\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory/batches",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "batches"
+              ]
+            },
+            "description": "创建新的库存批次并触发入库动作。`product_id`、`supplier_partner_id`、`supplier_record_id` 来源于演示脚本。"
+          }
+        },
+        {
+          "name": "互通调拨申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source_batch_id\": {{inventory_batch_id}},\n  \"target_company_id\": {{target_company_id}},\n  \"qty\": 3,\n  \"reason\": \"演示互通调拨\",\n  \"auto_approve\": true\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/inventory/transfers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "transfers"
+              ]
+            },
+            "description": "在互通组内调拨库存，库存经理具备自动审批权限。示例使用 `inventory_batch_id` 调拨到 `target_company_id`。"
+          }
+        },
+        {
+          "name": "查询批次详情",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/inventory/batches/{{inventory_batch_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "batches",
+                "{{inventory_batch_id}}"
+              ]
+            },
+            "description": "根据批次 ID 返回库存陈化与供应信息。建议配合变量 `inventory_batch_id`。"
+          }
+        },
+        {
+          "name": "获取供应商列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers?company_id=3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "suppliers"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "3"
+                }
+              ]
+            },
+            "description": "按门店公司检索供应商档案，默认为排除黑名单。GET JSON 接口需在请求体传参。",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_id\": {{store_company_id}},\n  \"include_blacklist\": false\n}\n"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "提成与业绩（Team C）",
+      "item": [
+        {
+          "name": "计算订单提成",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": {{sale_order_id}}\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/commissions/calculate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commissions",
+                "calculate"
+              ]
+            },
+            "description": "根据销售订单实时预估提成，调用内部 `compute_commission_preview`。"
+          }
+        },
+        {
+          "name": "查询提成日志",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/commissions/logs?employee_id={{commission_employee_id}}&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commissions",
+                "logs?employee_id={{commission_employee_id}}&limit=20"
+              ]
+            },
+            "description": "按员工查看已确认的提成日志，可用于调酒师工作台。示例查询 `commission_employee_id` 最新 20 条记录。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "财务结算（Team D）",
+      "item": [
+        {
+          "name": "记录交易流水",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_type\": \"sale\",\n  \"amount\": 288.0,\n  \"company_id\": {{store_company_id}},\n  \"channel_id\": {{finance_channel_cash}},\n  \"member_id\": {{member_id}},\n  \"description\": \"演示现销入账\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/transactions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "finance",
+                "transactions"
+              ]
+            },
+            "description": "写入门店财务流水，支持销售、充值、退款等类型。示例记录一笔前台现金销售。"
+          }
+        },
+        {
+          "name": "查询门店流水",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/finance/transactions?company_id={{store_company_id}}&date_from=2024-01-01&date_to=2024-12-31",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "finance",
+                "transactions?company_id={{store_company_id}}&date_from=2024-01-01&date_to=2024-12-31"
+              ]
+            },
+            "description": "按公司与时间段拉取流水明细，支持品牌汇总使用。"
+          }
+        },
+        {
+          "name": "发起内部清算",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"link_group_id\": {{link_group_id}},\n  \"source_company_id\": {{store_company_id}},\n  \"target_company_id\": {{target_company_id}},\n  \"amount\": 1000,\n  \"reference\": \"演示互通结算\",\n  \"note\": \"门店月度内部清算\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/finance/internal-clearing",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "finance",
+                "internal-clearing"
+              ]
+            },
+            "description": "互通门店之间发起内部清算，生成调拨补差与财务凭证。示例使用演示互通组的两家门店。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "会员与互通体验（Team E）",
+      "item": [
+        {
+          "name": "查询会员列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company_id\": {{store_company_id}},\n  \"level\": \"gold\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/members",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "members"
+              ]
+            },
+            "description": "品牌或门店按条件检索会员列表，可筛选等级、互通组等。"
+          }
+        },
+        {
+          "name": "新增会员并绑定手机号",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{member_phone}}\",\n  \"name\": \"演示会员张先生\",\n  \"member_level\": \"gold\",\n  \"company_id\": {{store_company_id}}\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/members/bind",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "members",
+                "bind"
+              ]
+            },
+            "description": "门店前台快速新增/绑定会员，支持手机号识别。示例绑定脚本生成的演示会员。"
+          }
+        },
+        {
+          "name": "会员余额充值",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": {{member_id}},\n  \"amount\": 200.0,\n  \"company_id\": {{store_company_id}},\n  \"channel_id\": {{finance_channel_stored}},\n  \"note\": \"演示充值\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/members/recharge",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "members",
+                "recharge"
+              ]
+            },
+            "description": "门店为会员办理储值充值，自动生成财务流水与余额日志。"
+          }
+        },
+        {
+          "name": "查询会员余额",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/members/balance?member_id={{member_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "members",
+                "balance"
+              ],
+              "query": [
+                {
+                  "key": "member_id",
+                  "value": "{{member_id}}"
+                }
+              ]
+            },
+            "description": "返回会员余额及互通共享信息，用于点单扣减或品牌风控。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "吧台前台（Team F）",
+      "item": [
+        {
+          "name": "创建点单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"table_id\": {{bar_table_id}},\n  \"company_id\": {{store_company_id}},\n  \"member_id\": {{member_id}},\n  \"payment_channel_id\": {{finance_channel_stored}},\n  \"responsible_employee_id\": {{bartender_employee_id}},\n  \"assistant_employee_ids\": [{{commission_employee_id}}],\n  \"lines\": [\n    {\n      \"product_id\": {{product_id}},\n      \"batch_id\": {{inventory_batch_id}},\n      \"quantity\": 1,\n      \"price_unit\": 368.0,\n      \"requires_preparation\": true\n    }\n  ],\n  \"amount_service\": 20.0\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bar/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bar",
+                "orders"
+              ]
+            },
+            "description": "前台创建吧台订单与明细，示例包含批次选择与协同员工。接口上线后将自动触发库存与提成计算。"
+          }
+        },
+        {
+          "name": "结账并关闭桌台",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"consume_member_balance\": true\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/bar/orders/{{bar_order_id}}/close",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "bar",
+                "orders",
+                "{{bar_order_id}}",
+                "close"
+              ]
+            },
+            "description": "吧台结账动作，结算库存、提成、财务与会员余额。示例针对脚本生成的演示订单。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "众筹与品牌洞察（Team G）",
+      "item": [
+        {
+          "name": "查询众筹项目",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/crowdfunding/projects?state=funding",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "crowdfunding",
+                "projects"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "funding"
+                }
+              ]
+            },
+            "description": "品牌或会员门户获取众筹项目列表，支持状态筛选。"
+          }
+        },
+        {
+          "name": "门店提交众筹项目",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"雪茄房升级示例\",\n  \"company_id\": {{store_company_id}},\n  \"link_group_id\": {{link_group_id}},\n  \"target_amount\": 120000,\n  \"min_invest_amount\": 2000,\n  \"funding_start_date\": \"2024-08-01\",\n  \"funding_end_date\": \"2024-09-30\",\n  \"description\": \"升级雪茄陈列与威士忌橱窗。\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/crowdfunding/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "crowdfunding",
+                "projects"
+              ]
+            },
+            "description": "门店发起众筹项目申请，进入品牌审核流程。示例项目与脚本数据一致。"
+          }
+        },
+        {
+          "name": "会员投资众筹项目",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_id\": {{crowdfunding_project_id}},\n  \"partner_id\": {{member_id}},\n  \"amount\": 5000\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/crowdfunding/investments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "crowdfunding",
+                "investments"
+              ]
+            },
+            "description": "会员认购众筹项目，确认后生成财务流水。示例投资脚本中已生成的项目。"
+          }
+        },
+        {
+          "name": "执行众筹分红",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_id\": {{crowdfunding_project_id}},\n  \"dividend_period\": \"2024-Q4\",\n  \"note\": \"演示季度分红\"\n}\n"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/crowdfunding/dividends/run",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "crowdfunding",
+                "dividends",
+                "run"
+              ]
+            },
+            "description": "品牌方批量执行众筹项目分红，生成分红明细与财务流水。"
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "company_id",
+      "value": "store_company_01"
+    }
+  ]
+}

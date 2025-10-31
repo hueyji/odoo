@@ -1,0 +1,24 @@
+{
+    "name": "门店供应商管理",
+    "summary": "维护门店私有供应商档案与合作记录。",
+    "version": "1.0.0",
+    "category": "Inventory",
+    "sequence": 30,
+    "author": "多门店项目组",
+    "website": "https://example.com",
+    "license": "LGPL-3",
+    "depends": [
+        "contacts",
+        "stock",
+        "mail",
+        "account",
+        "store_inventory",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/supplier_views.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": True,
+}

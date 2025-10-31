@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_store_commission_root" name="提成与业绩" parent="base.menu_custom" sequence="60"/>
+    <menuitem id="menu_store_commission_rules" name="提成规则" parent="menu_store_commission_root" action="action_store_commission_rules" sequence="10"/>
+    <menuitem id="menu_store_commission_logs" name="提成日志" parent="menu_store_commission_root" action="action_store_commission_logs" sequence="20"/>
+</odoo>

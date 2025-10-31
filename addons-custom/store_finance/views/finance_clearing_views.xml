@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_store_finance_clearing_tree" model="ir.ui.view">
+        <field name="name">store.finance.clearing.tree</field>
+        <field name="model">store.finance.clearing</field>
+        <field name="arch" type="xml">
+            <list string="互通清算单" decoration-success="state == 'confirmed'" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="group_id"/>
+                <field name="source_company_id"/>
+                <field name="target_company_id"/>
+                <field name="amount"/>
+                <field name="channel_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_finance_clearing_form" model="ir.ui.view">
+        <field name="name">store.finance.clearing.form</field>
+        <field name="model">store.finance.clearing</field>
+        <field name="arch" type="xml">
+            <form string="互通清算单">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_confirm"
+                                type="object"
+                                class="oe_stat_button"
+                                invisible="state != 'draft'">
+                            <span class="o_stat_text">确认清算</span>
+                        </button>
+                        <button name="action_cancel"
+                                type="object"
+                                class="oe_stat_button text-danger"
+                                invisible="state == 'cancelled'">
+                            <span class="o_stat_text">取消清算</span>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date"/>
+                            <field name="state" readonly="1"/>
+                            <field name="group_id" options="{'no_create': True}"/>
+                            <field name="channel_id"/>
+                        </group>
+                        <group>
+                            <field name="source_company_id"/>
+                            <field name="target_company_id"/>
+                            <field name="currency_id"/>
+                            <field name="amount"/>
+                        </group>
+                    </group>
+                    <group string="关联流水">
+                        <field name="source_transaction_id" options="{'no_open': False}" readonly="1"/>
+                        <field name="target_transaction_id" options="{'no_open': False}" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="memo"/>
+                    </group>
+                </sheet>
+                <notebook>
+                    <page string="自动生成流水">
+                        <field name="transaction_ids" readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="date"/>
+                                <field name="company_id"/>
+                                <field name="amount"/>
+                                <field name="state"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_finance_clearing_search" model="ir.ui.view">
+        <field name="name">store.finance.clearing.search</field>
+        <field name="model">store.finance.clearing</field>
+        <field name="arch" type="xml">
+            <search string="搜索互通清算单">
+                <field name="name"/>
+                <field name="group_id"/>
+                <field name="source_company_id"/>
+                <field name="target_company_id"/>
+                <filter name="filter_state_draft" string="待确认" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_state_confirmed" string="已确认" domain="[('state', '=', 'confirmed')]"/>
+                <group expand="0" string="分组">
+                    <filter name="group_by_group" string="按互通组" context="{'group_by': 'group_id'}"/>
+                    <filter name="group_by_source" string="按付款门店" context="{'group_by': 'source_company_id'}"/>
+                    <filter name="group_by_target" string="按收款门店" context="{'group_by': 'target_company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_finance_clearing" model="ir.actions.act_window">
+        <field name="name">互通内部清算</field>
+        <field name="res_model">store.finance.clearing</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_store_finance_clearing_search"/>
+        <field name="help" type="html">
+            <p>
+                记录互通组内门店之间的余额清算。确认后系统自动生成对应门店的调拨补差流水。
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_store_finance_clearing"
+              name="互通清算"
+              parent="menu_store_finance_root"
+              action="action_store_finance_clearing"
+              sequence="30"/>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="0">
+    <record id="sequence_store_link_group" model="ir.sequence">
+        <field name="name">互通组编号</field>
+        <field name="code">store.link.group</field>
+        <field name="prefix">LG%(y)s%(month)s</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="sequence_link_group_application" model="ir.sequence">
+        <field name="name">互通组申请编号</field>
+        <field name="code">store.link.group.application</field>
+        <field name="prefix">LGA%(y)s%(month)s</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="sequence_brand_config_check" model="ir.sequence">
+        <field name="name">配置检查任务编号</field>
+        <field name="code">brand.config.check</field>
+        <field name="prefix">CHK%(y)s%(month)s</field>
+        <field name="padding">4</field>
+    </record>
+</odoo>

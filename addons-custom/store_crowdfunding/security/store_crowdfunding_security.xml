@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 众筹项目：门店负责人限定本公司，品牌方可跨公司查看 -->
+    <record id="crowdfunding_project_rule_company" model="ir.rule">
+        <field name="name">众筹项目-门店可见范围</field>
+        <field name="model_id" ref="model_store_crowdfunding_project"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_store_manager'))]"/>
+        <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="crowdfunding_project_rule_brand" model="ir.rule">
+        <field name="name">众筹项目-品牌查看</field>
+        <field name="model_id" ref="model_store_crowdfunding_project"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_admin')), (4, ref('brand_core.group_brand_operator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="crowdfunding_project_rule_portal" model="ir.rule">
+        <field name="name">众筹项目-门户可见</field>
+        <field name="model_id" ref="model_store_crowdfunding_project"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">
+            ['|', ('company_id', 'in', user.company_ids.ids), ('brand_company_id', '=', user.company_id.id)]
+        </field>
+    </record>
+
+    <!-- 投资记录 -->
+    <record id="crowdfunding_investment_rule_company" model="ir.rule">
+        <field name="name">众筹投资-门店可见范围</field>
+        <field name="model_id" ref="model_store_crowdfunding_investment"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_store_manager'))]"/>
+        <field name="domain_force">[('project_company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="crowdfunding_investment_rule_brand" model="ir.rule">
+        <field name="name">众筹投资-品牌查看</field>
+        <field name="model_id" ref="model_store_crowdfunding_investment"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_admin')), (4, ref('brand_core.group_brand_operator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="crowdfunding_investment_rule_portal" model="ir.rule">
+        <field name="name">众筹投资-门户查看</field>
+        <field name="model_id" ref="model_store_crowdfunding_investment"/>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+    </record>
+
+    <!-- 分红计划门店与品牌可见 -->
+    <record id="crowdfunding_dividend_rule_company" model="ir.rule">
+        <field name="name">分红计划-门店可见</field>
+        <field name="model_id" ref="model_store_crowdfunding_dividend"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_store_manager'))]"/>
+        <field name="domain_force">[('project_company_id', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="crowdfunding_dividend_rule_brand" model="ir.rule">
+        <field name="name">分红计划-品牌查看</field>
+        <field name="model_id" ref="model_store_crowdfunding_dividend"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_admin')), (4, ref('brand_core.group_brand_operator'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

@@ -1,0 +1,114 @@
+<odoo>
+    <record id="view_store_bar_order_list" model="ir.ui.view">
+        <field name="name">store.bar.order.list</field>
+        <field name="model">store.bar.order</field>
+        <field name="arch" type="xml">
+            <list string="吧台订单" default_order="create_date desc">
+                <field name="name"/>
+                <field name="state" widget="badge"/>
+                <field name="table_id"/>
+                <field name="responsible_employee_id"/>
+                <field name="member_id"/>
+                <field name="amount_total"/>
+                <field name="pending_task_count"/>
+                <field name="billing_requested_at"/>
+                <field name="closed_at"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_bar_order_form" model="ir.ui.view">
+        <field name="name">store.bar.order.form</field>
+        <field name="model">store.bar.order</field>
+        <field name="arch" type="xml">
+            <form string="吧台订单">
+                <header>
+                    <button name="action_confirm" type="object" string="确认" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_set_serving" type="object" string="开始上酒" groups="store_bar.group_store_bar_user" invisible="state != 'preparing'"/>
+                    <button name="action_request_bill" type="object" string="请求结账" invisible="state not in ['serving', 'preparing']"/>
+                    <button name="action_close" type="object" string="完成结账" class="oe_highlight" invisible="state not in ['billing', 'serving']"/>
+                    <button name="action_cancel" type="object" string="取消" class="btn-secondary" invisible="state not in ['draft', 'preparing', 'serving', 'billing']"/>
+                    <button name="action_reset_to_draft" type="object" string="重置" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,preparing,serving,billing,done,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="action_preview_commission" type="object" icon="fa-money" help="查看实时提成预估">
+                            <field name="commission_total_amount" widget="statinfo" string="提成"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" icon="fa-tasks" invisible="not id" name="action_open_task_list" help="查看调酒任务列表">
+                            <field name="pending_task_count" widget="integer" string="待调酒"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="table_id" domain="[('company_id', '=', company_id)]" context="{'default_company_id': company_id}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="responsible_employee_id"/>
+                            <field name="assistant_employee_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                        <group>
+                            <field name="member_id"/>
+                            <field name="payment_channel_id"/>
+                            <field name="channel_type" readonly="1"/>
+                            <field name="billing_requested_at" readonly="1"/>
+                            <field name="closed_at" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="点单明细">
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="display_type"/>
+                                    <field name="product_id" readonly="display_type != False"/>
+                                    <field name="batch_id" readonly="display_type != False"/>
+                                    <field name="quantity" readonly="display_type != False"/>
+                                    <field name="price_unit" readonly="display_type != False"/>
+                                    <field name="price_subtotal" readonly="1"/>
+                                    <field name="requires_preparation" readonly="display_type != False"/>
+                                    <field name="prep_state" widget="statusbar" statusbar_visible="pending,in_progress,done,cancelled"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="调酒任务">
+                            <field name="task_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="state" widget="statusbar"/>
+                                    <field name="assigned_employee_id"/>
+                                    <field name="expected_commission_amount"/>
+                                    <field name="start_time"/>
+                                    <field name="complete_time"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="提成">
+                            <field name="commission_log_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="employee_id"/>
+                                    <field name="rule_id"/>
+                                    <field name="commission_amount"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="备注">
+                            <field name="note" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_bar_order" model="ir.actions.act_window">
+        <field name="name">吧台订单</field>
+        <field name="res_model">store.bar.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{"default_state": "draft"}</field>
+    </record>
+</odoo>

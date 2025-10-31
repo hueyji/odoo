@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_res_partner_form_store_crowdfunding" model="ir.ui.view">
+        <field name="name">res.partner.form.store.crowdfunding</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="store_member.view_res_partner_form_store_member"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_button_box']" position="inside">
+                <button name="action_open_crowdfunding_investment"
+                        type="object"
+                        class="oe_stat_button"
+                        groups="brand_core.group_brand_admin,brand_core.group_brand_operator,brand_core.group_store_manager"
+                        icon="fa-line-chart">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="crowdfunding_investment_total"
+                                   widget="monetary"
+                                   options="{'currency_field': 'member_balance_currency_id'}"/>
+                        </span>
+                        <span class="o_stat_text">众筹累计</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//group[@string='储值与投资']" position="inside">
+                <field name="crowdfunding_investment_count" readonly="1"/>
+                <field name="crowdfunding_last_investment_date" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

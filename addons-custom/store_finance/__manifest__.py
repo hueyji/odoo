@@ -1,0 +1,27 @@
+{
+    "name": "门店财务流水",
+    "summary": "记录库存动作关联的内部财务交易，支撑门店对账。",
+    "version": "1.0.0",
+    "category": "Finance",
+    "sequence": 50,
+    "author": "多门店项目组",
+    "website": "https://example.com",
+    "license": "LGPL-3",
+    "depends": [
+        "mail",
+        "brand_core",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/transaction_sequence.xml",
+        "data/finance_channel_sequence.xml",
+        "data/finance_channel_data.xml",
+        "data/finance_clearing_sequence.xml",
+        "views/account_transaction_views.xml",
+        "views/finance_channel_views.xml",
+        "views/finance_clearing_views.xml",
+    ],
+    "demo": [],
+    "installable": True,
+    "application": True,
+}

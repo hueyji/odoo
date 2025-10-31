@@ -1,0 +1,60 @@
+.o_store_inventory_board {
+    padding: 16px;
+
+    .o_board_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+
+        h2 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .text-muted {
+            font-size: 13px;
+        }
+    }
+
+    .o_board_cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .o_board_card {
+        border-radius: 8px;
+        padding: 16px;
+        background-color: var(--o-brand-odoo, #875a7b);
+        color: #fff;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .o_card_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .o_metric_value {
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .o_metric_attention {
+            margin-top: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    }
+}

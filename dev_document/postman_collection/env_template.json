@@ -1,0 +1,27 @@
+{
+  "id": "f4cfda58-6d4f-4b40-8db8-0fb1b0d0f6d6",
+  "name": "雪茄威士忌多门店-本地环境模板",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8069",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "token",
+      "value": "REPLACE_WITH_JWT",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "company_id",
+      "value": "store_company_01",
+      "type": "default",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-11-01T00:00:00.000Z",
+  "_postman_exported_using": "Codex CLI context7 集成"
+}

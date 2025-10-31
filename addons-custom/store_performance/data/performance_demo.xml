@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="performance_demo_bartender_month" model="store.performance.record">
+            <field name="employee_id" ref="store_commission.employee_demo_bartender"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="period_type">month</field>
+            <field name="period_start">2024-10-01</field>
+            <field name="period_end">2024-10-31</field>
+            <field name="target_amount">15000.0</field>
+            <field name="sales_amount">12000.0</field>
+            <field name="commission_amount">960.0</field>
+            <field name="order_count">18</field>
+            <field name="state">in_progress</field>
+        </record>
+    </data>
+</odoo>

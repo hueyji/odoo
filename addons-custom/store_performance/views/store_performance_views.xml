@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_store_performance_tree" model="ir.ui.view">
+        <field name="name">store.performance.record.tree</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <list string="员工业绩" default_order="period_start desc">
+                <field name="period_start"/>
+                <field name="period_type"/>
+                <field name="employee_id"/>
+                <field name="sales_amount"/>
+                <field name="commission_amount"/>
+                <field name="target_amount"/>
+                <field name="achievement_rate"/>
+                <field name="order_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_performance_form" model="ir.ui.view">
+        <field name="name">store.performance.record.form</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <form string="员工业绩">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,achieved,warning"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="company_id"/>
+                            <field name="period_type"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                        </group>
+                        <group>
+                            <field name="target_amount"/>
+                            <field name="sales_amount" readonly="1"/>
+                            <field name="commission_amount" readonly="1"/>
+                            <field name="achievement_rate" readonly="1"/>
+                            <field name="order_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="commission_log_ids" readonly="1">
+                        <list create="0" edit="0">
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="sale_order_id"/>
+                            <field name="commission_amount"/>
+                        </list>
+                    </field>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                    <field name="activity_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_performance_search" model="ir.ui.view">
+        <field name="name">store.performance.record.search</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="本月" name="current_month" domain="[('period_start', '&gt;=', (context_today().replace(day=1)))]"/>
+                <filter string="进行中" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="已达成" name="achieved" domain="[('state', '=', 'achieved')]"/>
+                <field name="employee_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_store_performance_graph" model="ir.ui.view">
+        <field name="name">store.performance.record.graph</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <graph string="业绩图表" type="bar">
+                <field name="commission_amount" type="measure"/>
+                <field name="employee_id" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    
+    <record id="view_store_performance_kanban" model="ir.ui.view">
+        <field name="name">store.performance.record.kanban</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="employee_id" class="o_kanban_dashboard">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_card">
+                            <div class="o_kanban_primary_center">
+                                <strong t-esc="record.employee_id.value"/>
+                                <div class="text-muted" t-esc="record.period_start.value"/>
+                                <div>
+                                    <span>销售额：</span>
+                                    <span t-esc="record.sales_amount.raw_value"/>
+                                </div>
+                                <div>
+                                    <span>提成：</span>
+                                    <span t-esc="record.commission_amount.raw_value"/>
+                                </div>
+                                <div>
+                                    <span>目标：</span>
+                                    <span t-esc="record.target_amount.raw_value"/>
+                                </div>
+                                <div class="o_progress">
+                                    <div class="o_progress_bar" t-att-style="'width: %s%%' % record.achievement_rate.raw_value"></div>
+                                    <span class="o_progress_value" t-esc="str(record.achievement_rate.raw_value) + '%'"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+<record id="action_store_performance_record" model="ir.actions.act_window">
+        <field name="name">员工业绩</field>
+        <field name="res_model">store.performance.record</field>
+        <field name="view_mode">kanban,tree,form,graph</field>
+        <field name="search_view_id" ref="view_store_performance_search"/>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem id="menu_store_performance" name="个人业绩" parent="store_commission.menu_store_commission_root" action="action_store_performance_record" sequence="30"/>
+</odoo>

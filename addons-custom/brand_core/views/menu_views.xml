@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_brand_core_app_root"
+              name="品牌互通"
+              sequence="25"
+              action="action_store_link_group"
+              groups="base.group_system,brand_core.group_brand_admin,brand_core.group_brand_operator"/>
+
+    <menuitem id="menu_brand_core_root"
+              name="品牌平台"
+              parent="base.menu_config"
+              sequence="60"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_brand_core_user_management"
+              name="用户管理"
+              parent="menu_brand_core_root"
+              action="base.action_res_users"
+              sequence="5"
+              groups="brand_core.group_brand_admin"/>
+
+    <record id="action_brand_core_setup_wizard" model="ir.actions.act_window">
+        <field name="name">品牌初始化向导</field>
+        <field name="res_model">brand.core.setup.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_brand_core_setup_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_brand_core_setup_wizard"
+              name="多公司初始化"
+              parent="menu_brand_core_root"
+              action="action_brand_core_setup_wizard"
+              sequence="10"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_brand_core_link_group"
+              name="互通组管理"
+              parent="menu_brand_core_root"
+              action="action_store_link_group"
+              sequence="20"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_brand_core_link_group_application"
+              name="互通申请审批"
+              parent="menu_brand_core_root"
+              action="action_store_link_group_application"
+              sequence="30"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_brand_core_config_check"
+              name="配置检查"
+              parent="menu_brand_core_root"
+              action="action_brand_config_check"
+              sequence="40"
+              groups="brand_core.group_brand_admin,brand_core.group_brand_operator"/>
+</odoo>

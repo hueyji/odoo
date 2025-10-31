@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_store_crowdfunding_dashboard" model="ir.actions.act_window">
+        <field name="name">品牌众筹看板</field>
+        <field name="res_model">store.crowdfunding.project</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="domain">[]</field>
+        <field name="context">
+            {
+                'search_default_group_by_state': 1,
+                'search_default_group_by_company': 1,
+                'search_default_group_by_brand': 0,
+                'graph_measure': 'amount_confirmed'
+            }
+        </field>
+        <field name="help" type="html">
+            <p>品牌方专用的众筹洞察看板，可快速查看各门店的募集进度与执行状态。</p>
+            <p>通过切换透视表与图表，分析募集金额、执行率与门店贡献度。</p>
+        </field>
+    </record>
+</odoo>

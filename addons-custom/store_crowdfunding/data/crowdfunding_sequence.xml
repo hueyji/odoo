@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_store_crowdfunding_project" model="ir.sequence">
+        <field name="name">众筹项目编号</field>
+        <field name="code">store.crowdfunding.project</field>
+        <field name="prefix">CF%(y)s</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_store_crowdfunding_investment" model="ir.sequence">
+        <field name="name">众筹投资编号</field>
+        <field name="code">store.crowdfunding.investment</field>
+        <field name="prefix">INV%(y)s</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_store_crowdfunding_dividend" model="ir.sequence">
+        <field name="name">众筹分红编号</field>
+        <field name="code">store.crowdfunding.dividend</field>
+        <field name="prefix">DIV%(y)s</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

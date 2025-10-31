@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="store_inventory_demo_partner_supplier" model="res.partner">
+        <field name="name">格兰菲迪酒业</field>
+        <field name="is_company">True</field>
+        <field name="supplier_rank">10</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="store_inventory_demo_product_whisky" model="product.template">
+        <field name="name">12 年单一麦芽威士忌</field>
+        <field name="type">product</field>
+        <field name="uom_id" ref="uom.product_uom_unit"/>
+        <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        <field name="list_price">880</field>
+        <field name="standard_price">520</field>
+    </record>
+
+    <record id="store_inventory_demo_batch_whisky" model="store.inventory.batch">
+        <field name="product_id" eval="ref('store_inventory_demo_product_whisky')"/>
+        <field name="supplier_id" eval="ref('store_inventory_demo_partner_supplier')"/>
+        <field name="qty_initial">20</field>
+        <field name="qty_available">20</field>
+        <field name="purchase_price">520</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="aging_start_date">2025-10-01</field>
+        <field name="state">in_stock</field>
+    </record>
+</odoo>

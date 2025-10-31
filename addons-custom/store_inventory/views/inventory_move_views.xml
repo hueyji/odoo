@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_store_inventory_move_list" model="ir.ui.view">
+        <field name="name">store.inventory.move.list</field>
+        <field name="model">store.inventory.move</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="move_type"/>
+                <field name="batch_id"/>
+                <field name="product_id" optional="show"/>
+                <field name="quantity" sum="调拨数量"/>
+                <field name="unit_price" optional="show"/>
+                <field name="amount_total" sum="金额"/>
+                <field name="state"/>
+                <field name="requester_id" optional="show"/>
+                <field name="approver_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_inventory_move_form" model="ir.ui.view">
+        <field name="name">store.inventory.move.form</field>
+        <field name="model">store.inventory.move</field>
+        <field name="arch" type="xml">
+            <form string="库存动作">
+                <header>
+                    <button name="action_submit" type="object" string="提交审批" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="审批通过" class="btn-success" groups="stock.group_stock_manager" invisible="state != 'to_approve'"/>
+                    <button name="action_reject" type="object" string="驳回" class="btn-secondary" groups="stock.group_stock_manager" invisible="state != 'to_approve'"/>
+                    <button name="action_reset_to_draft" type="object" string="回到草稿" groups="stock.group_stock_manager" invisible="state not in ['rejected', 'cancel']"/>
+                    <button name="action_cancel" type="object" string="取消" class="btn-link" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,done,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date"/>
+                            <field name="move_type"/>
+                            <field name="batch_id" options="{'no_create_edit': True}"/>
+                            <field name="product_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="amount_total" readonly="1"/>
+                            <field name="currency_id"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="requester_id" readonly="1"/>
+                            <field name="approver_id" readonly="1"/>
+                            <field name="approval_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="transaction_id" readonly="1" options="{'no_create_edit': True}"/>
+                            <field name="transfer_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="备注">
+                            <field name="reason"/>
+                            <field name="note"/>
+                            <field name="approval_note" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_inventory_move_search" model="ir.ui.view">
+        <field name="name">store.inventory.move.search</field>
+        <field name="model">store.inventory.move</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="batch_id"/>
+                <field name="move_type"/>
+                <field name="state"/>
+                <filter string="待审批" name="to_approve" domain="[('state', '=', 'to_approve')]"/>
+                <filter string="我的申请" name="my_requests" domain="[('requester_id', '=', uid)]"/>
+                <filter string="我审批的" name="my_approvals" domain="[('approver_id', '=', uid)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_inventory_move" model="ir.actions.act_window">
+        <field name="name">库存动作</field>
+        <field name="res_model">store.inventory.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_store_inventory_move_search"/>
+    </record>
+</odoo>

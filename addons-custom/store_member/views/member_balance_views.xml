@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 余额日志视图 -->
+    <record id="view_member_balance_log_tree" model="ir.ui.view">
+        <field name="name">store.member.balance.log.list</field>
+        <field name="model">store.member.balance.log</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="余额变动记录" create="false" edit="false">
+                <field name="create_date"/>
+                <field name="partner_id"/>
+                <field name="company_id"/>
+                <field name="change_type"/>
+                <field name="delta_amount"/>
+                <field name="balance_before"/>
+                <field name="balance_after"/>
+                <field name="operator_id"/>
+                <field name="link_group_id"/>
+                <field name="note"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_member_balance_log_form" model="ir.ui.view">
+        <field name="name">store.member.balance.log.form</field>
+        <field name="model">store.member.balance.log</field>
+        <field name="arch" type="xml">
+            <form string="余额变动记录" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="change_type" readonly="1"/>
+                            <field name="delta_amount" readonly="1"/>
+                            <field name="balance_before" readonly="1"/>
+                            <field name="balance_after" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="operator_id" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                            <field name="link_group_id" readonly="1"/>
+                            <field name="note" readonly="1"/>
+                            <field name="portal_visible"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_member_balance_log" model="ir.actions.act_window">
+        <field name="name">余额日志</field>
+        <field name="res_model">store.member.balance.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- 充值单视图 -->
+    <record id="view_member_recharge_tree" model="ir.ui.view">
+        <field name="name">store.member.recharge.list</field>
+        <field name="model">store.member.recharge</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="会员充值单" default_order="create_date desc">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="company_id"/>
+                <field name="amount"/>
+                <field name="payment_method"/>
+                <field name="state"/>
+                <field name="operator_id"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_member_recharge_form" model="ir.ui.view">
+        <field name="name">store.member.recharge.form</field>
+        <field name="model">store.member.recharge</field>
+        <field name="arch" type="xml">
+            <form string="会员充值单">
+                <header>
+                    <button name="action_confirm"
+                            type="object"
+                            string="确认充值"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_cancel"
+                            type="object"
+                            string="作废"
+                            class="btn-secondary"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="partner_id" domain="[('is_company','=',False)]" context="{'default_company_type': 'person'}"/>
+                            <field name="company_id" readonly="1"/>
+                            <field name="amount"/>
+                            <field name="currency_id" readonly="1"/>
+                            <field name="payment_method"/>
+                        </group>
+                        <group>
+                            <field name="link_group_id" readonly="1"/>
+                            <field name="log_id" readonly="1"/>
+                            <field name="operator_id" readonly="1"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_member_recharge" model="ir.actions.act_window">
+        <field name="name">会员充值单</field>
+        <field name="res_model">store.member.recharge</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_company_id': user.company_id.id}</field>
+    </record>
+
+    <menuitem id="menu_store_member_recharge"
+              name="会员充值单"
+              parent="store_member.menu_store_member_root"
+              action="store_member.action_store_member_recharge"
+              groups="store_member.group_member_sensitive"
+              sequence="30"/>
+</odoo>

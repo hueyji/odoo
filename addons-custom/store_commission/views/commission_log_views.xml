@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_store_commission_log_tree" model="ir.ui.view">
+        <field name="name">store.commission.log.tree</field>
+        <field name="model">store.commission.log</field>
+        <field name="arch" type="xml">
+            <list string="提成日志" create="false">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="rule_id"/>
+                <field name="sale_order_id"/>
+                <field name="sale_order_line_id"/>
+                <field name="commission_amount"/>
+                <field name="state"/>
+                <field name="is_refund"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_store_commission_log_form" model="ir.ui.view">
+        <field name="name">store.commission.log.form</field>
+        <field name="model">store.commission.log</field>
+        <field name="arch" type="xml">
+            <form string="提成日志">
+                <header>
+                    <button name="action_confirm" type="object" string="确认发放" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="取消" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,refunded,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date"/>
+                            <field name="company_id"/>
+                            <field name="employee_id"/>
+                            <field name="employee_job_id"/>
+                        </group>
+                        <group>
+                            <field name="rule_id" readonly="1"/>
+                            <field name="sale_order_id" readonly="1"/>
+                            <field name="sale_order_line_id" readonly="1"/>
+                            <field name="ladder_line_id" readonly="1"/>
+                            <field name="transaction_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="base_amount"/>
+                        <field name="quantity"/>
+                        <field name="commission_amount"/>
+                        <field name="currency_id"/>
+                        <field name="is_refund"/>
+                    </group>
+                    <field name="adjustment_reason" placeholder="记录调整原因或备注"/>
+                </sheet>
+                <chatter>
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                    <field name="activity_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_commission_log_search" model="ir.ui.view">
+        <field name="name">store.commission.log.search</field>
+        <field name="model">store.commission.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="待确认" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="已确认" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="已回滚" name="refunded" domain="[('state', '=', 'refunded')]"/>
+                <filter string="本公司" name="company" domain="[('company_id', '=', company_id)]" context="{'group_by': 'company_id'}"/>
+                <field name="employee_id"/>
+                <field name="rule_id"/>
+                <field name="sale_order_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_commission_logs" model="ir.actions.act_window">
+        <field name="name">提成日志</field>
+        <field name="res_model">store.commission.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_store_commission_log_search"/>
+    </record>
+
+</odoo>
