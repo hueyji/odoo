@@ -1,0 +1,103 @@
+2025-10-31 11:05:58,863 76333 INFO ? odoo: Odoo version 18.0 
+2025-10-31 11:05:58,863 76333 INFO ? odoo: Using configuration file at /Users/shawnmacmini/.odoorc 
+2025-10-31 11:05:58,863 76333 INFO ? odoo: addons paths: ['/Users/shawnmacmini/code/odoo-18.0/odoo/addons', '/Users/shawnmacmini/Library/Application Support/Odoo/addons/18.0', '/Users/shawnmacmini/code/odoo-18.0/addons'] 
+2025-10-31 11:05:58,863 76333 INFO ? odoo: database: odoo@localhost:5432 
+2025-10-31 11:06:00,084 76333 INFO ? odoo.addons.base.models.ir_actions_report: You need Wkhtmltopdf to print a pdf version of the reports. 
+2025-10-31 11:06:00,085 76333 INFO ? odoo.addons.base.models.ir_actions_report: You need Wkhtmltoimage to generate images from html. 
+2025-10-31 11:06:02,284 76333 INFO ? odoo.service.server: HTTP service (werkzeug) running on 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa:8069 
+2025-10-31 11:06:02,320 76333 INFO odoo odoo.modules.loading: loading 1 modules... 
+2025-10-31 11:06:02,324 76333 INFO odoo odoo.modules.loading: 1 modules loaded in 0.00s, 0 queries (+0 extra) 
+2025-10-31 11:06:02,346 76333 WARNING odoo odoo.modules.graph: module brand_management: not installable, skipped 
+2025-10-31 11:06:02,362 76333 INFO odoo odoo.modules.loading: loading 54 modules... 
+2025-10-31 11:06:06,977 76333 INFO odoo odoo.modules.loading: 54 modules loaded in 4.62s, 0 queries (+0 extra) 
+2025-10-31 11:06:07,036 76333 ERROR odoo odoo.modules.loading: Some modules are not loaded, some dependencies or manifest may be missing: ['brand_management'] 
+2025-10-31 11:06:07,037 76333 INFO odoo odoo.modules.loading: Modules loaded. 
+2025-10-31 11:06:07,040 76333 INFO odoo odoo.modules.registry: Registry loaded in 4.756s 
+2025-10-31 11:06:07,044 76333 INFO odoo odoo.addons.base.models.ir_http: Generating routing map for key 1 
+2025-10-31 11:06:07,711 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:07] "GET / HTTP/1.1" 200 - 212 0.236 4.996
+2025-10-31 11:06:08,257 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/9358a7e/web.assets_frontend_minimal.min.js (id:935) 
+2025-10-31 11:06:08,262 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:08] "GET /web/assets/1/9358a7e/web.assets_frontend_minimal.min.js HTTP/1.1" 200 - 14 0.065 0.367
+2025-10-31 11:06:08,262 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:08] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 - 39 0.031 0.486
+2025-10-31 11:06:08,784 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/195e69d/web.assets_frontend.min.css (id:936) 
+2025-10-31 11:06:08,786 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:08] "GET /web/assets/1/195e69d/web.assets_frontend.min.css HTTP/1.1" 200 - 11 0.036 1.003
+2025-10-31 11:06:08,926 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:08] "GET /web/image/website.s_cover_default_image HTTP/1.1" 200 - 13 0.069 0.040
+2025-10-31 11:06:08,928 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:08] "GET /web/image/website.s_text_image_default_image HTTP/1.1" 200 - 12 0.005 0.066
+2025-10-31 11:06:09,554 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/0632fc1/web.assets_frontend_lazy.min.js (id:937) 
+2025-10-31 11:06:09,555 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [921] (matching /web/assets/1/_______/web.assets_frontend_lazy.min.js) because it was replaced with /web/assets/1/0632fc1/web.assets_frontend_lazy.min.js 
+2025-10-31 11:06:09,572 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:09] "GET /web/assets/1/0632fc1/web.assets_frontend_lazy.min.js HTTP/1.1" 200 - 13 0.021 0.617
+2025-10-31 11:06:12,493 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:12] "GET /odoo/action-224 HTTP/1.1" 200 - 85 0.048 0.592
+2025-10-31 11:06:12,552 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:12] "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 - 25 0.015 0.015
+2025-10-31 11:06:13,233 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/20e98e4/web.assets_web.min.css (id:938) 
+2025-10-31 11:06:13,234 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [922] (matching /web/assets/1/_______/web.assets_web.min.css) because it was replaced with /web/assets/1/20e98e4/web.assets_web.min.css 
+2025-10-31 11:06:13,298 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:13] "GET /web/assets/1/20e98e4/web.assets_web.min.css HTTP/1.1" 200 - 17 0.081 0.689
+2025-10-31 11:06:14,430 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/4d6820e/web.assets_web_print.min.css (id:939) 
+2025-10-31 11:06:14,431 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [923] (matching /web/assets/1/_______/web.assets_web_print.min.css) because it was replaced with /web/assets/1/4d6820e/web.assets_web_print.min.css 
+2025-10-31 11:06:14,437 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:14] "GET /web/assets/1/4d6820e/web.assets_web_print.min.css HTTP/1.1" 200 - 13 0.128 0.976
+2025-10-31 11:06:15,326 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/e307896/web.assets_web.min.js (id:940) 
+2025-10-31 11:06:15,327 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [924] (matching /web/assets/1/_______/web.assets_web.min.js) because it was replaced with /web/assets/1/e307896/web.assets_web.min.js 
+2025-10-31 11:06:15,342 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "GET /web/assets/1/e307896/web.assets_web.min.js HTTP/1.1" 200 - 16 0.015 2.798
+2025-10-31 11:06:15,656 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "POST /web/action/load HTTP/1.1" 200 - 9 0.018 0.009
+2025-10-31 11:06:15,669 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "GET /web/image?model=res.users&field=avatar_128&id=2 HTTP/1.1" 304 - 16 0.025 0.016
+2025-10-31 11:06:15,677 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "GET /web/manifest.webmanifest HTTP/1.1" 200 - 11 0.019 0.016
+2025-10-31 11:06:15,678 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "GET /web/bundle/web.chartjs_lib?lang=zh_CN HTTP/1.1" 200 - 7 0.013 0.005
+2025-10-31 11:06:15,765 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "POST /mail/data HTTP/1.1" 200 - 28 0.108 0.018
+2025-10-31 11:06:15,769 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/71a46e8/web.chartjs_lib.min.js (id:941) 
+2025-10-31 11:06:15,770 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "GET /web/assets/1/71a46e8/web.chartjs_lib.min.js HTTP/1.1" 200 - 11 0.005 0.082
+2025-10-31 11:06:15,792 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:15] "GET /web/bundle/spreadsheet.o_spreadsheet?lang=zh_CN HTTP/1.1" 200 - 7 0.003 0.007
+2025-10-31 11:06:16,542 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/268bb59/spreadsheet.o_spreadsheet.min.js (id:942) 
+2025-10-31 11:06:16,542 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [934] (matching /web/assets/1/_______/spreadsheet.o_spreadsheet.min.js) because it was replaced with /web/assets/1/268bb59/spreadsheet.o_spreadsheet.min.js 
+2025-10-31 11:06:16,545 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:16] "GET /web/assets/1/268bb59/spreadsheet.o_spreadsheet.min.js HTTP/1.1" 200 - 13 0.006 0.745
+2025-10-31 11:06:16,671 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:16] "POST /web/dataset/call_kw/spreadsheet.dashboard.group/web_search_read HTTP/1.1" 200 - 5 0.007 0.014
+2025-10-31 11:06:17,394 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:17] "GET /web/service-worker.js HTTP/1.1" 200 - 2 0.001 0.006
+2025-10-31 11:06:19,594 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "POST /web/action/load HTTP/1.1" 200 - 8 0.005 0.010
+2025-10-31 11:06:19,621 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "POST /web/dataset/call_kw/res.users/has_group HTTP/1.1" 200 - 3 0.002 0.012
+2025-10-31 11:06:19,622 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "POST /web/dataset/call_kw/res.users/has_group HTTP/1.1" 200 - 3 0.002 0.014
+2025-10-31 11:06:19,623 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "POST /web/dataset/call_kw/website/get_current_website HTTP/1.1" 200 - 4 0.002 0.016
+2025-10-31 11:06:19,625 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "POST /web/dataset/call_kw/res.users/has_group HTTP/1.1" 200 - 3 0.004 0.013
+2025-10-31 11:06:19,627 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "POST /web/dataset/call_kw/website/search_read HTTP/1.1" 200 - 5 0.005 0.016
+2025-10-31 11:06:19,673 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "GET /website/force/1?path=/ HTTP/1.1" 303 - 5 0.003 0.006
+2025-10-31 11:06:19,720 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "GET / HTTP/1.1" 200 - 23 0.015 0.030
+2025-10-31 11:06:19,738 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "GET /website/iframefallback HTTP/1.1" 200 - 28 0.029 0.044
+2025-10-31 11:06:19,848 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "GET /web/image/website.s_cover_default_image HTTP/1.1" 304 - 10 0.004 0.010
+2025-10-31 11:06:19,921 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/52a0030/website.assets_wysiwyg_inside.min.css (id:943) 
+2025-10-31 11:06:19,922 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [919] (matching /web/assets/1/_______/website.assets_wysiwyg_inside.min.css) because it was replaced with /web/assets/1/52a0030/website.assets_wysiwyg_inside.min.css 
+2025-10-31 11:06:19,927 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "GET /web/assets/1/52a0030/website.assets_wysiwyg_inside.min.css HTTP/1.1" 200 - 13 0.017 0.077
+2025-10-31 11:06:19,931 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:19] "GET /web/image/website.s_text_image_default_image HTTP/1.1" 304 - 10 0.002 0.005
+2025-10-31 11:06:20,122 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:20] "GET /web/bundle/website.assets_all_wysiwyg_inside?lang=zh_CN&website_id=1 HTTP/1.1" 200 - 18 0.006 0.059
+2025-10-31 11:06:20,243 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/35761af/website.assets_all_wysiwyg_inside.min.css (id:944) 
+2025-10-31 11:06:20,249 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [920] (matching /web/assets/1/_______/website.assets_all_wysiwyg_inside.min.css) because it was replaced with /web/assets/1/35761af/website.assets_all_wysiwyg_inside.min.css 
+2025-10-31 11:06:20,258 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:20] "GET /web/assets/1/35761af/website.assets_all_wysiwyg_inside.min.css HTTP/1.1" 200 - 13 0.022 0.110
+2025-10-31 11:06:20,658 76333 INFO odoo odoo.addons.base.models.assetsbundle: Generating a new asset bundle attachment /web/assets/1/0d60e34/website.assets_all_wysiwyg_inside.min.js (id:945) 
+2025-10-31 11:06:20,658 76333 INFO odoo odoo.addons.base.models.assetsbundle: Deleting attachments [925] (matching /web/assets/1/_______/website.assets_all_wysiwyg_inside.min.js) because it was replaced with /web/assets/1/0d60e34/website.assets_all_wysiwyg_inside.min.js 
+2025-10-31 11:06:20,661 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:20] "GET /web/assets/1/0d60e34/website.assets_all_wysiwyg_inside.min.js HTTP/1.1" 200 - 13 0.005 0.530
+2025-10-31 11:06:22,879 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:22] "POST /web/action/load HTTP/1.1" 200 - 13 0.014 0.015
+2025-10-31 11:06:23,042 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:23] "POST /web/dataset/call_kw/rating.rating/get_views HTTP/1.1" 200 - 37 0.086 0.057
+2025-10-31 11:06:23,084 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:23] "POST /web/dataset/call_kw/rating.rating/web_search_read HTTP/1.1" 200 - 5 0.025 0.004
+2025-10-31 11:06:24,666 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:24] "POST /web/action/load HTTP/1.1" 200 - 8 0.004 0.011
+2025-10-31 11:06:24,798 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:24] "POST /mail/data HTTP/1.1" 200 - 41 0.046 0.041
+2025-10-31 11:06:24,842 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:24] "POST /mail/inbox/messages HTTP/1.1" 200 - 7 0.005 0.006
+2025-10-31 11:06:26,378 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:26] "POST /web/dataset/call_kw/spreadsheet.dashboard.group/web_search_read HTTP/1.1" 200 - 4 0.009 0.011
+2025-10-31 11:06:28,166 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "POST /web/dataset/call_kw/website/search_read HTTP/1.1" 200 - 4 0.003 0.004
+2025-10-31 11:06:28,179 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "POST /web/dataset/call_kw/website/get_current_website HTTP/1.1" 200 - 4 0.015 0.005
+2025-10-31 11:06:28,212 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "GET /website/force/1?path=/ HTTP/1.1" 303 - 5 0.005 0.012
+2025-10-31 11:06:28,217 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "GET /website/iframefallback HTTP/1.1" 200 - 14 0.012 0.010
+2025-10-31 11:06:28,284 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "GET / HTTP/1.1" 200 - 23 0.024 0.045
+2025-10-31 11:06:28,443 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "GET /web/image/website.s_cover_default_image HTTP/1.1" 304 - 10 0.005 0.010
+2025-10-31 11:06:28,451 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "GET /web/image/website.s_text_image_default_image HTTP/1.1" 304 - 10 0.005 0.012
+2025-10-31 11:06:28,507 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:28] "GET /web/bundle/website.assets_all_wysiwyg_inside?lang=zh_CN&website_id=1 HTTP/1.1" 200 - 3 0.001 0.003
+2025-10-31 11:06:29,941 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:29] "POST /web/dataset/call_kw/rating.rating/web_search_read HTTP/1.1" 200 - 4 0.026 0.005
+2025-10-31 11:06:31,611 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:31] "POST /web/action/load HTTP/1.1" 200 - 13 0.058 0.095
+2025-10-31 11:06:31,728 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:31] "POST /web/dataset/call_kw/hr.employee/get_views HTTP/1.1" 200 - 85 0.045 0.061
+2025-10-31 11:06:31,756 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:31] "POST /web/dataset/call_kw/hr.employee/search_panel_select_range HTTP/1.1" 200 - 15 0.014 0.007
+2025-10-31 11:06:31,780 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:31] "POST /web/dataset/call_kw/hr.employee/web_search_read HTTP/1.1" 200 - 36 0.028 0.017
+2025-10-31 11:06:31,831 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:31] "GET /web/image/res.users/2/avatar_128 HTTP/1.1" 304 - 9 0.006 0.011
+2025-10-31 11:06:33,610 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:33] "POST /web/action/load HTTP/1.1" 200 - 12 0.009 0.012
+2025-10-31 11:06:33,691 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:33] "POST /web/dataset/call_kw/ir.module.module/get_views HTTP/1.1" 200 - 52 0.026 0.042
+2025-10-31 11:06:33,710 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:33] "POST /web/dataset/call_kw/ir.module.module/search_panel_select_range HTTP/1.1" 200 - 3 0.006 0.007
+2025-10-31 11:06:33,765 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:33] "POST /web/dataset/call_kw/ir.module.module/web_search_read HTTP/1.1" 200 - 6 0.031 0.035
+2025-10-31 11:06:33,784 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:33] "POST /web/dataset/call_kw/ir.module.module/search_panel_select_range HTTP/1.1" 200 - 55 0.072 0.015
+2025-10-31 11:06:38,801 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:38] "POST /web/action/load HTTP/1.1" 200 - 11 0.008 0.012
+2025-10-31 11:06:38,897 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:38] "POST /web/dataset/call_kw/res.config.settings/get_views HTTP/1.1" 200 - 23 0.030 0.039
+2025-10-31 11:06:38,945 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:38] "POST /web/dataset/call_kw/res.config.settings/onchange HTTP/1.1" 200 - 59 0.016 0.022
+2025-10-31 11:06:38,990 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:38] "POST /base_setup/demo_active HTTP/1.1" 200 - 4 0.002 0.003
+2025-10-31 11:06:38,997 76333 INFO odoo werkzeug: 127.0.0.1 - - [31/Oct/2025 11:06:38] "POST /base_setup/data HTTP/1.1" 200 - 8 0.003 0.003
