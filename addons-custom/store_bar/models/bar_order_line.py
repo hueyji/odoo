@@ -43,10 +43,16 @@ class StoreBarOrderLine(models.Model):
         string="币种",
         readonly=True,
     )
+    company_id = fields.Many2one(
+        related="order_id.company_id",
+        store=True,
+        string="所属公司",
+        readonly=True,
+    )
     batch_id = fields.Many2one(
         "store.inventory.batch",
         string="库存批次",
-        domain="[('product_id', '=', product_id), ('company_id', '=', order_id.company_id)]",
+        domain="[('product_id', '=', product_id), ('company_id', '=', company_id)]",
         help="点单对应扣减的库存批次，需确保可用数量充足。",
     )
     combo_id = fields.Many2one(

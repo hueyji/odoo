@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- 吧台订单动作 -->
+    <record id="action_store_bar_order" model="ir.actions.act_window">
+        <field name="name">吧台订单</field>
+        <field name="res_model">store.bar.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- 桌台动作 -->
+    <record id="action_store_bar_table" model="ir.actions.act_window">
+        <field name="name">桌台</field>
+        <field name="res_model">store.bar.table</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- 套餐动作 -->
+    <record id="action_store_combo" model="ir.actions.act_window">
+        <field name="name">套餐</field>
+        <field name="res_model">store.combo</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>
+

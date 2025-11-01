@@ -19,13 +19,19 @@
         "sales_team",
     ],
     "data": [
+        # 1. 基础数据：序列
         "data/store_bar_sequence.xml",
+        # 2. 安全：组、规则、权限
         "security/store_bar_security.xml",
         "security/store_bar_rule.xml",
         "security/ir.model.access.csv",
-        "views/store_bar_table_views.xml",
+        # 3. 动作定义（必须在视图之前，因为视图会引用动作）
+        "views/store_bar_actions.xml",
+        # 4. 视图定义
         "views/store_bar_order_views.xml",
+        "views/store_bar_table_views.xml",
         "views/store_bar_combo_views.xml",
+        # 5. 菜单（最后加载，因为菜单引用动作）
         "views/store_bar_menu.xml",
     ],
     "demo": [

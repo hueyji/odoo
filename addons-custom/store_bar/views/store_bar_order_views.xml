@@ -32,9 +32,12 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,locked,serving,billing,billed,cancelled"/>
                 </header>
                 <sheet>
+                    <!-- 隐藏的 company_id 字段，用于 domain 验证，不受权限限制 -->
+                    <field name="company_id" invisible="1"/>
                     <group>
                         <field name="name" readonly="1"/>
-                        <field name="company_id" groups="store_bar.group_bar_manager"/>
+                        <!-- 可见的 company_id 字段，仅管理员可见 -->
+                        <field name="company_id" groups="store_bar.group_bar_manager" force_save="0"/>
                         <field name="table_id"/>
                         <field name="employee_id"/>
                         <field name="member_id"/>
@@ -57,6 +60,7 @@
                                     <field name="batch_id"/>
                                     <field name="price_unit" attrs="{'readonly': [('is_combo_component', '=', True)]}"/>
                                     <field name="price_subtotal" readonly="1"/>
+                                    <field name="company_id" invisible="1"/>
                                     <field name="is_combo_component" invisible="1"/>
                                     <field name="note" optional="show"/>
                                 </tree>
@@ -70,12 +74,5 @@
                 <chatter/>
             </form>
         </field>
-    </record>
-
-    <record id="action_store_bar_order" model="ir.actions.act_window">
-        <field name="name">吧台订单</field>
-        <field name="res_model">store.bar.order</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
     </record>
 </odoo>

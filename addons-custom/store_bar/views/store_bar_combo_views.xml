@@ -41,11 +41,4 @@
             </form>
         </field>
     </record>
-
-    <record id="action_store_combo" model="ir.actions.act_window">
-        <field name="name">套餐</field>
-        <field name="res_model">store.combo</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
-    </record>
 </odoo>

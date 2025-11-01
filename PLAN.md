@@ -102,6 +102,44 @@
 - [x] 2025-11-01：实现桌台/套餐/吧台订单模型与状态流转，含库存批次校验与责任员工锁单约束。
 - [x] 2025-11-01：上线 `/api/v1/bar/*` 接口（桌台查询、点单创建、结账），提供吧台用户组鉴权与错误码。
 - [x] 2025-11-01：补充演示数据（桌台/批次/套餐/订单）与点单流程单测，确保库存扣减与状态流转可回归。
+- [x] **2025-11-01：修复 store_bar 模块 XML 加载顺序错误**（RPC_ERROR: External ID not found）
+  - **根本原因**：`__manifest__.py` 中 XML 文件加载顺序错误，`store_bar_table_views.xml` 引用了尚未定义的 `action_store_bar_order`
+  - **深层问题**：视图文件中混合了视图定义和 action 定义，导致依赖关系混乱
+  - **修复方案**：
+    1. 创建独立的 `store_bar_actions.xml` 文件，集中定义所有窗口动作
+    2. 从各视图文件中移除 action 定义
+    3. 调整 `__manifest__.py` 加载顺序：security → actions → views → menu
+    4. 添加注释说明加载顺序的原因
+  - **影响范围**：修改了4个文件（新增1个，修改3个）
+  - **预防措施**：更新《常见错误与预防指南.md》，新增"XML 文件加载顺序错误"案例与最佳实践
+- [x] **2025-11-01：修复 store_bar 模块视图 Domain 关联字段错误**（RPC_ERROR: 组合字段无效 + 字段缺失 + 权限限制）
+  - **根本原因 1**：`store.bar.order.line` 模型的 `batch_id` 字段 domain 中使用了 `order_id.company_id`，在 tree 视图内联编辑中不支持
+  - **根本原因 2**：domain 中使用的 `company_id` 字段没有在视图中声明
+  - **根本原因 3**：`store.bar.order` 表单视图中的 `company_id` 字段受权限组限制，导致 `employee_id` 和 `table_id` 的 domain 无法正常工作
+  - **深层问题**：Odoo 16 的视图验证器要求：
+    1. domain 中不能直接引用父记录的字段（如 `order_id.company_id`）
+    2. domain 中使用的所有字段必须在视图中存在（即使是隐藏的）
+    3. domain 中引用的字段不能受权限组限制，否则非权限用户无法使用
+  - **修复方案**：
+    1. 在 `store.bar.order.line` 模型中添加 `company_id` related 字段
+    2. 修改 `batch_id` 的 domain 为 `[('product_id', '=', product_id), ('company_id', '=', company_id)]`
+    3. 在 order line tree 视图中添加 `<field name="company_id" invisible="1"/>`
+    4. 在 order form 视图中添加隐藏的 `<field name="company_id" invisible="1"/>`（不受权限限制）
+    5. 保留可见的 `<field name="company_id" groups="..." force_save="0"/>`（仅管理员可见）
+    6. 设置 `store=True` 和 `readonly=True` 确保性能和数据一致性
+  - **影响范围**：修改了2个文件（`models/bar_order_line.py`、`views/store_bar_order_views.xml`）
+  - **预防措施**：更新《常见错误与预防指南.md》，新增两个案例：
+    - "视图 Domain 中的关联字段错误"：强调 domain 字段必须在视图中存在
+    - "Domain 字段受权限组限制错误"：强调使用"隐藏字段 + 可见字段"的双字段方案
+- [x] **2025-11-01：修复 store_bar 模块桌台视图 Domain 权限限制错误**（RPC_ERROR: company_id 字段受权限组限制）
+  - **根本原因**：`store.bar.table` 表单视图中的 `company_id` 字段被 `groups="store_bar.group_bar_manager"` 限制，但 `reservation_partner_id` 字段的 domain 使用了 `company_id`，导致普通用户无法使用
+  - **深层问题**：与 `store.bar.order` 视图相同的设计缺陷，domain 中引用的字段不能受权限组限制
+  - **修复方案**：
+    1. 在 table form 视图开头添加隐藏的 `<field name="company_id" invisible="1"/>`（不受权限限制）
+    2. 保留可见的 `<field name="company_id" groups="store_bar.group_bar_manager" force_save="0"/>`（仅管理员可见）
+    3. 采用与 `store_bar_order_views.xml` 相同的"双字段"模式
+  - **影响范围**：修改了1个文件（`views/store_bar_table_views.xml`）
+  - **一致性改进**：确保所有 store_bar 视图使用统一的 company_id 显示策略
 
 ## Team G 众筹与品牌洞察组（store_crowdfunding）
 - [x] 评估 Odoo 16 文档签署/审批能力，提出众筹状态机与附件存储方案（2025-11-02：`store_crowdfunding` 引入合同多附件与 `contract_watermark_status`，审批按钮依赖水印校验；2025-11-02 补充水印方案选择、基于开源 PDF 叠加的自动水印与附件水印标记）
