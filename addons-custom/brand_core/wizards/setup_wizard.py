@@ -118,11 +118,17 @@ class BrandCoreSetupWizard(models.TransientModel):
         if not message_parts:
             message_parts.append(_("所有目标公司均已存在，无需更新。"))
 
-        self.env.user.notify_success(
-            title=_("初始化完成"),
-            message="\n".join(message_parts),
-        )
-        return {"type": "ir.actions.act_window_close"}
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("初始化完成"),
+                "message": "\n".join(message_parts),
+                "type": "success",
+                "sticky": False,
+                "next": {"type": "ir.actions.act_window_close"},
+            },
+        }
 
     def _ensure_sequences(self, brand_company):
         sequence_model = self.env["ir.sequence"]

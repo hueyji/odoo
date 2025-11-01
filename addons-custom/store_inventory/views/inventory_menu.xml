@@ -2,7 +2,7 @@
 <odoo>
     <menuitem id="menu_store_inventory_root"
               name="门店库存"
-              parent="stock.menu_stock_root"
+              parent="stock.menu_stock_inventory_control"
               sequence="15"
               groups="stock.group_stock_user,base.group_system"/>
 

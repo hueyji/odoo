@@ -153,6 +153,28 @@ class StoreInventoryBatch(models.Model):
         compute="_compute_last_move",
         store=True,
     )
+    # 供应商档案关联（继承自store_supplier模块）
+    supplier_record_id = fields.Many2one(
+        "store.supplier",
+        string="供应商档案",
+        tracking=True,
+        help="与门店供应商档案建立关联，便于统计采购表现。",
+    )
+
+    @api.onchange("supplier_record_id")
+    def _onchange_supplier_record_id(self):
+        for record in self:
+            if record.supplier_record_id:
+                record.supplier_id = record.supplier_record_id.partner_id
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "supplier_record_id" in vals:
+            for record in self:
+                if record.supplier_record_id and record.supplier_record_id.partner_id:
+                    record.supplier_id = record.supplier_record_id.partner_id
+        return res
+
     active = fields.Boolean(default=True)
 
     _sql_constraints = [

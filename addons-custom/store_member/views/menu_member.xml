@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_store_member_root"
+              name="门店会员服务"
+              parent="sale.sale_menu_root"
+              sequence="80"
+              groups="store_member.group_member_sensitive,base.group_system"/>
+
+    <menuitem id="menu_store_member_local"
+              name="门店会员"
+              parent="menu_store_member_root"
+              action="action_store_member_local"
+              sequence="10"
+              groups="store_member.group_member_sensitive,base.group_system"/>
+
+    <menuitem id="menu_store_member_brand"
+              name="品牌会员"
+              parent="menu_store_member_root"
+              action="action_store_member_brand"
+              sequence="20"
+              groups="store_member.group_member_sensitive,base.group_system"/>
+
+    <menuitem id="menu_store_member_balance"
+              name="余额记录"
+              parent="menu_store_member_root"
+              action="action_store_member_balance_log"
+              sequence="30"
+              groups="store_member.group_member_sensitive,base.group_system"/>
+
+    <menuitem id="menu_store_member_recharge"
+              name="会员充值"
+              parent="menu_store_member_root"
+              action="action_store_member_recharge"
+              sequence="40"
+              groups="store_member.group_member_sensitive,base.group_system"/>
+</odoo>

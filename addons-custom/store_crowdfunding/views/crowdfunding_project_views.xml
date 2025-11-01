@@ -63,7 +63,7 @@
                                 class="oe_stat_button"
                                 icon="fa-line-chart"
                                 name="%(action_store_crowdfunding_investment)d"
-                                context="{'search_default_project_id': active_id, 'default_project_id': active_id}">
+                                context="{'search_default_project_id': id, 'default_project_id': id}">
                             <span class="o_stat_value"><field name="investment_count"/></span>
                             <span class="o_stat_text">投资记录</span>
                         </button>
@@ -71,7 +71,7 @@
                                 class="oe_stat_button"
                                 icon="fa-money"
                                 name="%(action_store_crowdfunding_dividend)d"
-                                context="{'search_default_project_id': active_id, 'default_project_id': active_id}">
+                                context="{'search_default_project_id': id, 'default_project_id': id}">
                             <span class="o_stat_value"><field name="dividend_count"/></span>
                             <span class="o_stat_text">分红计划</span>
                         </button>
@@ -219,8 +219,8 @@
     <record id="action_store_crowdfunding_project" model="ir.actions.act_window">
         <field name="name">众筹项目</field>
         <field name="res_model">store.crowdfunding.project</field>
-        <field name="view_mode">kanban,tree,form,pivot,graph</field>
-        <field name="view_ids" eval="[(0, 0, {'sequence': 1, 'view_mode': 'kanban', 'view_id': ref('view_store_crowdfunding_project_kanban')}), (0, 0, {'sequence': 2, 'view_mode': 'tree', 'view_id': ref('view_store_crowdfunding_project_tree')}), (0, 0, {'sequence': 3, 'view_mode': 'form', 'view_id': ref('view_store_crowdfunding_project_form')})]"/>
+        <field name="view_mode">kanban,list,form,pivot,graph</field>
+        <field name="view_ids" eval="[(0, 0, {'sequence': 1, 'view_mode': 'kanban', 'view_id': ref('view_store_crowdfunding_project_kanban')}), (0, 0, {'sequence': 2, 'view_mode': 'list', 'view_id': ref('view_store_crowdfunding_project_tree')}), (0, 0, {'sequence': 3, 'view_mode': 'form', 'view_id': ref('view_store_crowdfunding_project_form')})]"/>
         <field name="search_view_id" ref="view_store_crowdfunding_project_search"/>
         <field name="help" type="html">
             <p>管理众筹项目的全生命周期：门店提交、品牌审核、募集执行与分红。</p>

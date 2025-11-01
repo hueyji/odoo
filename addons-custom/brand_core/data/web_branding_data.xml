@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="brand_core_web_app_name_param" model="ir.config_parameter">
+            <field name="key">web.web_app_name</field>
+            <field name="value">大卖茄</field>
+        </record>
+    </data>
+</odoo>

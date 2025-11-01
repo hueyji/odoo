@@ -92,9 +92,9 @@
                 <field name="company_id"/>
                 <filter string="黑名单" name="filter_black" domain="[('is_blacklisted', '=', True)]"/>
                 <group expand="0" string="评级">
-                    <filter string="五星" domain="[('rating', '=', 'excellent')]"/>
-                    <filter string="四星" domain="[('rating', '=', 'good')]"/>
-                    <filter string="三星及以下" domain="[('rating', 'in', ['normal', 'warning', 'blocked'])]"/>
+                    <filter string="五星" name="rating_excellent" domain="[('rating', '=', 'excellent')]"/>
+                    <filter string="四星" name="rating_good" domain="[('rating', '=', 'good')]"/>
+                    <filter string="三星及以下" name="rating_low" domain="[('rating', 'in', ['normal', 'warning', 'blocked'])]"/>
                 </group>
             </search>
         </field>
@@ -114,14 +114,5 @@
               sequence="40"
               groups="stock.group_stock_user,base.group_system"/>
 
-    <record id="view_store_inventory_batch_form_supplier" model="ir.ui.view">
-        <field name="name">store.inventory.batch.form.supplier</field>
-        <field name="model">store.inventory.batch</field>
-        <field name="inherit_id" ref="store_inventory.view_store_inventory_batch_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//group/field[@name='supplier_id']" position="after">
-                <field name="supplier_record_id" options="{'no_create_edit': True}"/>
-            </xpath>
-        </field>
-    </record>
+    <!-- Note: supplier_record_id 字段现在直接在 store_inventory 模块的视图中定义 -->
 </odoo>

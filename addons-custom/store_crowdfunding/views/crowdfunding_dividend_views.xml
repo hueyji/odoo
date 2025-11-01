@@ -54,7 +54,7 @@
                     </group>
                     <notebook>
                         <page string="分红明细">
-                            <field name="line_ids" context="{'default_dividend_id': active_id, 'default_project_id': project_id}">
+                            <field name="line_ids" context="{'default_dividend_id': id, 'default_project_id': project_id}">
                                 <list editable="bottom">
                                     <field name="investment_id" options="{'no_create': True}"/>
                                     <field name="partner_id" readonly="1"/>

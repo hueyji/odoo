@@ -21,7 +21,7 @@
                     </div>
                 </button>
             </xpath>
-            <xpath expr="//group[@string='储值与投资']" position="inside">
+            <xpath expr="//group[field[@name='member_balance']]" position="inside">
                 <field name="crowdfunding_investment_count" readonly="1"/>
                 <field name="crowdfunding_last_investment_date" readonly="1"/>
             </xpath>

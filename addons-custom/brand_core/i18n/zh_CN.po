@@ -1,0 +1,64 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: brand_core 1.0\n"
+"Report-Msgid-Bugs-To:\n"
+"POT-Creation-Date: 2025-11-01 00:00+0000\n"
+"PO-Revision-Date: 2025-11-01 00:00+0000\n"
+"Last-Translator: 自动化集成\n"
+"Language-Team:\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/public/error_notifications.js:0
+msgid "Odoo Session Expired"
+msgstr "大卖茄会话已过期"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/public/error_notifications.js:0
+msgid "Your Odoo session expired. The current page is about to be refreshed."
+msgstr "您的大卖茄会话已过期，当前页面将自动刷新。"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/core/barcode/barcode_video_scanner.js:0
+msgid "Odoo needs your authorization first."
+msgstr "在继续使用前请先授权大卖茄的摄像头访问。"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+msgid "Odoo Error"
+msgstr "大卖茄错误"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+msgid "Odoo Client Error"
+msgstr "大卖茄客户端错误"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+msgid "Odoo Network Error"
+msgstr "大卖茄网络错误"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+msgid "Odoo Server Error"
+msgstr "大卖茄服务器错误"
+
+#. module: web
+#. odoo-javascript
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+#: code:addons/web/static/src/core/errors/error_dialogs.js:0
+msgid "Odoo Warning"
+msgstr "大卖茄警告"

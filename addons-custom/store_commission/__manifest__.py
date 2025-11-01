@@ -12,7 +12,6 @@
         "account",
         "hr",
         "mail",
-        "store_finance",
     ],
     "data": [
         "security/store_commission_security.xml",

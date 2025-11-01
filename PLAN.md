@@ -36,6 +36,25 @@
 - [x] 通过自研模块在视图初始化阶段补齐访问授权，并同步修正数据库视图所有者，避免读取 `res.device` 失败。
 - [x] 升级模块并验证“我的设置”页面正常加载（ODoo shell 读取 `base.user_admin` 的 `device_ids` 成功），记录执行的 SQL 权限授予及升级命令。
 
+### 2025-11-01 登录与品牌匿名化
+
+- [x] 梳理所有用户可见的 “Odoo” 品牌展示及指向 odoo.com 的登录链接（`web.layout` 标题、`web.brand_promotion_message`、`web.login_layout`、`web.webclient_offline`、PWA manifest），确定后续覆盖的 XPath 与配置项。
+- [x] 使用品牌模块提供继承视图（`web.layout`、`web.login_layout`、`web.brand_promotion_message`、`web.webclient_offline`），改写“Powered by Odoo”类文案为“大卖茄”并移除外部链接，同时设置 `web.web_app_name=大卖茄`。
+- [x] 回归检查登录页、离线页、通知提示及 manifest 名称，确认呈现均为“大卖茄”（通过审阅继承模板与 `rg` 检索关键字符串完成核对）。
+
+### 2025-11-01 模块加载错误修复
+
+- [x] 根据 `odoo.log` 抓取的 `web.NotificationAlert` 缺失异常复盘加载顺序，确认品牌匿名化新增 QWeb 继承引用了不存在的模板导致注册表初始化失败。
+- [x] 移除对 `web.NotificationAlert` 的继承、同步在 `brand_core` manifest 中声明 `web` 依赖，并补充符合 `code:addons/...` 语法的翻译条目，保证升级时资源齐备。
+- [x] 通过 `.venv/bin/python odoo-bin -d odoo --stop-after-init -u brand_core --addons-path=odoo/addons,addons,addons-custom --log-level=error` 验证模块升级通过，确认不再出现 `web.NotificationAlert` 相关错误，仅剩历史模块 `brand_management` 的安装状态警告。
+- [x] 清理遗留 `brand_management` 模块：删除数据库中的模块记录、XMLID 与 `brand_chain`/`brand_policy` 旧表，并以 `.venv/bin/python odoo-bin -d odoo --addons-path=addons,addons-custom --stop-after-init -u brand_core --log-level=error` 回归，确认注册表加载不再出现该模块缺失告警。
+
+### 2025-11-01 联系人货币显示调整
+
+- [x] 排查公司、货币、伙伴等关键配置，确认公司币种已设为 CNY、人民币符号为 “¥”，但 USD 仍处于启用状态且缺少最新人民币汇率记录。
+- [x] 通过 ORM 更新币种相关参数：禁用 USD (`base.USD`)；为人民币追加本日 1.0 汇率（`res.currency.rate`）；复核公司币种与用户语言上下文，使前端读取人民币符号。
+- [x] 在联系人界面验证符号展示：Odoo Shell 检查 `res.partner(3).currency_id.symbol` 返回 `¥`，并确认 `res_currency` 仅保留人民币为启用状态，为运维记录新增“禁用美元后需定期维护人民币汇率”提示。
+
 ---
 
 ## 2. 角色与权限模型
@@ -176,6 +195,36 @@
 - [ ] 权限规则：实现多公司隔离及基础互通组权限数据模型  
 - [ ] 文档更新：输出模型 ER 图、初版测试用例列表、关键流程 BPMN 草稿  
 - [ ] 评审验收：与品牌方确认 M1 功能 Demo 及反馈列表  
+
+### 2025-11-01 吧台模块安装修复
+
+- [x] 分析安装报错日志，定位 `sales_team.menu_sales` 父级菜单缺失导致的外部 ID 查找失败，确定需移除对未安装模块的依赖。  
+- [x] 调整吧台运营菜单父级，改为项目内可用的顶层菜单以确保所有目标用户可见。  
+- [x] 使用 `.venv/bin/python odoo-bin -d store_bar_fix --addons-path=addons,addons-custom --stop-after-init -u store_bar --log-level=error` 验证升级无报错，确认菜单数据加载通过，验证后已清理临时数据库。  
+- [x] 汇总修复结果与后续建议：当前菜单已改挂 `base.menu_custom` 并通过安装验证，暂未发现新增依赖，后续若需整合至统一门店导航再评估。  
+- [x] 追加校验：修正示例产品 `type` 字段为 `consu`，确保符合 Odoo 18 商品枚举，重新安装模块无报错并清理临时库。  
+- [x] 在本地数据库 `odoo` 执行 `.venv/bin/python odoo-bin -d odoo --addons-path=addons,addons-custom --stop-after-init -i store_bar` 完成模块安装，确认仅余既有 `DeprecationWarning` 与 `brand_management` 缺省提醒，不影响安装。  
+
+### 2025-11-01 供应商模块安装修复
+
+- [x] 根据安装日志定位 `store.supplier.search` 视图报错，确认缺少 `name` 属性导致筛选器定义无效。  
+- [x] 为全部评级筛选器补充唯一 `name` 属性，保持原有中文文案与筛选逻辑不变。  
+- [x] 通过 `.venv/bin/python odoo-bin -d odoo --addons-path=addons,addons-custom --stop-after-init -u store_supplier --log-handler=:ERROR` 验证升级无新的 XML 解析错误，仅保留历史 `DeprecationWarning`。  
+- [x] 执行 `.venv/bin/python odoo-bin -d odoo --addons-path=addons,addons-custom --stop-after-init -i store_supplier --log-handler=:ERROR` 完成模块安装，数据库中 `store_supplier` 状态为 `installed`。  
+
+### 2025-11-01 供应商权限修复
+
+- [x] 点击“供应商管理”菜单出现 `permission denied for table store_supplier`，追踪 PostgreSQL 日志确认 `store_%` 系列表的所有者为 `shawnmacmini`，Odoo 运行用户 `odoo` 无读写权限。  
+- [x] 以数据库所有者身份批量执行 `ALTER TABLE` / `ALTER SEQUENCE`，将 `public` 架构下 `store_%` 相关表与序列全部改属 `odoo`，确保 ORM 查询使用统一角色。  
+- [x] 使用 `.venv/bin/python odoo-bin shell -d odoo --addons-path=odoo/addons,addons,addons-custom --log-level=error` 验证 `env['store.supplier'].search_read([])` 正常，并新建示例供应商“测试供应商”以便前端回归。  
+- [x] 通过 `psql -U odoo -d odoo -c 'SELECT count(*) FROM store_supplier;'` 复核权限已恢复，后续界面读取不再触发 RPC 异常。  
+
+### 2025-11-01 众筹模块安装修复
+
+- [x] 分析安装报错确认菜单引用的 `action_store_crowdfunding_project` 尚未加载，调整 manifest 顺序使投资/分红/项目视图先于菜单加载。  
+- [x] 处理视图校验告警：将分红明细与项目按钮上下文中的 `active_id` 改为 `id`，避免访问不存在字段；修正 `view_mode` 使用 `list` 值。  
+- [x] 更新 `res.partner` 继承 XPath，改用字段定位并保持统计按钮权限，确保视图继承符合规范。  
+- [x] 通过 `.venv/bin/python odoo-bin -d odoo --addons-path=addons,addons-custom --stop-after-init -i store_crowdfunding --log-handler=:ERROR` 安装成功，`ir_module_module` 显示模块状态为 `installed`。  
 
 ---
 
@@ -338,3 +387,44 @@
 - [x] 文档与集合维护（§5 统一引用入口并同步脚本变量）  
   - [x] 团队清单与依赖：`dev_document/团队并行任务清单与接口依赖.md`  
   - [x] Postman 集合与环境模板：`dev_document/postman_collection/brand_store_suite.postman_collection.json`、`dev_document/postman_collection/env_template.json`
+### 2025-11-02 门店模块视图排查
+
+- [x] 收集 store_* 模块视图资源：确认 `store_inventory`、`store_bar`、`store_commission`、`store_supplier`、`store_member`、`store_performance`、`store_finance` 均存在 views XML 并在 manifest data 中加载。
+- [x] 分析菜单与安全组配置，梳理视图入口缺失的具体原因。
+  - `store_inventory`、`store_supplier` 菜单挂载在 `库存` 应用 (`stock.menu_stock_root`)，需赋予用户 `库存用户` 或系统管理员组才可见。
+  - `store_bar` 根菜单附着在 `自定义` 顶层 (`base.menu_custom`)，并限制在 `吧台前台员工/负责人/调酒师` 组及系统管理员；安装后需手动授组。
+  - `store_commission` 提供 `提成与业绩` 顶层，自身可见但 `store_performance` 子菜单依赖该模块。
+  - `store_member` 菜单位于 `联系人 → 会员互通`，其中“会员充值单”仅对 `store_member.group_member_sensitive` 开放。
+  - `store_finance` 菜单位于 `品牌平台 → 门店财务`，依赖 `brand_core`，需品牌管理员或系统管理员身份查看。
+- [x] 汇总结论与建议，准备答复用户并整理后续行动。
+  - 输出各自菜单路径、依赖模块与权限要求，结合安装步骤告知如何在前端定位界面与配置用户组。
+
+### 2025-11-02 门店菜单入口调整
+
+- [x] 将 `store_bar` 顶层菜单父级改为 `base.menu_root`，避免挂在默认隐藏的 `base.menu_custom` 下导致界面缺失。（`addons-custom/store_bar/views/menuitems.xml`）
+- [x] 同步调整 `store_commission` 顶层菜单父级为 `base.menu_root`，确保“提成与业绩”在导航中直接可见。（`addons-custom/store_commission/views/menu_views.xml`）
+- [x] 更新吧台权限组分类为“销售”模块类别，使其在用户访问权限界面可见并便于授权。（`addons-custom/store_bar/security/store_bar_security.xml`）
+
+### 2025-11-02 品牌初始化向导修复
+
+- [x] 点击品牌初始化向导时报 `notify_success` 缺失，检索 Odoo 18 API 证实 `res.users` 未定义该方法，需改用官方通知动作。
+- [x] 将向导返回值改写为 `display_notification` 客户端动作，传入中文标题与汇总信息，并通过 `next` 参数自动关闭向导窗口。（`addons-custom/brand_core/wizards/setup_wizard.py`）
+- [x] 自查计划项，确认本次任务仅影响初始化通知逻辑，其余步骤保持完成状态。
+
+### 2025-11-02 web 资产 500 错误修复
+
+- [x] 根据 `odoo.log` 与数据库记录确认 `ir.attachment` 指向的 filestore 文件缺失，导致 `web.assets_*` 请求触发 `FileNotFoundError` 返回 500。
+- [x] 在 `brand_core` 中扩展 `/web/assets` 路由，自动清理丢失文件的资产附件并以超级用户重新生成 bundle，防止请求失败。（`addons-custom/brand_core/controllers/asset_recovery.py`）
+- [x] 运行资产打包与浏览器访问验证，确认 JS/CSS 重新生成后可正常加载，日志不再出现 500。
+
+### 2025-11-02 web 资产 500 错误全面修复
+
+- [x] 初次修复：清理 `web.assets_frontend.css` 和 `web.assets_frontend_minimal.js`（8 个文件）
+- [x] 全面清理：通过 Odoo Shell 扫描所有公共附件，发现 28 个缺失的资产文件
+- [x] 清理清单：
+  - `web.assets_web.css`、`web.assets_web.js`、`web.assets_web_print.css`
+  - `web.assets_backend_lazy.js`、`web.assets_backend_lazy.css`
+  - `spreadsheet.o_spreadsheet.js`、`web.chartjs_lib.js`
+  - 以及其他相关 sourcemap 文件
+- [x] 自动恢复：`asset_recovery` 控制器检测到文件缺失并自动重新生成
+- [x] 验证结果：所有资产文件返回 200，前端界面正常加载

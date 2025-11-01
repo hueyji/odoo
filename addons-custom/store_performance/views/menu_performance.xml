@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_store_performance_root"
+              name="门店业绩看板"
+              parent="hr.menu_hr_main"
+              sequence="90"
+              groups="store_performance.group_store_performance_user,store_performance.group_store_performance_manager,base.group_system"/>
+
+    <menuitem id="menu_store_performance"
+              name="业绩看板"
+              parent="menu_store_performance_root"
+              action="action_store_performance_record"
+              sequence="10"
+              groups="store_performance.group_store_performance_user,store_performance.group_store_performance_manager,base.group_system"/>
+</odoo>

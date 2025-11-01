@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="web_layout_title_brand" inherit_id="web.layout" name="Replace default title with brand">
+            <xpath expr="//title" position="replace">
+                <title t-esc="title or '大卖茄'"/>
+            </xpath>
+        </template>
+
+        <template id="web_brand_promotion_message_clean" inherit_id="web.brand_promotion_message" name="Brand promotion without Odoo link">
+            <xpath expr="." position="replace">
+                <span class="badge text-bg-light">大卖茄 · 多门店平台</span>
+                <t t-if="_message">
+                    <span class="ms-2" t-esc="_message"/>
+                </t>
+            </xpath>
+        </template>
+
+        <template id="web_login_footer_brand" inherit_id="web.login_layout" name="Brand login footer">
+            <xpath expr="//div[hasclass('text-center', 'small')]/a[contains(@href, 'odoo.com')]" position="replace">
+                <span class="text-muted">大卖茄 · 多门店平台</span>
+            </xpath>
+        </template>
+
+        <template id="web_offline_page_brand" inherit_id="web.webclient_offline" name="Brand offline page content">
+            <xpath expr="//img" position="attributes">
+                <attribute name="alt">大卖茄 标志</attribute>
+            </xpath>
+            <xpath expr="//h1" position="replace">
+                <h1>当前离线</h1>
+            </xpath>
+            <xpath expr="//p" position="replace">
+                <p>请检查网络连接，恢复后“大卖茄”将自动重新加载。</p>
+            </xpath>
+            <xpath expr="//button" position="replace">
+                <button onclick="location.reload()">重新检查</button>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>

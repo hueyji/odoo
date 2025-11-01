@@ -11,7 +11,6 @@
         "contacts",
         "mail",
         "brand_core",
-        "web_map",
         "portal",
     ],
     "data": [
@@ -21,6 +20,7 @@
         "views/res_partner_views.xml",
         "views/member_balance_views.xml",
         "views/wizards/phone_bind_wizard_views.xml",
+        "views/menu_member.xml",
         "views/portal_templates.xml",
     ],
     "demo": [],

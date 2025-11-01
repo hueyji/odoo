@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_store_supplier_root"
+              name="门店供应商"
+              parent="sale.sale_menu_root"
+              sequence="70"
+              groups="base.group_user,base.group_system"/>
+
+    <menuitem id="menu_store_supplier"
+              name="供应商管理"
+              parent="menu_store_supplier_root"
+              action="action_store_supplier"
+              sequence="10"
+              groups="base.group_user,base.group_system"/>
+</odoo>

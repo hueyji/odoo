@@ -13,7 +13,6 @@
         "product",
         "store_inventory",
         "store_commission",
-        "store_finance",
         "store_member",
     ],
     "data": [

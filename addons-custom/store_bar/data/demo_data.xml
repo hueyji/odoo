@@ -10,7 +10,7 @@
 
         <record id="store_bar_product_template_demo" model="product.template">
             <field name="name">调制威士忌示例</field>
-            <field name="type">product</field>
+            <field name="type">consu</field>
             <field name="list_price">198</field>
             <field name="standard_price">120</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
@@ -21,12 +21,8 @@
             <field name="company_id" ref="base.main_company"/>
         </record>
 
-        <record id="store_bar_product_demo" model="product.product">
-            <field name="product_tmpl_id" ref="store_bar_product_template_demo"/>
-        </record>
-
         <record id="store_bar_inventory_batch_demo" model="store.inventory.batch">
-            <field name="product_id" ref="store_bar_product_demo"/>
+            <field name="product_id" model="product.product" eval="obj().env.ref('store_bar.store_bar_product_template_demo').product_variant_id"/>
             <field name="qty_initial">50</field>
             <field name="qty_available">50</field>
             <field name="purchase_price">120</field>
@@ -62,7 +58,7 @@
 
         <record id="store_bar_order_line_demo" model="store.bar.order.line">
             <field name="order_id" ref="store_bar_order_demo"/>
-            <field name="product_id" ref="store_bar_product_demo"/>
+            <field name="product_id" model="product.product" eval="obj().env.ref('store_bar.store_bar_product_template_demo').product_variant_id"/>
             <field name="batch_id" ref="store_bar_inventory_batch_demo"/>
             <field name="quantity">2</field>
             <field name="price_unit">198</field>

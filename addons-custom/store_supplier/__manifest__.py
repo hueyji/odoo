@@ -17,6 +17,7 @@
     "data": [
         "security/ir.model.access.csv",
         "views/supplier_views.xml",
+        "views/menu_supplier.xml",
     ],
     "demo": [],
     "installable": True,

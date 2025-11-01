@@ -12,7 +12,6 @@
         "stock",
         "product",
         "mail",
-        "store_finance",
         "brand_core",
     ],
     "data": [

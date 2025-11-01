@@ -21,7 +21,28 @@ class SpreadsheetDashboard(models.Model):
 
     def get_readonly_dashboard(self):
         self.ensure_one()
-        snapshot = json.loads(self.spreadsheet_data)
+        # 修复spreadsheet_data为空的情况
+        if not self.spreadsheet_data:
+            # 创建空的spreadsheet数据
+            empty_snapshot = {
+                "version": 1,
+                "sheets": [{"id": "sheet1", "name": "Sheet1", "cols": {}, "rows": {}, "cells": {}, "merges": [], "figures": [], "conditionalFormats": [], "validation": [], "filters": [], "sort": [], "panes": {}, "views": []}],
+                "settings": {"locale": "zh_CN"},
+                "revisionId": "START_REVISION",
+            }
+            snapshot = empty_snapshot
+        else:
+            try:
+                snapshot = json.loads(self.spreadsheet_data)
+            except (json.JSONDecodeError, TypeError):
+                # 如果JSON解析失败，也创建空数据
+                empty_snapshot = {
+                    "version": 1,
+                    "sheets": [{"id": "sheet1", "name": "Sheet1"}],
+                    "settings": {"locale": "zh_CN"},
+                    "revisionId": "START_REVISION",
+                }
+                snapshot = empty_snapshot
         if self._dashboard_is_empty() and self.sample_dashboard_file_path:
             sample_data = self._get_sample_dashboard()
             if sample_data:

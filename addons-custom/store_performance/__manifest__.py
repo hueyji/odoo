@@ -16,6 +16,7 @@
         "security/store_performance_security.xml",
         "security/ir.model.access.csv",
         "views/store_performance_views.xml",
+        "views/menu_performance.xml",
     ],
     "demo": [
         "data/performance_demo.xml",

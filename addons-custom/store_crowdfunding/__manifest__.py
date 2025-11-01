@@ -10,7 +10,6 @@
     "depends": [
         "mail",
         "brand_core",
-        "store_finance",
         "store_member",
         "portal",
         "board",
@@ -20,13 +19,13 @@
         "security/ir.model.access.csv",
         "data/crowdfunding_sequence.xml",
         "data/crowdfunding_dashboard_board.xml",
-        "views/crowdfunding_menu.xml",
-        "views/crowdfunding_project_views.xml",
         "views/crowdfunding_investment_views.xml",
         "views/crowdfunding_dividend_views.xml",
+        "views/crowdfunding_project_views.xml",
         "views/res_partner_views.xml",
         "views/crowdfunding_portal_templates.xml",
         "reports/crowdfunding_dividend_report.xml",
+        "views/crowdfunding_menu.xml",
     ],
     "demo": [
         "demo/crowdfunding_demo.xml",
