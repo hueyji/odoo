@@ -13,7 +13,7 @@
     "website": "https://example.com",
     "license": "LGPL-3",
     "depends": [
-        "contacts",
+        "base",
         "mail",
         "portal",
         "auth_signup",

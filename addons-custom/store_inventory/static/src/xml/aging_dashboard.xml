@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<templates xml:space="preserve">
-    <t t-name="store_inventory.AgingDashboard">
+<templates id="template" xml:space="preserve">
+    <t t-name="store_inventory.AgingDashboard" owl="1">
         <div class="o_store_inventory_dashboard o_controller">
             <div class="d-flex align-items-center mb-3">
                 <h2 class="me-3 mb-0">陈化看板</h2>

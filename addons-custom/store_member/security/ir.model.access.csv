@@ -7,3 +7,4 @@ access_store_member_balance_log_admin,access.store.member.balance.log.admin,mode
 access_store_member_balance_log_user,access.store.member.balance.log.user,model_store_member_balance_log,store_member.group_store_member_user,1,0,1,0
 access_store_member_pref_admin,access.store.member.preference.admin,model_store_member_preference,store_member.group_store_member_admin,1,1,1,1
 access_store_member_pref_user,access.store.member.preference.user,model_store_member_preference,store_member.group_store_member_user,1,0,0,0
+

@@ -29,8 +29,8 @@
     ],
     "assets": {
         "web.assets_backend": [
-            "addons-custom/store_inventory/static/src/js/aging_dashboard.js",
-            "addons-custom/store_inventory/static/src/xml/aging_dashboard.xml",
+            "store_inventory/static/src/js/aging_dashboard.js",
+            "store_inventory/static/src/xml/aging_dashboard.xml",
         ],
     },
     "installable": True,

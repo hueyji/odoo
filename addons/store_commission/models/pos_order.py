@@ -10,7 +10,6 @@ class PosOrder(models.Model):
         string="责任员工",
         required=True,
         domain="[('company_id', 'in', [company_id, False])]",
-        tracking=True,
         help="用于提成计算的责任员工，将自动同步至POS员工字段。",
     )
 

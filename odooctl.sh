@@ -59,20 +59,49 @@ check_port() {
 }
 
 clean_cache() {
-    print_status "正在清理缓存..."
+    local clean_type="${1:-all}"
 
-    find "$ODOO_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-    print_status "已清理 Python 缓存"
+    print_status "正在清理缓存 (类型: $clean_type)..."
 
-    if [[ -d "$DATA_DIR/filestore/$DB_NAME" ]]; then
-        rm -rf "$DATA_DIR/filestore/$DB_NAME"
-        print_status "已清理 filestore 缓存 ($DATA_DIR/filestore/$DB_NAME)"
+    # 1. 清理 Python 字节码缓存
+    if [[ "$clean_type" == "all" || "$clean_type" == "python" ]]; then
+        find "$ODOO_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
+        find "$ODOO_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+        print_status "✓ 已清理 Python 字节码缓存 (.pyc, __pycache__)"
     fi
 
-    if [[ -d "$DATA_DIR/sessions/$DB_NAME" ]]; then
-        rm -rf "$DATA_DIR/sessions/$DB_NAME"
-        print_status "已清理 session 缓存 ($DATA_DIR/sessions/$DB_NAME)"
+    # 2. 清理 Session 缓存
+    if [[ "$clean_type" == "all" || "$clean_type" == "session" ]]; then
+        if [[ -d "$DATA_DIR/sessions" ]]; then
+            rm -rf "$DATA_DIR/sessions"/*
+            print_status "✓ 已清理 Session 缓存 ($DATA_DIR/sessions)"
+        fi
     fi
+
+    # 3. 清理 Assets 缓存（数据库中的编译资源）
+    if [[ "$clean_type" == "all" || "$clean_type" == "assets" ]]; then
+        print_status "正在清理 Assets 缓存（数据库）..."
+        PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c \
+            "DELETE FROM ir_attachment WHERE name LIKE 'web_icon_data%' OR name LIKE '%assets_%' OR url LIKE '/web/content/%';" \
+            2>/dev/null && print_status "✓ 已清理 Assets 缓存（数据库 ir_attachment）" || \
+            print_warning "⚠ 无法清理 Assets 缓存（可能需要数据库权限）"
+    fi
+
+    # 4. 清理 Filestore 缓存（可选，谨慎使用）
+    if [[ "$clean_type" == "filestore" ]]; then
+        if [[ -d "$DATA_DIR/filestore/$DB_NAME" ]]; then
+            print_warning "⚠ 即将删除 filestore，这会删除所有上传的文件！"
+            read -p "确认删除？(yes/no): " confirm
+            if [[ "$confirm" == "yes" ]]; then
+                rm -rf "$DATA_DIR/filestore/$DB_NAME"
+                print_status "✓ 已清理 filestore 缓存 ($DATA_DIR/filestore/$DB_NAME)"
+            else
+                print_status "已取消 filestore 清理"
+            fi
+        fi
+    fi
+
+    print_status "缓存清理完成！"
 }
 
 start_odoo() {
@@ -97,7 +126,6 @@ start_odoo() {
         --db_port="$DB_PORT" \
         --db_user="$DB_USER" \
         --db_password="$DB_PASSWORD" \
-        --addons-path="$ODOO_DIR/odoo/addons,$ODOO_DIR/addons" \
         --xmlrpc-port="$PORT" \
         >>"$LOG_FILE" 2>&1 &
 
@@ -147,11 +175,65 @@ stop_odoo() {
 }
 
 restart_odoo() {
+    local clean_cache_flag="${1:-no}"
+
     print_status "重启 Odoo 服务器..."
     stop_odoo
     sleep 1
-    clean_cache
+
+    if [[ "$clean_cache_flag" == "clean" ]]; then
+        clean_cache "all"
+    fi
+
     start_odoo
+}
+
+dev_restart_odoo() {
+    print_status "开发模式重启 Odoo 服务器（清理所有缓存）..."
+    stop_odoo
+    sleep 1
+    clean_cache "all"
+
+    print_status "以开发模式启动 Odoo..."
+
+    local pids
+    pids=$(lsof -ti :"$PORT" 2>/dev/null || true)
+    if [[ -n "$pids" ]]; then
+        print_warning "端口 $PORT 已被占用，尝试杀掉相关进程..."
+        for pid in $pids; do
+            kill "$pid" 2>/dev/null || true
+        done
+        sleep 1
+    fi
+
+    touch "$LOG_FILE"
+
+    nohup "$PYTHON_BIN" "$ODOO_DIR/odoo-bin" \
+        -c "$CONFIG_FILE" \
+        -d "$DB_NAME" \
+        --db_host="$DB_HOST" \
+        --db_port="$DB_PORT" \
+        --db_user="$DB_USER" \
+        --db_password="$DB_PASSWORD" \
+        --xmlrpc-port="$PORT" \
+        --dev=all \
+        >>"$LOG_FILE" 2>&1 &
+
+    local odoo_pid=$!
+    echo "$odoo_pid" >"$PID_FILE"
+
+    sleep 2
+
+    if ps -p "$odoo_pid" >/dev/null 2>&1; then
+        print_status "Odoo 已启动（开发模式），PID: $odoo_pid"
+        print_status "访问地址: http://localhost:$PORT"
+        print_status "日志文件: $LOG_FILE"
+        print_warning "开发模式已启用：自动重载、无缓存、详细日志"
+    else
+        print_error "Odoo 启动失败，请查看日志: $LOG_FILE"
+        rm -f "$PID_FILE"
+        exit 1
+    fi
 }
 
 status_odoo() {
@@ -176,17 +258,57 @@ status_odoo() {
 }
 
 usage() {
-    echo "用法: $0 {start|stop|restart|status|clean}"
+    cat <<EOF
+用法: $0 {start|stop|restart|dev-restart|status|clean}
+
+命令说明:
+  start           启动 Odoo 服务器
+  stop            停止 Odoo 服务器
+  restart         重启 Odoo 服务器（不清理缓存）
+  restart clean   重启 Odoo 服务器并清理所有缓存
+  dev-restart     开发模式重启（清理缓存 + --dev=all）
+  status          查看 Odoo 运行状态
+  clean [type]    清理缓存
+                  - all      清理所有缓存（默认）
+                  - python   仅清理 Python 字节码
+                  - session  仅清理 Session
+                  - assets   仅清理 Assets（数据库）
+                  - filestore 清理文件存储（谨慎使用）
+
+开发建议:
+  - 开发阶段使用: ./odooctl.sh dev-restart
+  - 生产环境使用: ./odooctl.sh restart
+
+示例:
+  ./odooctl.sh dev-restart          # 开发模式重启（推荐）
+  ./odooctl.sh restart clean        # 普通重启并清理缓存
+  ./odooctl.sh clean assets         # 仅清理 Assets 缓存
+EOF
     exit 1
 }
 
 case "${1:-}" in
-    start) start_odoo ;;
-    stop) stop_odoo ;;
-    restart) restart_odoo ;;
-    status) status_odoo ;;
-    clean) clean_cache ;;
-    *) usage ;;
+    start)
+        start_odoo
+        ;;
+    stop)
+        stop_odoo
+        ;;
+    restart)
+        restart_odoo "${2:-no}"
+        ;;
+    dev-restart)
+        dev_restart_odoo
+        ;;
+    status)
+        status_odoo
+        ;;
+    clean)
+        clean_cache "${2:-all}"
+        ;;
+    *)
+        usage
+        ;;
 esac
 
 exit 0

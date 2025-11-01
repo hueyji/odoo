@@ -20,7 +20,6 @@
     ],
     "data": [
         "data/store_bar_sequence.xml",
-        "data/store_bar_demo.xml",
         "security/store_bar_security.xml",
         "security/store_bar_rule.xml",
         "security/ir.model.access.csv",
@@ -29,7 +28,9 @@
         "views/store_bar_combo_views.xml",
         "views/store_bar_menu.xml",
     ],
-    "demo": [],
+    "demo": [
+        "demo/store_bar_demo.xml",
+    ],
     "installable": True,
     "application": True,
 }

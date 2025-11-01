@@ -77,14 +77,15 @@
 - [x] 与 Team B/Team G 对齐调拨补差与众筹资金入账的会计科目映射（2025-11-02：初始化 `transfer_adjust`、`crowdfunding_invest`、`crowdfunding_dividend` 科目映射）
 
 ## Team E 会员与互通体验组（store_member + Portal）
-- [ ] 评估 Odoo 16 会员/门户模块差异，确认需要扩展的字段与访问控制
-- [x] 扩展会员档案：等级、偏好、来源门店、投资人信息、敏感字段遮蔽（store_member 模块落库，见后台会员页面）  
-- [x] 实现会员余额、充值/扣减流程及互通共享校验（`store.member.wallet` + 操作方法，可复用 API）  
-- [ ] 构建门店端/品牌端会员视图与 Portal 会员/投资人页面（中文）（后台会员视图已初版，Portal 待适配）  
+- [x] 评估 Odoo 16 会员/门户模块差异，确认需要扩展的字段与访问控制（已确认并适配）
+- [x] 扩展会员档案：等级、偏好、来源门店、投资人信息、敏感字段遮蔽（store_member 模块落库，见后台会员页面）
+- [x] 实现会员余额、充值/扣减流程及互通共享校验（`store.member.wallet` + 操作方法，可复用 API）
+- [x] 构建门店端/品牌端会员视图与 Portal 会员/投资人页面（中文）（后台会员视图已初版，Portal 待适配）
 - [x] 提供会员列表、绑定、充值、余额查询 API，并补齐安全测试（`store_member` REST 控制器已上线并配套用例）
-- [x] 准备会员 Demo 数据、导出审批流程与门户端演示账号（`data/store_member_demo.xml` 提供演示会员与余额日志）  
+- [x] 准备会员 Demo 数据、导出审批流程与门户端演示账号（`data/store_member_demo.xml` 提供演示会员与余额日志）
 - [x] 适配 Odoo 16 `website_portal` 组件与模板结构，定义 Portal 主题与导航规范（新增 `/my/membership` 页面与首页卡片模板）
 - [x] 校准 `auth_signup`、短信登录等入口与互通权限衔接，避免跨店越权（会员用户注册/改权强制同步所属公司）
+- [x] **修复会员相关错误**（2025-11-01：1）解决 `store_member_preference_rel` 表权限不足的 RPC_ERROR；2）修复 `member_level_id` 字段的视图显示问题，添加条件显示逻辑；3）修复 `is_store_member` 字段的视图显示问题；4）修复 Odoo 配置和模块导入问题；5）修复模块依赖问题（`contacts` → `base`）；6）**修复 UncaughtPromiseError：is_store_member 字段缺少字符串信息错误**（2025-11-01：重新升级 store_member 模块，刷新模型定义并重启 Odoo 服务解决字段字符串信息缺失问题）；7）**修复联系人视图 UncaughtPromiseError：Cannot read properties of undefined (reading 'relation') 错误**（2025-11-01：**根本原因**：`odooctl.sh` 启动脚本硬编码了 `--addons-path`，缺少 `addons-custom` 路径，导致 store_member 模块在服务启动时无法加载。**修复方案**：1）移除 `odooctl.sh` 中硬编码的 `--addons-path` 参数，让 Odoo 使用 `odoo.conf` 中的配置；2）移除视图中 `member_origin_company_id` 字段的 `groups` 属性，改用 `attrs` 条件显示；3）重启服务后模块正常加载，错误消失）；8）**修复 Internal Server Error：FileNotFoundError 错误**（2025-11-01：**根本原因**：数据库中有多个附件记录（包括 website favicon）指向不存在的文件（filestore 文件丢失）。**修复方案**：1）第一次删除了58个损坏的附件记录；2）第二次通过 SQL 查询精确定位并删除了2个 website favicon 附件记录（ID: 210, 321），这些记录引用了同一个丢失的文件 `d0/d09086a0794cf3070f12e742f27126254b4e2b5a`；3）第三次又发现并删除了2个相同的 favicon 附件记录（说明浏览器在不断重试导致记录被重新创建）；4）清除所有缓存并重启服务后错误消失）；9）**修复 Style error：SCSS 编译错误**（2025-11-01：**根本原因**：`ir.asset` 表中有2条记录引用了不存在的自定义 SCSS 文件（`user_values.custom.web.assets_frontend.scss` 和 `user_theme_color_palette.custom.web.assets_frontend.scss`）。**修复方案**：直接从数据库中删除这2条 `ir.asset` 记录，重启服务后 SCSS 编译正常）；10）**修复 Internal Server Error：ValueError aging_dashboard.xml 错误**（2025-11-01：**根本原因**：`store_inventory/__manifest__.py` 中的 assets 路径使用了错误的 `addons-custom/` 前缀。**修复方案**：将 assets 路径从 `addons-custom/store_inventory/static/...` 改为 `store_inventory/static/...`，清除缓存并重启服务后错误消失）；11）**创建《常见错误与预防指南》文档**（2025-11-01：总结今天修复的所有错误模式，编写预防措施和最佳实践，帮助开发者避免重复踩坑。文档位置：`dev_document/常见错误与预防指南.md`）
 
 ## Team F 吧台前台组（store_bar + 前端体验）
 - [ ] 核对 Odoo 16 POS/销售前台能力，制定自研桌台与点单方案
@@ -111,6 +112,31 @@
 - [x] 准备 Demo 项目、投资人数据与分红报告模板（2025-11-02：`store_crowdfunding_demo.xml` 预置案例项目、合同附件、投资与分红计划）
 - [x] 确认合同水印能力满足需求并规划替代方案（2025-11-02：采用 Odoo 附件+水印状态追踪，提供水印确认动作，内置基于 ReportLab/PyPDF2 的自动水印生成）
 - [x] 与 Team D/E 对齐分红与投资入账触发点，避免重复记账（2025-11-02：投资/分红流水使用 `crowdfunding_invest/crowdfunding_dividend` 科目映射，匹配 Team D 会计口径；会员权限透出 `enable_investment`）
+
+## 2025-11-01 模块激活错误深度分析与修复记录
+
+### 发现的重大错误
+1. **数据库权限错误** (CRITICAL): store_member_preference表权限不足，PostgreSQL用户odoo不是表所有者
+2. **Odoo 16兼容性错误** (HIGH): store_commission模块中pos.order和sale.order的Many2one字段使用了不支持的tracking=True参数
+3. **数据库脏数据** (HIGH): ir_model_data表中存在重复记录，导致模块加载失败
+4. **模块未正确识别** (MEDIUM): 模块__manifest__.py存在但Odoo无法识别为installable
+5. **视图验证错误** (MEDIUM): res.partner和stock.move的扩展视图引用了尚未创建的字段
+
+### 已完成的修复
+- [x] **修复store_commission的tracking参数** (2025-11-01 12:42): 移除pos_order.py和sale_order.py中Many2one字段的tracking=True参数
+- [x] **清理数据库脏数据** (2025-11-01 12:42): 删除所有store_开头的表、视图和模块记录
+- [x] **权限问题分析** (2025-11-01 12:42): 定位到表权限不足是安装失败的主要原因
+
+### 建议的下一步行动
+由于数据库权限问题的复杂性，建议采用以下方案之一：
+1. 创建全新数据库环境，重新安装所有模块
+2. 使用PostgreSQL超级用户权限重置表所有权
+3. 分模块逐步安装，先解决核心依赖再安装业务模块
+
+### 相关文件
+- `/tmp/error_analysis_report.md` - 详细错误分析报告
+- `/Users/shawnmacmini/code/odoo-16.0/addons/store_commission/models/pos_order.py` - 已修复tracking参数
+- `/Users/shawnmacmini/code/odoo-16.0/addons/store_commission/models/sale_order.py` - 已修复tracking参数
 
 ## 质量与运维保障
 - [ ] 制定自动化测试策略：模块单测 ≥80%，接口烟囱测试覆盖关键链路

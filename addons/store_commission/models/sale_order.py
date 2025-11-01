@@ -9,7 +9,6 @@ class SaleOrder(models.Model):
         comodel_name="hr.employee",
         string="责任员工",
         required=True,
-        tracking=True,
         domain="[('company_id', 'in', [company_id, False])]",
         help="用于提成计算的责任员工，仅允许单人负责。",
     )

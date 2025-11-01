@@ -25,6 +25,16 @@
                     <button name="action_mark_free" string="设为空闲" type="object" class="oe_highlight" attrs="{'invisible': [('state', '=', 'free')]}"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            class="oe_stat_button"
+                            type="action"
+                            name="%(store_bar.action_store_bar_order)d"
+                            icon="fa-list"
+                        >
+                            <field name="order_ids" widget="statinfo" string="历史订单"/>
+                        </button>
+                    </div>
                     <group>
                         <field name="name"/>
                         <field name="company_id" groups="store_bar.group_bar_manager"/>
@@ -40,16 +50,6 @@
                         <field name="note"/>
                     </group>
                 </sheet>
-                <div class="oe_button_box" name="button_box">
-                    <button
-                        class="oe_stat_button"
-                        type="action"
-                        name="%(store_bar.action_store_bar_order)d"
-                        icon="fa-list"
-                    >
-                        <field name="order_ids" widget="statinfo" string="历史订单"/>
-                    </button>
-                </div>
                 <chatter/>
             </form>
         </field>
