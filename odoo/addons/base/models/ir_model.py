@@ -230,17 +230,23 @@ class IrModel(models.Model):
     @api.depends()
     def _view_ids(self):
         for model in self:
-            model.view_ids = self.env['ir.ui.view'].search([('model', '=', model.model)])
+            try:
+                model.view_ids = self.env['ir.ui.view'].search([('model', '=', model.model)])
+            except KeyError:
+                model.view_ids = self.env['ir.ui.view'].browse()
 
     @api.depends()
     def _compute_count(self):
         cr = self.env.cr
         self.count = 0
         for model in self:
-            records = self.env[model.model]
-            if not records._abstract and records._auto:
-                cr.execute(sql.SQL('SELECT COUNT(*) FROM {}').format(sql.Identifier(records._table)))
-                model.count = cr.fetchone()[0]
+            try:
+                records = self.env[model.model]
+                if not records._abstract and records._auto:
+                    cr.execute(sql.SQL('SELECT COUNT(*) FROM {}').format(sql.Identifier(records._table)))
+                    model.count = cr.fetchone()[0]
+            except KeyError:
+                model.count = 0
 
     @api.constrains('model')
     def _check_model_name(self):
