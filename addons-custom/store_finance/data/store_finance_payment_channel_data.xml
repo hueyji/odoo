@@ -1,0 +1,112 @@
+<odoo>
+    <data>
+        <!-- 示例会计科目 -->
+        <record id="account_store_sale_revenue" model="account.account">
+            <field name="name">门店销售收入</field>
+            <field name="code">760001</field>
+            <field name="account_type" ref="account.data_account_type_revenue"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_cash" model="account.account">
+            <field name="name">门店现金账户</field>
+            <field name="code">100810</field>
+            <field name="account_type" ref="account.data_account_type_liquidity"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_pos" model="account.account">
+            <field name="name">POS 清算账户</field>
+            <field name="code">101200</field>
+            <field name="account_type" ref="account.data_account_type_liquidity"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_wechat" model="account.account">
+            <field name="name">微信收款账户</field>
+            <field name="code">101210</field>
+            <field name="account_type" ref="account.data_account_type_liquidity"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_member_deposit" model="account.account">
+            <field name="name">会员储值负债</field>
+            <field name="code">220510</field>
+            <field name="account_type" ref="account.data_account_type_current_liabilities"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_refund_expense" model="account.account">
+            <field name="name">销售退款支出</field>
+            <field name="code">660620</field>
+            <field name="account_type" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_transfer_adjust" model="account.account">
+            <field name="name">调拨成本调整</field>
+            <field name="code">540320</field>
+            <field name="account_type" ref="account.data_account_type_direct_costs"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_crowdfunding" model="account.account">
+            <field name="name">众筹资金负债</field>
+            <field name="code">220530</field>
+            <field name="account_type" ref="account.data_account_type_current_liabilities"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_dividend_expense" model="account.account">
+            <field name="name">众筹分红支出</field>
+            <field name="code">660630</field>
+            <field name="account_type" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="account_store_write_off" model="account.account">
+            <field name="name">报损支出</field>
+            <field name="code">660640</field>
+            <field name="account_type" ref="account.data_account_type_expenses"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- 支付渠道 -->
+        <record id="finance_channel_cash" model="store.finance.payment.channel">
+            <field name="name">现金</field>
+            <field name="code">cash</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+            <field name="account_id" ref="store_finance.account_store_cash"/>
+            <field name="description">门店现场收款使用的现金渠道。</field>
+        </record>
+
+        <record id="finance_channel_pos" model="store.finance.payment.channel">
+            <field name="name">POS 刷卡</field>
+            <field name="code">pos</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+            <field name="account_id" ref="store_finance.account_store_pos"/>
+            <field name="description">银行 POS 结算渠道。</field>
+        </record>
+
+        <record id="finance_channel_wechat" model="store.finance.payment.channel">
+            <field name="name">微信支付</field>
+            <field name="code">wechat</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+            <field name="account_id" ref="store_finance.account_store_wechat"/>
+            <field name="description">品牌方统一的微信支付渠道。</field>
+        </record>
+
+        <record id="finance_channel_member_balance" model="store.finance.payment.channel">
+            <field name="name">会员储值</field>
+            <field name="code">member_balance</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+            <field name="account_id" ref="store_finance.account_store_member_deposit"/>
+            <field name="description">会员余额扣减与充值使用的内部渠道。</field>
+        </record>
+    </data>
+</odoo>
+

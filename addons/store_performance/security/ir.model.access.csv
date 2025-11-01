@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_store_performance_record_user","store_performance.record.user","model_store_performance_record","base.group_user",1,0,0,0
+"access_store_performance_record_manager","store_performance.record.manager","model_store_performance_record","base.group_system",1,1,1,1
+"access_store_performance_target_user","store_performance.target.user","model_store_performance_target","base.group_user",1,0,0,0
+"access_store_performance_target_manager","store_performance.target.manager","model_store_performance_target","base.group_system",1,1,1,1

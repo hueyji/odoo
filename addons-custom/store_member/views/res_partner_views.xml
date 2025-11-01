@@ -1,0 +1,153 @@
+<odoo>
+    <data>
+        <!-- 成员表单扩展 -->
+        <record id="view_partner_form_store_member" model="ir.ui.view">
+            <field name="name">res.partner.form.store.member</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="priority" eval="20"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/notebook" position="inside">
+                    <page string="会员信息" attrs="{'invisible': [('company_type', '=', 'company')]}">
+                        <group>
+                            <group>
+                                <field name="is_store_member"/>
+                                <field name="member_code" readonly="1"/>
+                                <field name="member_level_id"/>
+                                <field name="member_origin_company_id" groups="store_member.group_store_member_admin"/>
+                                <field name="member_total_spent" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="member_cash_balance" readonly="1"/>
+                                <field name="member_crowdfunding_balance" readonly="1"/>
+                                <field name="investor_profile"/>
+                                <field name="enable_crowdfunding"/>
+                                <field name="member_sensitive_mask"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="member_preference_ids" widget="many2many_tags" options="{'no_create': False}"/>
+                        </group>
+                        <group>
+                            <field name="member_taboo" placeholder="填写会员禁忌或特殊提醒，门户默认遮蔽敏感信息。"/>
+                        </group>
+                        <notebook colspan="4">
+                            <page string="余额账户">
+                                <field name="member_wallet_ids" context="{'default_partner_id': id}" mode="tree,form">
+                                    <tree editable="bottom">
+                                        <field name="company_id" readonly="1"/>
+                                        <field name="balance_type"/>
+                                        <field name="balance" readonly="1"/>
+                                        <field name="sharing_scope"/>
+                                        <field name="allow_negative"/>
+                                        <field name="last_transaction_date"/>
+                                    </tree>
+                                    <form string="会员余额">
+                                        <sheet>
+                                            <group>
+                                                <group>
+                                                    <field name="partner_id" readonly="1"/>
+                                                    <field name="company_id" readonly="1"/>
+                                                    <field name="balance_type"/>
+                                                    <field name="sharing_scope"/>
+                                                    <field name="allow_negative"/>
+                                                </group>
+                                                <group>
+                                                    <field name="balance" readonly="1"/>
+                                                    <field name="currency_id" readonly="1"/>
+                                                    <field name="last_transaction_date" readonly="1"/>
+                                                </group>
+                                            </group>
+                                            <group string="余额日志">
+                                                <field name="log_ids" readonly="1">
+                                                    <tree create="false" edit="false" delete="false">
+                                                        <field name="create_date"/>
+                                                        <field name="transaction_type"/>
+                                                        <field name="change_amount"/>
+                                                        <field name="balance_after"/>
+                                                        <field name="reference"/>
+                                                        <field name="note"/>
+                                                        <field name="actor_id"/>
+                                                    </tree>
+                                                </field>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="余额日志">
+                                <field name="member_balance_log_ids" create="false" edit="false" delete="false">
+                                    <tree>
+                                        <field name="create_date"/>
+                                        <field name="wallet_id"/>
+                                        <field name="transaction_type"/>
+                                        <field name="change_amount"/>
+                                        <field name="balance_after"/>
+                                        <field name="reference"/>
+                                        <field name="actor_id"/>
+                                        <field name="note"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </page>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="toggle_member_flag"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-id-badge"
+                            attrs="{'invisible': [('is_store_member', '=', True)]}"
+                            groups="store_member.group_store_member_user,store_member.group_store_member_admin">
+                        <div class="o_stat_info">
+                            <span class="o_stat_value">设为会员</span>
+                        </div>
+                    </button>
+                    <button name="toggle_member_flag"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-times-circle"
+                            attrs="{'invisible': [('is_store_member', '=', False)]}"
+                            groups="store_member.group_store_member_user,store_member.group_store_member_admin">
+                        <div class="o_stat_info">
+                            <span class="o_stat_value">取消会员</span>
+                        </div>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- 列表视图扩展 -->
+        <record id="view_partner_tree_store_member" model="ir.ui.view">
+            <field name="name">res.partner.tree.store.member</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='email']" position="after">
+                    <field name="is_store_member"/>
+                    <field name="member_level_id"/>
+                    <field name="member_cash_balance"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- 搜索视图扩展 -->
+        <record id="view_partner_filter_store_member" model="ir.ui.view">
+            <field name="name">res.partner.search.store.member</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="is_store_member"
+                            string="会员"
+                            domain="[('is_store_member', '=', True)]"/>
+                </xpath>
+                <xpath expr="//group[@name='group_by']" position="inside">
+                    <filter name="group_member_level"
+                            string="按会员等级"
+                            context="{'group_by': 'member_level_id'}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

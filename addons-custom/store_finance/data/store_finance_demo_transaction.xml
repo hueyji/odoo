@@ -1,0 +1,36 @@
+<odoo>
+    <data>
+        <record id="demo_transaction_sale_cash" model="store.account.transaction">
+            <field name="date">2025-11-01 18:30:00</field>
+            <field name="transaction_type">sale</field>
+            <field name="amount">1280.00</field>
+            <field name="currency_id" eval="ref('base.main_company').currency_id.id"/>
+            <field name="payment_channel_id" ref="store_finance.finance_channel_cash"/>
+            <field name="state">confirmed</field>
+            <field name="description">旗舰门店包间消费，含威士忌套餐。</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="demo_transaction_member_recharge" model="store.account.transaction">
+            <field name="date">2025-11-02 09:15:00</field>
+            <field name="transaction_type">recharge</field>
+            <field name="amount">3000.00</field>
+            <field name="currency_id" eval="ref('base.main_company').currency_id.id"/>
+            <field name="payment_channel_id" ref="store_finance.finance_channel_pos"/>
+            <field name="state">confirmed</field>
+            <field name="description">会员储值充值，门店 POS 刷卡。</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="demo_transaction_transfer_adjust" model="store.account.transaction">
+            <field name="date">2025-11-03 21:05:00</field>
+            <field name="transaction_type">transfer_adjust</field>
+            <field name="amount">-260.00</field>
+            <field name="currency_id" eval="ref('base.main_company').currency_id.id"/>
+            <field name="payment_channel_id" ref="store_finance.finance_channel_member_balance"/>
+            <field name="state">confirmed</field>
+            <field name="description">互通门店调拨成本补差。</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

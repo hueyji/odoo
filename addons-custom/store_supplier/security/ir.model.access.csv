@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+store_supplier_user,store_supplier_user,model_store_supplier,store_supplier.group_store_supplier_user,1,0,0,0
+store_supplier_manager,store_supplier_manager,model_store_supplier,store_supplier.group_store_supplier_manager,1,1,1,1
+store_supplier_report_user,store_supplier_report_user,model_store_supplier_purchase_report,store_supplier.group_store_supplier_user,1,0,0,0
+store_supplier_report_manager,store_supplier_report_manager,model_store_supplier_purchase_report,store_supplier.group_store_supplier_manager,1,0,0,0

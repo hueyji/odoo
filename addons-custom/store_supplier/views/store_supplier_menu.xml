@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem
+            id="menu_store_supplier_root"
+            name="供应商管理"
+            parent="store_inventory.menu_store_inventory_root"
+            groups="store_supplier.group_store_supplier_user"
+            sequence="30"
+        />
+
+        <menuitem
+            id="menu_store_supplier_profile"
+            name="供应商档案"
+            parent="store_supplier.menu_store_supplier_root"
+            action="store_supplier.action_store_supplier_tree"
+            sequence="10"
+            groups="store_supplier.group_store_supplier_user"
+        />
+
+        <menuitem
+            id="menu_store_supplier_report"
+            name="采购历史报表"
+            parent="store_supplier.menu_store_supplier_root"
+            action="store_supplier.action_store_supplier_report"
+            sequence="20"
+            groups="store_supplier.group_store_supplier_user"
+        />
+
+        <menuitem
+            id="menu_store_supplier_blacklist"
+            name="黑名单"
+            parent="store_supplier.menu_store_supplier_root"
+            action="store_supplier.action_store_supplier_blacklist"
+            sequence="30"
+            groups="store_supplier.group_store_supplier_user"
+        />
+    </data>
+</odoo>

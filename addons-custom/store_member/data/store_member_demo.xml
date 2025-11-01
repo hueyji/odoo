@@ -1,0 +1,112 @@
+<odoo>
+    <data>
+        <!-- Demo Members -->
+        <record id="partner_member_chenyating" model="res.partner">
+            <field name="name">陈雅婷</field>
+            <field name="phone">13800000001</field>
+            <field name="email">chenyating@example.com</field>
+            <field name="company_type">person</field>
+            <field name="is_store_member">True</field>
+            <field name="member_code">HY24010001</field>
+            <field name="member_level_id" ref="store_member.level_gold"/>
+            <field name="member_origin_company_id" ref="base.main_company"/>
+            <field name="member_preference_ids" eval="[(6, 0, [ref('store_member.preference_single_malt'), ref('store_member.preference_crowdfunding')])]"/>
+            <field name="investor_profile">balanced</field>
+            <field name="enable_crowdfunding">True</field>
+            <field name="member_taboo">忌食辛辣，偏好中等酒体。</field>
+            <field name="member_total_spent">15000</field>
+        </record>
+
+        <record id="partner_member_liguang" model="res.partner">
+            <field name="name">李光</field>
+            <field name="phone">13900000002</field>
+            <field name="email">liguang@example.com</field>
+            <field name="company_type">person</field>
+            <field name="is_store_member">True</field>
+            <field name="member_code">HY24010002</field>
+            <field name="member_level_id" ref="store_member.level_bronze"/>
+            <field name="member_origin_company_id" ref="base.main_company"/>
+            <field name="member_preference_ids" eval="[(6, 0, [ref('store_member.preference_cigar_mild')])]"/>
+            <field name="investor_profile">conservative</field>
+            <field name="enable_crowdfunding">False</field>
+            <field name="member_taboo">对烟熏味敏感，请先确认口味。</field>
+            <field name="member_total_spent">3500</field>
+        </record>
+
+        <!-- Demo Wallets -->
+        <record id="wallet_chenyating_cash" model="store.member.wallet">
+            <field name="partner_id" ref="store_member.partner_member_chenyating"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="balance_type">cash</field>
+            <field name="balance">2800</field>
+            <field name="sharing_scope">link_group</field>
+            <field name="allow_negative">False</field>
+            <field name="last_transaction_date">2025-01-12 20:30:00</field>
+        </record>
+
+        <record id="wallet_chenyating_crowdfunding" model="store.member.wallet">
+            <field name="partner_id" ref="store_member.partner_member_chenyating"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="balance_type">crowdfunding</field>
+            <field name="balance">4500</field>
+            <field name="sharing_scope">brand</field>
+            <field name="allow_negative">False</field>
+            <field name="last_transaction_date">2025-01-10 15:30:00</field>
+        </record>
+
+        <record id="wallet_liguang_cash" model="store.member.wallet">
+            <field name="partner_id" ref="store_member.partner_member_liguang"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="balance_type">cash</field>
+            <field name="balance">560</field>
+            <field name="sharing_scope">store_only</field>
+            <field name="allow_negative">True</field>
+            <field name="last_transaction_date">2025-01-08 19:45:00</field>
+        </record>
+
+        <!-- Demo Logs -->
+        <record id="balance_log_chenyating_recharge" model="store.member.balance.log">
+            <field name="wallet_id" ref="store_member.wallet_chenyating_cash"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="change_amount">3000</field>
+            <field name="balance_after">3000</field>
+            <field name="transaction_type">recharge</field>
+            <field name="reference">FNB20250112001</field>
+            <field name="note">品牌充值活动，赠送 20% 储值金。</field>
+            <field name="actor_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="balance_log_chenyating_consume" model="store.member.balance.log">
+            <field name="wallet_id" ref="store_member.wallet_chenyating_cash"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="change_amount">-200</field>
+            <field name="balance_after">2800</field>
+            <field name="transaction_type">consume</field>
+            <field name="reference">ORDER-20250112-001</field>
+            <field name="note">门店消费：桌台 A3。</field>
+            <field name="actor_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="balance_log_liguang_recharge" model="store.member.balance.log">
+            <field name="wallet_id" ref="store_member.wallet_liguang_cash"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="change_amount">1000</field>
+            <field name="balance_after">1000</field>
+            <field name="transaction_type">recharge</field>
+            <field name="reference">FNB20250108002</field>
+            <field name="note">门店小程序充值。</field>
+            <field name="actor_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="balance_log_liguang_consume" model="store.member.balance.log">
+            <field name="wallet_id" ref="store_member.wallet_liguang_cash"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="change_amount">-440</field>
+            <field name="balance_after">560</field>
+            <field name="transaction_type">consume</field>
+            <field name="reference">ORDER-20250108-003</field>
+            <field name="note">雪茄消费及调酒服务。</field>
+            <field name="actor_id" ref="base.user_admin"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="store_inventory_supplier_havana" model="res.partner">
+            <field name="name">哈瓦那雪茄供应商</field>
+            <field name="company_type">company</field>
+            <field name="is_company">True</field>
+            <field name="category_id" eval="[(4, ref('base.res_partner_category_supplier'))]"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="store_inventory_supplier_branch" model="res.partner">
+            <field name="name">湾区精品酒类供应</field>
+            <field name="company_type">company</field>
+            <field name="is_company">True</field>
+            <field name="category_id" eval="[(4, ref('base.res_partner_category_supplier'))]"/>
+            <field name="company_id" ref="store_inventory.store_inventory_company_branch"/>
+            <field name="phone">+1 202 889 9523</field>
+            <field name="email">service@bayarea-supply.com</field>
+        </record>
+
+        <record id="product_template_cigar_robusto" model="product.template">
+            <field name="name">雪茄 - 罗布图</field>
+            <field name="type">product</field>
+            <field name="list_price">280</field>
+            <field name="standard_price">180</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">True</field>
+            <field name="tracking">serial</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="product_product_cigar_robusto" model="product.product">
+            <field name="product_tmpl_id" ref="store_inventory.product_template_cigar_robusto"/>
+            <field name="default_code">CIGAR-R001</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="product_template_whisky_batch" model="product.template">
+            <field name="name">威士忌桶装陈化</field>
+            <field name="type">product</field>
+            <field name="list_price">680</field>
+            <field name="standard_price">420</field>
+            <field name="uom_id" ref="uom.product_uom_litre"/>
+            <field name="uom_po_id" ref="uom.product_uom_litre"/>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="sale_ok">True</field>
+            <field name="purchase_ok">True</field>
+            <field name="tracking">lot</field>
+            <field name="company_id" ref="store_inventory.store_inventory_company_branch"/>
+        </record>
+
+        <record id="product_product_whisky_batch" model="product.product">
+            <field name="product_tmpl_id" ref="store_inventory.product_template_whisky_batch"/>
+            <field name="default_code">WHISKY-B001</field>
+            <field name="company_id" ref="store_inventory.store_inventory_company_branch"/>
+        </record>
+
+        <record id="store_inventory_batch_demo_01" model="store.inventory.batch">
+            <field name="product_id" ref="store_inventory.product_product_cigar_robusto"/>
+            <field name="product_uom_id" ref="uom.product_uom_unit"/>
+            <field name="supplier_id" ref="store_inventory.store_inventory_supplier_havana"/>
+            <field name="purchase_price">190</field>
+            <field name="qty_initial">120</field>
+            <field name="aging_start_date">2024-09-01</field>
+            <field name="warehouse_id" ref="stock.warehouse0"/>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="state">in_stock</field>
+            <field name="best_before_date">2025-06-30</field>
+            <field name="note">首批陈化雪茄，适合高端品鉴活动。</field>
+        </record>
+
+        <record id="store_inventory_quant_demo_01" model="stock.quant">
+            <field name="product_id" ref="store_inventory.product_product_cigar_robusto"/>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+            <field name="quantity">110</field>
+            <field name="reserved_quantity">10</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="store_batch_id" ref="store_inventory.store_inventory_batch_demo_01"/>
+        </record>
+
+        <record id="store_inventory_batch_demo_branch" model="store.inventory.batch">
+            <field name="product_id" ref="store_inventory.product_product_whisky_batch"/>
+            <field name="product_uom_id" ref="uom.product_uom_litre"/>
+            <field name="supplier_id" ref="store_inventory.store_inventory_supplier_branch"/>
+            <field name="purchase_price">450</field>
+            <field name="qty_initial">300</field>
+            <field name="aging_start_date">2024-08-15</field>
+            <field name="warehouse_id" ref="store_inventory.store_inventory_branch_warehouse"/>
+            <field name="company_id" ref="store_inventory.store_inventory_company_branch"/>
+            <field name="state">in_stock</field>
+            <field name="note">湾区分店专用威士忌批次，需维持 120 天陈化。</field>
+        </record>
+
+        <record id="store_inventory_quant_demo_branch" model="stock.quant">
+            <field name="product_id" ref="store_inventory.product_product_whisky_batch"/>
+            <field name="location_id" eval="env.ref('store_inventory.store_inventory_branch_warehouse').lot_stock_id.id"/>
+            <field name="quantity">260</field>
+            <field name="reserved_quantity">20</field>
+            <field name="company_id" ref="store_inventory.store_inventory_company_branch"/>
+            <field name="store_batch_id" ref="store_inventory.store_inventory_batch_demo_branch"/>
+        </record>
+    </data>
+</odoo>

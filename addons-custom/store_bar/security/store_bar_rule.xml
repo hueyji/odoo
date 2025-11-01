@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="rule_store_bar_table_company" model="ir.rule">
+        <field name="name">吧台桌台公司隔离</field>
+        <field name="model_id" ref="model_store_bar_table"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('store_bar.group_bar_user'))]"/>
+    </record>
+
+    <record id="rule_store_bar_order_company" model="ir.rule">
+        <field name="name">吧台订单公司隔离</field>
+        <field name="model_id" ref="model_store_bar_order"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('store_bar.group_bar_user'))]"/>
+    </record>
+
+    <record id="rule_store_bar_order_line_company" model="ir.rule">
+        <field name="name">吧台订单明细公司隔离</field>
+        <field name="model_id" ref="model_store_bar_order_line"/>
+        <field name="domain_force">['|', ('order_id.company_id', '=', False), ('order_id.company_id', 'in', user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('store_bar.group_bar_user'))]"/>
+    </record>
+
+    <record id="rule_store_combo_company" model="ir.rule">
+        <field name="name">套餐公司隔离</field>
+        <field name="model_id" ref="model_store_combo"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('store_bar.group_bar_user'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,131 @@
+<odoo>
+    <template id="portal_my_home_membership" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[contains(@class,'o_portal_my_home')]" position="inside">
+            <t t-set="portal_partner" t-value="user.partner_id"/>
+            <t t-if="portal_partner.is_store_member">
+                <div class="row my-3">
+                    <div class="col-lg-4 col-md-6 mb-3">
+                        <div class="o_portal_box text-center h-100">
+                            <span class="o_portal_box_icon fa fa-id-card" aria-hidden="true"/>
+                            <h4 class="mt-2">我的会员权益</h4>
+                            <p class="mb-1">
+                                等级：
+                                <strong><t t-esc="portal_partner.member_level_id.name or '普通会员'"/></strong>
+                            </p>
+                            <p class="mb-1">
+                                储值余额：
+                                <strong>
+                                    <span t-esc="portal_partner.member_cash_balance or 0.0"
+                                          t-options='{"widget": "monetary", "display_currency": portal_partner.member_currency_id}'/>
+                                </strong>
+                            </p>
+                            <p class="mb-3">
+                                众筹收益：
+                                <strong>
+                                    <span t-esc="portal_partner.member_crowdfunding_balance or 0.0"
+                                          t-options='{"widget": "monetary", "display_currency": portal_partner.member_currency_id}'/>
+                                </strong>
+                            </p>
+                            <a class="btn btn-primary" href="/my/membership">进入会员中心</a>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="portal_my_membership">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value='[("会员中心", "/my/membership")]'/>
+            <div class="o_portal_wrap">
+                <div class="o_portal_my_home">
+                    <h2 class="mb-3">会员中心</h2>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">会员信息</h5>
+                                    <p class="card-text">
+                                        <strong>姓名：</strong>
+                                        <t t-esc="partner.name"/>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>会员编号：</strong>
+                                        <t t-esc="partner.member_code or '未生成'"/>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>会员等级：</strong>
+                                        <t t-esc="partner.member_level_id.name or '普通会员'"/>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>来源门店：</strong>
+                                        <t t-esc="partner.member_origin_company_id.name or '未记录'"/>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>偏好标签：</strong>
+                                        <t t-if="partner.member_preference_ids">
+                                            <t t-foreach="partner.member_preference_ids" t-as="pref">
+                                                <span class="badge bg-secondary me-1" t-esc="pref.name"/>
+                                            </t>
+                                        </t>
+                                        <t t-else="">暂无偏好</t>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>投资权限：</strong>
+                                        <t t-esc="partner.enable_crowdfunding and '可参与众筹' or '仅限消费'"/>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong>敏感提醒：</strong>
+                                        <t t-esc="member_taboo_masked or '无'"/>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">余额与账户</h5>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>类型</th>
+                                                <th class="text-end">余额</th>
+                                                <th>共享范围</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="member_wallets">
+                                                <t t-foreach="member_wallets" t-as="wallet">
+                                                    <tr>
+                                                        <td><t t-esc="wallet['balance_type_label']"/></td>
+                                                        <td class="text-end">
+                                                            <span t-esc="wallet['balance']"
+                                                                  t-options='{"widget": "monetary", "display_currency": wallet["currency"]}'/>
+                                                        </td>
+                                                        <td><t t-esc="wallet['sharing_scope_label']"/></td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <tr>
+                                                    <td colspan="3" class="text-center text-muted">暂无余额账户</td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                    <p class="text-muted small mb-0">
+                                        若需跨店使用储值，请联系所属品牌或互通组管理员授权。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <strong>温馨提示：</strong>
+                        门店及品牌方会根据互通权限展示余额与消费数据。如需修改手机号或开通额外权限，请致电门店店长办理。
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_store_crowdfunding_project_tree" model="ir.ui.view">
+            <field name="name">store.crowdfunding.project.tree</field>
+            <field name="model">store.crowdfunding.project</field>
+            <field name="arch" type="xml">
+                <tree string="众筹项目">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="goal_amount"/>
+                    <field name="total_invest_amount"/>
+                    <field name="investor_count"/>
+                    <field name="progress_rate" widget="percentpie"/>
+                    <field name="fundraising_deadline"/>
+                    <field name="total_dividend_amount"/>
+                    <field name="dividend_paid_count"/>
+                    <field name="last_dividend_date"/>
+                    <field name="state"/>
+                    <field name="portal_published"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_crowdfunding_project_form" model="ir.ui.view">
+            <field name="name">store.crowdfunding.project.form</field>
+            <field name="model">store.crowdfunding.project</field>
+            <field name="arch" type="xml">
+                <form string="众筹项目" class="o_store_crowdfunding_project">
+                    <header>
+                        <button name="action_submit_for_approval" string="提交审核" type="object"
+                                class="btn-primary"
+                                attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'rejected']), ('contract_watermark_status', '!=', 'ready')]}"/>
+                        <button name="action_approve" string="审核通过" type="object"
+                                class="btn-success"
+                                attrs="{'invisible': [('state', '!=', 'to_approve')]}"/>
+                        <button name="action_reject" string="驳回" type="object"
+                                class="btn-secondary"
+                                attrs="{'invisible': [('state', 'not in', ['to_approve', 'fundraising', 'in_progress'])]}"/>
+                        <button name="action_start_execution" string="开始执行" type="object"
+                                class="btn-info"
+                                attrs="{'invisible': [('state', '!=', 'fundraising')]}"/>
+                        <button name="action_close" string="结项" type="object"
+                                class="btn-secondary"
+                                attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                        <button name="action_mark_watermark_ready" string="标记水印已确认" type="object"
+                                attrs="{'invisible': [('contract_watermark_status', '=', 'ready')]}"/>
+                        <button name="action_generate_watermark" string="自动生成水印" type="object"
+                                class="btn-secondary"
+                                attrs="{'invisible': ['|', ('watermark_method', '=', 'manual'), ('contract_watermark_status', '=', 'ready')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,to_approve,fundraising,in_progress,closed,rejected"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="action" name="%(action_store_crowdfunding_investments)d"
+                                    icon="fa-money">
+                                <span class="o_stat_text">投资记录</span>
+                                <span class="o_stat_value">
+                                    <field name="investor_count"/>
+                                </span>
+                            </button>
+                            <button class="oe_stat_button" type="action" name="%(action_store_crowdfunding_dividends)d"
+                                    icon="fa-gift">
+                                <span class="o_stat_text">分红计划</span>
+                                <span class="o_stat_value">
+                                    <field name="dividend_paid_count"/>
+                                </span>
+                            </button>
+                            <button class="oe_stat_button" type="action" name="%(action_store_crowdfunding_dividends)d"
+                                    icon="fa-cny">
+                                <span class="o_stat_text">累计分红</span>
+                                <span class="o_stat_value">
+                                    <field name="total_dividend_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </span>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="company_id"/>
+                                <field name="applicant_id" readonly="1"/>
+                                <field name="approval_user_id" readonly="1"/>
+                                <field name="goal_amount"/>
+                                <field name="minimum_amount"/>
+                                <field name="watermark_method"/>
+                                <field name="portal_published"/>
+                            </group>
+                            <group>
+                                <field name="fundraising_start_date"/>
+                                <field name="fundraising_deadline"/>
+                                <field name="execution_start_date" readonly="1"/>
+                                <field name="closed_date" readonly="1"/>
+                                <field name="total_invest_amount" readonly="1"/>
+                                <field name="progress_rate" widget="progressbar" readonly="1"/>
+                                <field name="investor_count" readonly="1"/>
+                                <field name="total_dividend_amount" readonly="1"/>
+                                <field name="dividend_paid_count" readonly="1"/>
+                                <field name="last_dividend_date" readonly="1"/>
+                                <field name="contract_watermark_status"/>
+                                <field name="watermark_generated_at" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="概述">
+                                <group>
+                                    <field name="summary" widget="text"/>
+                                    <field name="investor_highlight" widget="text"/>
+                                    <field name="location"/>
+                                </group>
+                            </page>
+                            <page string="分红规则">
+                                <field name="dividend_rule" widget="html"/>
+                            </page>
+                            <page string="合同附件">
+                                <field name="contract_attachment_ids" widget="many2many_binary" options="{'create': True, 'no_open': False}"/>
+                            </page>
+                            <page string="投资记录">
+                                <field name="investment_ids" context="{'default_project_id': active_id}">
+                                    <tree string="投资记录" editable="bottom">
+                                        <field name="name" readonly="1"/>
+                                        <field name="partner_id"/>
+                                        <field name="amount"/>
+                                        <field name="state" readonly="1"/>
+                                        <field name="confirm_date" readonly="1"/>
+                                        <field name="account_transaction_id" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="分红计划">
+                                <field name="dividend_plan_ids" context="{'default_project_id': active_id}">
+                                    <tree string="分红计划" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="planned_date"/>
+                                        <field name="amount"/>
+                                        <field name="state" readonly="1"/>
+                                        <field name="paid_date" readonly="1"/>
+                                        <field name="account_transaction_id" readonly="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_store_crowdfunding_projects" model="ir.actions.act_window">
+            <field name="name">众筹项目</field>
+            <field name="res_model">store.crowdfunding.project</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    创建众筹项目，上传合同并提交品牌审核。
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="store_commission_demo_employee_bartender" model="hr.employee">
+        <field name="name">演示调酒师</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="store_commission_demo_product_template" model="product.template">
+        <field name="name">演示雪茄（提成示例）</field>
+        <field name="type">consu</field>
+        <field name="list_price">260.0</field>
+        <field name="standard_price">120.0</field>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+    </record>
+
+    <record id="store_commission_demo_product_variant" model="product.product">
+        <field name="product_tmpl_id" ref="store_commission_demo_product_template"/>
+    </record>
+
+    <record id="store_commission_rule_basic" model="store.commission.rule">
+        <field name="name">单品销售提成（演示）</field>
+        <field name="code">DEMO-SP-001</field>
+        <field name="rule_type">product</field>
+        <field name="rate_type">percent</field>
+        <field name="rate_value">5.0</field>
+        <field name="period_type">monthly</field>
+        <field name="applicable_employee_ids" eval="[(4, ref('store_commission_demo_employee_bartender'))]"/>
+        <field name="target_product_ids" eval="[(4, ref('store_commission_demo_product_variant'))]"/>
+        <field name="state">active</field>
+    </record>
+
+    <record id="store_commission_demo_sale_order" model="sale.order">
+        <field name="name">SO/演示001</field>
+        <field name="partner_id" ref="base.res_partner_3"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="commission_employee_id" ref="store_commission_demo_employee_bartender"/>
+        <field name="state">sale</field>
+        <field name="date_order">2024-12-15 10:00:00</field>
+        <field name="pricelist_id" ref="product.list0"/>
+    </record>
+
+    <record id="store_commission_demo_sale_order_line" model="sale.order.line">
+        <field name="order_id" ref="store_commission_demo_sale_order"/>
+        <field name="name">演示雪茄提成</field>
+        <field name="product_id" ref="store_commission_demo_product_variant"/>
+        <field name="product_uom_qty">5</field>
+        <field name="price_unit">260</field>
+        <field name="tax_id" eval="[(6, 0, [])]"/>
+    </record>
+
+    <record id="store_commission_demo_log_sale" model="store.commission.log">
+        <field name="order_type">sale</field>
+        <field name="sale_order_id" ref="store_commission_demo_sale_order"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="employee_id" ref="store_commission_demo_employee_bartender"/>
+        <field name="rule_id" ref="store_commission_rule_basic"/>
+        <field name="amount">65.0</field>
+        <field name="base_amount">1300.0</field>
+        <field name="quantity">5</field>
+        <field name="state">pending</field>
+        <field name="trigger_type">order_confirm</field>
+        <field name="order_name">SO/演示001</field>
+    </record>
+
+    <record id="store_commission_log_demo_recharge" model="store.commission.log">
+        <field name="order_type">recharge</field>
+        <field name="employee_id" ref="store_commission_demo_employee_bartender"/>
+        <field name="rule_id" ref="store_commission_rule_basic"/>
+        <field name="amount">120.00</field>
+    </record>
+</odoo>

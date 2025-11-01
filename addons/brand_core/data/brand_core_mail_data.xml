@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mt_link_group" model="mail.message.subtype">
+        <field name="name">互通审批更新</field>
+        <field name="res_model">store.link.group</field>
+        <field name="default" eval="False"/>
+        <field name="description">门店互通审批流程相关消息</field>
+    </record>
+
+    <record id="mail_activity_brand_approval" model="mail.activity.type">
+        <field name="name">互通审批</field>
+        <field name="category">default</field>
+        <field name="res_model">store.link.group</field>
+        <field name="icon">fa-check-circle</field>
+        <field name="summary">互通审批提醒</field>
+    </record>
+</odoo>

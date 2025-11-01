@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_store_performance_record_tree" model="ir.ui.view">
+        <field name="name">store.performance.record.tree</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="achievement_rate &gt;= 100" decoration-warning="achievement_rate &gt;= 70 and achievement_rate &lt; 100">
+                <field name="name" string="周期"/>
+                <field name="employee_id"/>
+                <field name="company_id"/>
+                <field name="period_type"/>
+                <field name="period_start"/>
+                <field name="period_end"/>
+                <field name="confirmed_sales_amount"/>
+                <field name="confirmed_commission_amount"/>
+                <field name="pending_sales_amount"/>
+                <field name="pending_commission_amount"/>
+                <field name="target_amount"/>
+                <field name="achievement_rate"/>
+                <field name="last_update"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_store_performance_record_form" model="ir.ui.view">
+        <field name="name">store.performance.record.form</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <form string="业绩详情">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="company_id"/>
+                            <field name="period_type"/>
+                            <field name="period_start"/>
+                            <field name="period_end" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="confirmed_sales_amount" readonly="1"/>
+                            <field name="confirmed_commission_amount" readonly="1"/>
+                            <field name="pending_sales_amount" readonly="1"/>
+                            <field name="pending_commission_amount" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="target_amount" readonly="1"/>
+                            <field name="achievement_rate" readonly="1"/>
+                            <field name="last_update" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_store_performance_record_kanban" model="ir.ui.view">
+        <field name="name">store.performance.record.kanban</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="period_type">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="confirmed_sales_amount"/>
+                <field name="confirmed_commission_amount"/>
+                <field name="pending_sales_amount"/>
+                <field name="pending_commission_amount"/>
+                <field name="target_amount"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_head">
+                                <strong t-esc="record.employee_id.raw_value"/>
+                                <span class="o_stat_value">&nbsp;</span>
+                            </div>
+                            <div>
+                                <div>
+                                    <span>确认销售：</span>
+                                    <strong t-esc="record.confirmed_sales_amount.raw_value"/>
+                                </div>
+                                <div>
+                                    <span>确认提成：</span>
+                                    <strong t-esc="record.confirmed_commission_amount.raw_value"/>
+                                </div>
+                                <div>
+                                    <span>目标：</span>
+                                    <strong t-esc="record.target_amount.raw_value"/>
+                                </div>
+                                <div>
+                                    <span>达成率：</span>
+                                    <strong t-esc="record.achievement_rate.raw_value"/>%
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_store_performance_record_search" model="ir.ui.view">
+        <field name="name">store.performance.record.search</field>
+        <field name="model">store.performance.record</field>
+        <field name="arch" type="xml">
+            <search string="业绩搜索">
+                <field name="employee_id"/>
+                <field name="company_id"/>
+                <field name="period_type"/>
+                <filter string="仅显示月度" name="filter_monthly" domain="[('period_type', '=', 'monthly')]"/>
+                <filter string="仅显示日报" name="filter_daily" domain="[('period_type', '=', 'daily')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_store_performance_record" model="ir.actions.act_window">
+        <field name="name">个人业绩看板</field>
+        <field name="res_model">store.performance.record</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

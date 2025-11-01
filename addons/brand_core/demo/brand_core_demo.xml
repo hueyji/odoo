@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 公司结构 -->
+    <record id="company_brand_hq" model="res.company">
+        <field name="name">雪茄威士忌品牌总部</field>
+        <field name="street">上海市黄浦区外滩路 18 号</field>
+        <field name="phone">021-50008888</field>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <record id="company_store_bund" model="res.company">
+        <field name="name">上海外滩旗舰门店</field>
+        <field name="street">上海市黄浦区中山东一路 99 号</field>
+        <field name="phone">021-50009999</field>
+        <field name="parent_id" ref="brand_core.company_brand_hq"/>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <record id="company_store_jingan" model="res.company">
+        <field name="name">上海静安庭院门店</field>
+        <field name="street">上海市静安区延平路 66 号</field>
+        <field name="phone">021-50007777</field>
+        <field name="parent_id" ref="brand_core.company_brand_hq"/>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <record id="company_investor_virtual" model="res.company">
+        <field name="name">品牌投资人虚拟公司</field>
+        <field name="parent_id" ref="brand_core.company_brand_hq"/>
+        <field name="currency_id" ref="base.CNY"/>
+    </record>
+
+    <!-- 人员 -->
+    <record id="partner_brand_admin" model="res.partner">
+        <field name="name">品牌总部管理员</field>
+        <field name="email">admin@brand-suite.cn</field>
+        <field name="phone">021-50008801</field>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+    </record>
+
+    <record id="partner_portal_manager" model="res.partner">
+        <field name="name">互通门户经理</field>
+        <field name="email">portal@brand-suite.cn</field>
+        <field name="phone">021-50008802</field>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+    </record>
+
+    <record id="partner_store_owner" model="res.partner">
+        <field name="name">静安门店老板</field>
+        <field name="email">owner@brand-suite.cn</field>
+        <field name="phone">021-50007701</field>
+        <field name="company_id" ref="brand_core.company_store_jingan"/>
+    </record>
+
+    <record id="user_brand_admin" model="res.users">
+        <field name="name">品牌总部管理员</field>
+        <field name="login">brand_admin</field>
+        <field name="password">brand_admin</field>
+        <field name="lang">zh_CN</field>
+        <field name="email">admin@brand-suite.cn</field>
+        <field name="partner_id" ref="brand_core.partner_brand_admin"/>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+        <field name="company_ids" eval="[(6, 0, [ref('brand_core.company_brand_hq'), ref('brand_core.company_store_bund'), ref('brand_core.company_store_jingan')])]" />
+        <field name="groups_id" eval="[(6, 0, [ref('brand_core.group_brand_platform_admin')]) ]" />
+    </record>
+
+    <record id="user_portal_manager" model="res.users">
+        <field name="name">互通门户经理</field>
+        <field name="login">portal_manager</field>
+        <field name="password">portal_manager</field>
+        <field name="lang">zh_CN</field>
+        <field name="email">portal@brand-suite.cn</field>
+        <field name="partner_id" ref="brand_core.partner_portal_manager"/>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+        <field name="company_ids" eval="[(6, 0, [ref('brand_core.company_brand_hq'), ref('brand_core.company_store_bund')])]" />
+        <field name="groups_id" eval="[(6, 0, [ref('brand_core.group_brand_portal_manager')]) ]" />
+    </record>
+
+    <record id="user_store_owner" model="res.users">
+        <field name="name">静安门店老板</field>
+        <field name="login">store_owner</field>
+        <field name="password">store_owner</field>
+        <field name="lang">zh_CN</field>
+        <field name="email">owner@brand-suite.cn</field>
+        <field name="partner_id" ref="brand_core.partner_store_owner"/>
+        <field name="company_id" ref="brand_core.company_store_jingan"/>
+        <field name="company_ids" eval="[(6, 0, [ref('brand_core.company_store_jingan'), ref('brand_core.company_brand_hq')])]" />
+        <field name="groups_id" eval="[(6, 0, [ref('brand_core.group_brand_portal_manager')]) ]" />
+    </record>
+
+    <!-- 陈化仓 -->
+    <record id="cellar_brand_hq" model="brand.core.cellar">
+        <field name="name">品牌总部陈化仓</field>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+        <field name="manager_id" ref="brand_core.user_brand_admin"/>
+        <field name="temperature_target">18.0</field>
+        <field name="humidity_target">68.0</field>
+        <field name="note">品牌总部样品存储仓，演示互通配置。</field>
+    </record>
+
+    <record id="cellar_store_jingan" model="brand.core.cellar">
+        <field name="name">静安门店地下陈化仓</field>
+        <field name="company_id" ref="brand_core.company_store_jingan"/>
+        <field name="manager_id" ref="brand_core.user_store_owner"/>
+        <field name="temperature_target">19.5</field>
+        <field name="humidity_target">70.0</field>
+        <field name="note">静安门店陈化仓，展示跨店互通示例。</field>
+    </record>
+
+    <!-- 互通组 -->
+    <record id="link_group_demo" model="store.link.group">
+        <field name="name">品牌示例互通组</field>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+        <field name="owner_id" ref="brand_core.user_brand_admin"/>
+        <field name="share_inventory">True</field>
+        <field name="share_member">True</field>
+        <field name="share_finance">True</field>
+        <field name="state">active</field>
+        <field name="member_company_ids" eval="[(6, 0, [ref('brand_core.company_brand_hq'), ref('brand_core.company_store_bund'), ref('brand_core.company_store_jingan')])]" />
+    </record>
+
+    <record id="link_group_demo_application" model="store.link.group.application">
+        <field name="name">品牌示例互通组申请</field>
+        <field name="group_id" ref="brand_core.link_group_demo"/>
+        <field name="company_id" ref="brand_core.company_brand_hq"/>
+        <field name="request_company_id" ref="brand_core.company_store_jingan"/>
+        <field name="requested_member_ids" eval="[(6, 0, [ref('brand_core.company_store_bund'), ref('brand_core.company_store_jingan')])]" />
+        <field name="share_inventory">True</field>
+        <field name="share_member">True</field>
+        <field name="share_finance">True</field>
+        <field name="state">approved</field>
+        <field name="approver_id" ref="brand_core.user_brand_admin"/>
+        <field name="approved_date">2025-11-02 08:00:00</field>
+    </record>
+</odoo>

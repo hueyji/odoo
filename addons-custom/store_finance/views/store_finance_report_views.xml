@@ -1,0 +1,41 @@
+<odoo>
+    <data>
+        <record id="view_store_account_transaction_pivot" model="ir.ui.view">
+            <field name="name">store.account.transaction.pivot</field>
+            <field name="model">store.account.transaction</field>
+            <field name="arch" type="xml">
+                <pivot string="财务汇总" default_order="date desc">
+                    <field name="amount_company_currency" type="measure"/>
+                    <field name="amount" type="measure"/>
+                    <field name="transaction_type" type="row"/>
+                    <field name="payment_channel_id" type="col"/>
+                    <field name="date" interval="day" type="col"/>
+                    <field name="date" interval="week" type="col"/>
+                    <field name="date" interval="month" type="col"/>
+                    <field name="company_id" type="row" groups="base.group_multi_company"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="view_store_account_transaction_graph" model="ir.ui.view">
+            <field name="name">store.account.transaction.graph</field>
+            <field name="model">store.account.transaction</field>
+            <field name="arch" type="xml">
+                <graph string="财务趋势" type="bar">
+                    <field name="date" type="row" interval="day"/>
+                    <field name="amount_company_currency" type="measure"/>
+                    <field name="transaction_type" type="col"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="action_store_finance_dashboard" model="ir.actions.act_window">
+            <field name="name">财务仪表盘</field>
+            <field name="res_model">store.account.transaction</field>
+            <field name="view_mode">pivot,graph,tree</field>
+            <field name="search_view_id" ref="store_finance.view_store_account_transaction_search"/>
+            <field name="context">{'group_by':'date:day'}</field>
+        </record>
+    </data>
+</odoo>
+

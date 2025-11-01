@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_store_supplier_tree" model="ir.ui.view">
+            <field name="name">store.supplier.tree</field>
+            <field name="model">store.supplier</field>
+            <field name="arch" type="xml">
+                <tree string="供应商档案" default_order="rating_overall desc">
+                    <field name="name"/>
+                    <field name="rating_overall"/>
+                    <field name="risk_level"/>
+                    <field name="is_blacklisted" widget="boolean_toggle"/>
+                    <field name="purchase_order_count"/>
+                    <field name="purchase_amount_total"/>
+                    <field name="last_purchase_date"/>
+                    <field name="on_time_rate"/>
+                    <field name="contact_user_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_supplier_form" model="ir.ui.view">
+            <field name="name">store.supplier.form</field>
+            <field name="model">store.supplier</field>
+            <field name="arch" type="xml">
+                <form string="供应商档案">
+                    <header>
+                        <button name="action_mark_blacklist" type="object" string="加入黑名单" class="btn-danger" attrs="{'invisible': [('is_blacklisted', '=', True)]}"/>
+                        <button name="action_remove_blacklist" type="object" string="移出黑名单" attrs="{'invisible': [('is_blacklisted', '=', False)]}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_purchase_orders" type="object" class="oe_stat_button" icon="fa-shopping-cart" attrs="{'invisible': [('purchase_order_count', '=', 0)]}">
+                                <field name="purchase_order_count" widget="statinfo" string="采购订单"/>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="partner_id" options="{'no_open': True}"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="contact_user_id"/>
+                                <field name="phone"/>
+                                <field name="email"/>
+                                <field name="website"/>
+                            </group>
+                            <group>
+                                <field name="category_ids" widget="many2many_tags"/>
+                                <field name="product_category_ids" widget="many2many_tags"/>
+                                <field name="risk_level"/>
+                                <field name="rating_overall" readonly="1"/>
+                                <field name="score_delivery"/>
+                                <field name="score_quality"/>
+                                <field name="score_service"/>
+                            </group>
+                        </group>
+                        <group string="采购统计" colspan="4">
+                            <field name="purchase_order_count" readonly="1"/>
+                            <field name="purchase_amount_total" readonly="1"/>
+                            <field name="last_purchase_date" readonly="1"/>
+                            <field name="delivery_cycle_avg" readonly="1"/>
+                            <field name="on_time_rate" readonly="1"/>
+                        </group>
+                        <group string="黑名单信息" colspan="4">
+                            <field name="is_blacklisted"/>
+                            <field name="blacklist_reason"/>
+                            <field name="blacklist_date" readonly="1"/>
+                            <field name="blacklist_user_id" readonly="1"/>
+                        </group>
+                        <group string="地址" colspan="4">
+                            <field name="address" readonly="1" widget="text"/>
+                        </group>
+                        <group string="备注" colspan="4">
+                            <field name="note" nolabel="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_store_supplier_search" model="ir.ui.view">
+            <field name="name">store.supplier.search</field>
+            <field name="model">store.supplier</field>
+            <field name="arch" type="xml">
+                <search string="搜索供应商">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="category_ids"/>
+                    <field name="is_blacklisted"/>
+                    <field name="risk_level"/>
+                    <filter string="黑名单" name="filter_blacklist" domain="[('is_blacklisted', '=', True)]"/>
+                    <filter string="高风险" name="filter_high_risk" domain="[('risk_level', '=', 'high')]"/>
+                    <filter string="综合评分 ≥4" name="filter_high_rating" domain="[('rating_overall', '>=', 4)]"/>
+                    <group expand="0" string="分组">
+                        <filter string="按风险" context="{'group_by': 'risk_level'}"/>
+                        <filter string="按标签" context="{'group_by': 'category_ids'}"/>
+                        <filter string="按对接人" context="{'group_by': 'contact_user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_store_supplier_tree" model="ir.actions.act_window">
+            <field name="name">供应商档案</field>
+            <field name="res_model">store.supplier</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="store_supplier.view_store_supplier_search"/>
+            <field name="context">{'search_default_company_id': user.company_id.id}</field>
+        </record>
+
+        <record id="action_store_supplier_blacklist" model="ir.actions.act_window">
+            <field name="name">供应商黑名单</field>
+            <field name="res_model">store.supplier</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_blacklisted', '=', True)]</field>
+            <field name="search_view_id" ref="store_supplier.view_store_supplier_search"/>
+        </record>
+
+        <record id="view_store_supplier_report_tree" model="ir.ui.view">
+            <field name="name">store.supplier.purchase.report.tree</field>
+            <field name="model">store.supplier.purchase.report</field>
+            <field name="arch" type="xml">
+                <tree string="采购历史报表" create="false" edit="false">
+                    <field name="supplier_id"/>
+                    <field name="purchase_order_count"/>
+                    <field name="purchase_amount_total"/>
+                    <field name="last_purchase_date"/>
+                    <field name="delivery_cycle_avg"/>
+                    <field name="on_time_rate"/>
+                    <field name="rating_overall"/>
+                    <field name="risk_level"/>
+                    <field name="is_blacklisted"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_supplier_report_pivot" model="ir.ui.view">
+            <field name="name">store.supplier.purchase.report.pivot</field>
+            <field name="model">store.supplier.purchase.report</field>
+            <field name="arch" type="xml">
+                <pivot string="采购历史分析">
+                    <field name="purchase_amount_total" type="measure"/>
+                    <field name="purchase_order_count" type="measure"/>
+                    <field name="supplier_id" type="row"/>
+                    <field name="risk_level" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="view_store_supplier_report_search" model="ir.ui.view">
+            <field name="name">store.supplier.purchase.report.search</field>
+            <field name="model">store.supplier.purchase.report</field>
+            <field name="arch" type="xml">
+                <search string="筛选采购历史">
+                    <field name="supplier_id"/>
+                    <field name="risk_level"/>
+                    <field name="is_blacklisted"/>
+                    <group expand="0" string="分组">
+                        <filter string="按风险" context="{'group_by': 'risk_level'}"/>
+                        <filter string="按黑名单" context="{'group_by': 'is_blacklisted'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_store_supplier_report" model="ir.actions.act_window">
+            <field name="name">采购历史报表</field>
+            <field name="res_model">store.supplier.purchase.report</field>
+            <field name="view_mode">tree,pivot,graph</field>
+            <field name="search_view_id" ref="store_supplier.view_store_supplier_report_search"/>
+            <field name="context">{'group_by': ['risk_level']}</field>
+        </record>
+    </data>
+</odoo>

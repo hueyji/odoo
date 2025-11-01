@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_store_inventory_aging_dashboard" model="ir.actions.client">
+            <field name="name">陈化看板</field>
+            <field name="tag">store_inventory_aging_dashboard</field>
+            <field name="target">main</field>
+            <field name="context">{'search_default_company_id': user.company_id.id}</field>
+        </record>
+
+    </data>
+</odoo>

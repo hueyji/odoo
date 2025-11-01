@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- 产品与套餐示例 -->
+    <record id="product_tmpl_cigar_no1" model="product.template">
+        <field name="name">雪茄 No.1（演示）</field>
+        <field name="type">product</field>
+        <field name="list_price">168.0</field>
+        <field name="standard_price">90.0</field>
+        <field name="uom_id" ref="uom.product_uom_unit"/>
+        <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="product_cigar_no1" model="product.product">
+        <field name="product_tmpl_id" ref="store_bar.product_tmpl_cigar_no1"/>
+    </record>
+
+    <record id="product_tmpl_whisky_12y" model="product.template">
+        <field name="name">威士忌 12 年（演示）</field>
+        <field name="type">product</field>
+        <field name="list_price">98.0</field>
+        <field name="standard_price">45.0</field>
+        <field name="uom_id" ref="uom.product_uom_unit"/>
+        <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">True</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="product_whisky_12y" model="product.product">
+        <field name="product_tmpl_id" ref="store_bar.product_tmpl_whisky_12y"/>
+    </record>
+
+    <record id="store_combo_evening_pair" model="store.combo">
+        <field name="name">双人雪茄威士忌套餐</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="list_price">398.0</field>
+        <field name="item_ids" eval="[(0, 0, {
+            'product_id': ref('store_bar.product_cigar_no1'),
+            'quantity': 2.0
+        }), (0, 0, {
+            'product_id': ref('store_bar.product_whisky_12y'),
+            'quantity': 2.0
+        })]"/>
+    </record>
+
+    <!-- 桌台 -->
+    <record id="store_bar_table_vip01" model="store.bar.table">
+        <field name="name">VIP 包间 01</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="capacity">4</field>
+        <field name="state">free</field>
+    </record>
+
+    <record id="store_bar_table_hall03" model="store.bar.table">
+        <field name="name">大厅 03</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="capacity">2</field>
+        <field name="state">free</field>
+    </record>
+
+    <!-- 演示员工与会员 -->
+    <record id="store_bar_employee_bartender" model="hr.employee">
+        <field name="name">李调酒</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <record id="store_bar_member_demo" model="res.partner">
+        <field name="name">王雪茄</field>
+        <field name="phone">13800001111</field>
+        <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- 库存批次与库存量 -->
+    <record id="store_inventory_batch_demo_cigar" model="store.inventory.batch">
+        <field name="name">BATCH-CIGAR-001</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_id" ref="store_bar.product_cigar_no1"/>
+        <field name="product_uom_id" ref="uom.product_uom_unit"/>
+        <field name="qty_initial">40</field>
+        <field name="aging_start_date">2025-10-01</field>
+        <field name="purchase_price">80.0</field>
+        <field name="state">in_stock</field>
+    </record>
+
+    <record id="store_inventory_batch_demo_whisky" model="store.inventory.batch">
+        <field name="name">BATCH-WHISKY-001</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_id" ref="store_bar.product_whisky_12y"/>
+        <field name="product_uom_id" ref="uom.product_uom_unit"/>
+        <field name="qty_initial">60</field>
+        <field name="aging_start_date">2025-06-15</field>
+        <field name="purchase_price">40.0</field>
+        <field name="state">in_stock</field>
+    </record>
+
+    <record id="stock_quant_cigar_demo" model="stock.quant">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_id" ref="store_bar.product_cigar_no1"/>
+        <field name="location_id" ref="stock.stock_location_stock"/>
+        <field name="quantity">40</field>
+        <field name="reserved_quantity">0</field>
+        <field name="store_batch_id" ref="store_bar.store_inventory_batch_demo_cigar"/>
+    </record>
+
+    <record id="stock_quant_whisky_demo" model="stock.quant">
+        <field name="company_id" ref="base.main_company"/>
+        <field name="product_id" ref="store_bar.product_whisky_12y"/>
+        <field name="location_id" ref="stock.stock_location_stock"/>
+        <field name="quantity">60</field>
+        <field name="reserved_quantity">0</field>
+        <field name="store_batch_id" ref="store_bar.store_inventory_batch_demo_whisky"/>
+    </record>
+
+    <!-- 示例订单（草稿） -->
+    <record id="store_bar_order_demo" model="store.bar.order">
+        <field name="name">BAR-DEMO-0001</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="table_id" ref="store_bar.store_bar_table_vip01"/>
+        <field name="employee_id" ref="store_bar.store_bar_employee_bartender"/>
+        <field name="member_id" ref="store_bar.store_bar_member_demo"/>
+        <field name="note">演示订单：套餐示例，未锁定</field>
+    </record>
+
+    <record id="store_bar_order_line_demo_cigar" model="store.bar.order.line">
+        <field name="order_id" ref="store_bar.store_bar_order_demo"/>
+        <field name="product_id" ref="store_bar.product_cigar_no1"/>
+        <field name="product_uom_id" ref="uom.product_uom_unit"/>
+        <field name="quantity">2</field>
+        <field name="price_unit">150.0</field>
+        <field name="batch_id" ref="store_bar.store_inventory_batch_demo_cigar"/>
+        <field name="combo_id" ref="store_bar.store_combo_evening_pair"/>
+    </record>
+
+    <record id="store_bar_order_line_demo_whisky" model="store.bar.order.line">
+        <field name="order_id" ref="store_bar.store_bar_order_demo"/>
+        <field name="product_id" ref="store_bar.product_whisky_12y"/>
+        <field name="product_uom_id" ref="uom.product_uom_unit"/>
+        <field name="quantity">2</field>
+        <field name="price_unit">49.0</field>
+        <field name="batch_id" ref="store_bar.store_inventory_batch_demo_whisky"/>
+        <field name="combo_id" ref="store_bar.store_combo_evening_pair"/>
+        <field name="is_combo_component">True</field>
+    </record>
+</odoo>

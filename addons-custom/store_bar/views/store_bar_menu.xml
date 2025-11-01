@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem
+        id="menu_store_bar_root"
+        name="吧台前台"
+        parent="sales_team.menu_sales_root"
+        sequence="20"
+        groups="store_bar.group_bar_user"
+    />
+
+    <menuitem
+        id="menu_store_bar_table"
+        name="桌台"
+        parent="store_bar.menu_store_bar_root"
+        action="store_bar.action_store_bar_table"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_store_bar_order"
+        name="吧台订单"
+        parent="store_bar.menu_store_bar_root"
+        action="store_bar.action_store_bar_order"
+        sequence="20"
+    />
+
+    <menuitem
+        id="menu_store_bar_combo"
+        name="套餐"
+        parent="store_bar.menu_store_bar_root"
+        action="store_bar.action_store_combo"
+        sequence="30"
+        groups="store_bar.group_bar_manager"
+    />
+</odoo>

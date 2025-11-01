@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem id="menu_store_crowdfunding_root"
+                  name="众筹管理"
+                  parent="brand_core.menu_brand_core_root"
+                  sequence="40"
+                  groups="store_crowdfunding.group_store_crowdfunding_user,store_crowdfunding.group_store_crowdfunding_manager"/>
+
+        <menuitem id="menu_store_crowdfunding_project"
+                  name="众筹项目"
+                  parent="store_crowdfunding.menu_store_crowdfunding_root"
+                  action="store_crowdfunding.action_store_crowdfunding_projects"
+                  sequence="10"
+                  groups="store_crowdfunding.group_store_crowdfunding_user,store_crowdfunding.group_store_crowdfunding_manager"/>
+
+        <menuitem id="menu_store_crowdfunding_investment"
+                  name="投资记录"
+                  parent="store_crowdfunding.menu_store_crowdfunding_root"
+                  action="store_crowdfunding.action_store_crowdfunding_investments"
+                  sequence="20"
+                  groups="store_crowdfunding.group_store_crowdfunding_manager"/>
+
+        <menuitem id="menu_store_crowdfunding_dividend"
+                  name="分红计划"
+                  parent="store_crowdfunding.menu_store_crowdfunding_root"
+                  action="store_crowdfunding.action_store_crowdfunding_dividends"
+                  sequence="30"
+                  groups="store_crowdfunding.group_store_crowdfunding_manager"/>
+
+        <menuitem id="menu_store_crowdfunding_dividend_payout"
+                  name="分红明细"
+                  parent="store_crowdfunding.menu_store_crowdfunding_root"
+                  action="store_crowdfunding.action_store_crowdfunding_dividend_payouts"
+                  sequence="40"
+                  groups="store_crowdfunding.group_store_crowdfunding_manager"/>
+    </data>
+</odoo>

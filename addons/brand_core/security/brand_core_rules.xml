@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- store.link.group record rules -->
+    <record id="rule_store_link_group_company" model="ir.rule">
+        <field name="name">互通组-公司访问</field>
+        <field name="model_id" ref="brand_core.model_store_link_group"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('company_id', 'in', user.company_ids.ids), ('member_company_ids', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_store_link_group_portal_manager" model="ir.rule">
+        <field name="name">互通组-门户经理</field>
+        <field name="model_id" ref="brand_core.model_store_link_group"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_portal_manager'))]"/>
+        <field name="domain_force">['|', ('company_id', 'in', user.company_ids.ids), ('member_company_ids', 'in', user.company_ids.ids)]</field>
+    </record>
+
+    <record id="rule_store_link_group_system" model="ir.rule">
+        <field name="name">互通组-系统管理员</field>
+        <field name="model_id" ref="brand_core.model_store_link_group"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- store.link.group.application record rules -->
+    <record id="rule_store_link_group_application_company" model="ir.rule">
+        <field name="name">互通申请-公司访问</field>
+        <field name="model_id" ref="brand_core.model_store_link_group_application"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">
+            ['|', ('company_id', 'in', user.company_ids.ids), '|', ('request_company_id', 'in', user.company_ids.ids), ('requested_member_ids', 'in', user.company_ids.ids)]
+        </field>
+    </record>
+
+    <record id="rule_store_link_group_application_portal_manager" model="ir.rule">
+        <field name="name">互通申请-门户经理</field>
+        <field name="model_id" ref="brand_core.model_store_link_group_application"/>
+        <field name="groups" eval="[(4, ref('brand_core.group_brand_portal_manager'))]"/>
+        <field name="domain_force">
+            ['|', ('company_id', 'in', user.company_ids.ids), '|', ('request_company_id', 'in', user.company_ids.ids), ('requested_member_ids', 'in', user.company_ids.ids)]
+        </field>
+    </record>
+
+    <record id="rule_store_link_group_application_system" model="ir.rule">
+        <field name="name">互通申请-系统管理员</field>
+        <field name="model_id" ref="brand_core.model_store_link_group_application"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

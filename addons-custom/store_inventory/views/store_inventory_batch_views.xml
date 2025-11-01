@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_store_inventory_batch_tree" model="ir.ui.view">
+            <field name="name">store.inventory.batch.tree</field>
+            <field name="model">store.inventory.batch</field>
+            <field name="arch" type="xml">
+                <tree string="陈化批次" default_order="aging_start_date desc">
+                    <field name="name"/>
+                    <field name="state"/>
+                    <field name="product_id"/>
+                    <field name="supplier_id"/>
+                    <field name="warehouse_id"/>
+                    <field name="location_id"/>
+                    <field name="qty_initial"/>
+                    <field name="qty_available"/>
+                    <field name="reservation_qty"/>
+                    <field name="aging_start_date"/>
+                    <field name="aging_days"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_inventory_batch_form" model="ir.ui.view">
+            <field name="name">store.inventory.batch.form</field>
+            <field name="model">store.inventory.batch</field>
+            <field name="arch" type="xml">
+                <form string="陈化批次" create="true">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button
+                                name="action_open_pickings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                attrs="{'invisible': [('picking_count', '=', 0)]}"
+                            >
+                                <field name="picking_count" widget="statinfo" string="拣货单"/>
+                            </button>
+                            <button
+                                name="action_open_quants"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-archive"
+                                attrs="{'invisible': [('quant_count', '=', 0)]}"
+                            >
+                                <field name="quant_count" widget="statinfo" string="库存明细"/>
+                            </button>
+                            <button
+                                name="action_open_operations"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-exchange"
+                                attrs="{'invisible': [('operation_count', '=', 0)]}"
+                            >
+                                <field name="operation_count" widget="statinfo" string="库存操作"/>
+                            </button>
+                            <button
+                                name="action_open_lots"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-tags"
+                                attrs="{'invisible': [('lot_count', '=', 0)]}"
+                            >
+                                <field name="lot_count" widget="statinfo" string="序列批号"/>
+                            </button>
+                        </div>
+                        <header>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,in_stock,transit,loss,done"/>
+                            <button name="action_set_in_stock" type="object" string="标记在库" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                            <button name="action_mark_transit" type="object" string="标记调拨中" attrs="{'invisible': ['|', ('state', 'in', ['loss','done']), ('state', '=', 'transit')]}"/>
+                            <button name="action_mark_loss" type="object" string="标记报损" attrs="{'invisible': [('state', '!=', 'in_stock')]}"/>
+                            <button name="action_mark_done" type="object" string="标记售罄" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                        </header>
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="product_id" options="{'no_open': True}"/>
+                                <field name="product_uom_id" options="{'no_open': True}"/>
+                                <field name="supplier_id" options="{'no_create': True}"/>
+                                <field name="purchase_price"/>
+                                <field name="currency_id" groups="base.group_multi_currency"/>
+                            </group>
+                            <group>
+                                <field name="warehouse_id" options="{'no_open': True}"/>
+                                <field name="location_id" domain="[('company_id', '=', company_id), ('usage', '=', 'internal')]"/>
+                                <field name="aging_start_date"/>
+                                <field name="aging_days" readonly="1"/>
+                                <field name="best_before_date"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                        <group string="库存数量" colspan="4">
+                            <field name="qty_initial"/>
+                            <field name="qty_available" readonly="1"/>
+                            <field name="reservation_qty" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <page string="库存明细">
+                                <field name="quant_ids" context="{'default_store_batch_id': active_id}" readonly="1">
+                                    <tree string="库存明细" create="false" edit="false">
+                                        <field name="location_id"/>
+                                        <field name="lot_id"/>
+                                        <field name="quantity"/>
+                                        <field name="reserved_quantity"/>
+                                        <field name="company_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="调拨与拣货">
+                                <field name="picking_ids" readonly="1">
+                                    <tree string="拣货单">
+                                        <field name="name"/>
+                                        <field name="picking_type_id"/>
+                                        <field name="scheduled_date"/>
+                                        <field name="state"/>
+                                        <field name="company_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="库存移动">
+                                <field name="move_ids" readonly="1">
+                                    <tree string="库存移动">
+                                        <field name="date"/>
+                                        <field name="reference"/>
+                                        <field name="product_id"/>
+                                        <field name="product_uom_qty"/>
+                                        <field name="quantity_done"/>
+                                        <field name="store_unit_cost"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="序列批号">
+                                <field name="lot_ids" readonly="1">
+                                    <tree string="序列批号">
+                                        <field name="name"/>
+                                        <field name="product_id"/>
+                                        <field name="company_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="库存操作">
+                                <field name="operation_ids" readonly="1">
+                                    <tree string="库存操作">
+                                        <field name="name"/>
+                                        <field name="operation_type"/>
+                                        <field name="requested_qty"/>
+                                        <field name="state"/>
+                                        <field name="scheduled_date"/>
+                                        <field name="approver_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="备注">
+                                <field name="note"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_store_inventory_batch_search" model="ir.ui.view">
+            <field name="name">store.inventory.batch.search</field>
+            <field name="model">store.inventory.batch</field>
+            <field name="arch" type="xml">
+                <search string="搜索陈化批次">
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="supplier_id"/>
+                    <field name="state"/>
+                    <field name="company_id"/>
+                    <filter string="在库" name="filter_in_stock" domain="[('state', '=', 'in_stock')]"/>
+                    <filter string="调拨中" name="filter_transit" domain="[('state', '=', 'transit')]"/>
+                    <filter string="报损" name="filter_loss" domain="[('state', '=', 'loss')]"/>
+                    <group expand="0" string="分组">
+                        <filter string="按商品" name="group_product" context="{'group_by': 'product_id'}"/>
+                        <filter string="按供应商" name="group_supplier" context="{'group_by': 'supplier_id'}"/>
+                        <filter string="按状态" name="group_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_store_inventory_batch" model="ir.actions.act_window">
+            <field name="name">陈化批次</field>
+            <field name="res_model">store.inventory.batch</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_store_inventory_batch_tree"/>
+            <field name="search_view_id" ref="view_store_inventory_batch_search"/>
+        </record>
+
+        <record id="view_picking_form_store_inventory_inherit" model="ir.ui.view">
+            <field name="name">stock.picking.form.store.inventory</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group string="陈化批次" attrs="{'invisible': [('store_batch_ids', '=', False)]}">
+                        <field name="store_batch_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="store_batch_count" invisible="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_move_form_store_inventory_inherit" model="ir.ui.view">
+            <field name="name">stock.move.form.store.inventory</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_uom_qty']" position="after">
+                    <field
+                        name="store_batch_id"
+                        domain="[('product_id', '=', product_id), ('company_id', '=', company_id)]"
+                        options="{'no_create': True}"
+                    />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_move_tree_store_inventory_inherit" model="ir.ui.view">
+            <field name="name">stock.move.tree.store.inventory</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='product_uom']" position="before">
+                    <field name="store_batch_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_quant_tree_store_inventory_inherit" model="ir.ui.view">
+            <field name="name">stock.quant.tree.store.inventory</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='location_id']" position="after">
+                    <field name="store_batch_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_stock_quant_form_store_inventory_inherit" model="ir.ui.view">
+            <field name="name">stock.quant.form.store.inventory</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_form_editable"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/field[@name='lot_id']" position="after">
+                    <field name="store_batch_id" options="{'no_create': True}" domain="[('product_id', '=', product_id)]"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

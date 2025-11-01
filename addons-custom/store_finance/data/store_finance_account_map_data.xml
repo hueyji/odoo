@@ -1,0 +1,68 @@
+<odoo>
+    <data>
+        <record id="account_map_sale_default" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">sale</field>
+            <field name="account_id" ref="store_finance.account_store_sale_revenue"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_sale_cash" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">sale</field>
+            <field name="payment_channel_id" ref="store_finance.finance_channel_cash"/>
+            <field name="account_id" ref="store_finance.account_store_sale_revenue"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_recharge_member_balance" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">recharge</field>
+            <field name="payment_channel_id" ref="store_finance.finance_channel_member_balance"/>
+            <field name="account_id" ref="store_finance.account_store_member_deposit"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_recharge_generic" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">recharge</field>
+            <field name="account_id" ref="store_finance.account_store_member_deposit"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_refund_default" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">refund</field>
+            <field name="account_id" ref="store_finance.account_store_refund_expense"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_transfer_adjust" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">transfer_adjust</field>
+            <field name="account_id" ref="store_finance.account_store_transfer_adjust"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_crowdfunding_invest" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">crowdfunding_invest</field>
+            <field name="account_id" ref="store_finance.account_store_crowdfunding"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_crowdfunding_dividend" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">crowdfunding_dividend</field>
+            <field name="account_id" ref="store_finance.account_store_dividend_expense"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+
+        <record id="account_map_write_off" model="store.finance.account.map">
+            <field name="company_id" ref="base.main_company"/>
+            <field name="transaction_type">write_off</field>
+            <field name="account_id" ref="store_finance.account_store_write_off"/>
+            <field name="journal_id" ref="account.miscellaneous_journal"/>
+        </record>
+    </data>
+</odoo>

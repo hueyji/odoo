@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_store_crowdfunding_dividend_tree" model="ir.ui.view">
+            <field name="name">store.crowdfunding.dividend.tree</field>
+            <field name="model">store.crowdfunding.dividend</field>
+            <field name="arch" type="xml">
+                <tree string="众筹分红">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="planned_date"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+                    <field name="paid_date"/>
+                    <field name="account_transaction_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_crowdfunding_dividend_form" model="ir.ui.view">
+            <field name="name">store.crowdfunding.dividend.form</field>
+            <field name="model">store.crowdfunding.dividend</field>
+            <field name="arch" type="xml">
+                <form string="众筹分红">
+                    <header>
+                        <button name="action_set_pending" type="object" string="待执行" class="btn-secondary"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_execute" type="object" string="执行分红" class="btn-primary"
+                                attrs="{'invisible': [('state', 'not in', ['draft', 'pending'])]}"/>
+                        <button name="action_cancel" type="object" string="取消" class="btn-secondary"
+                                attrs="{'invisible': [('state', '=', 'cancelled')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,paid,cancelled"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="project_id" required="1"/>
+                                <field name="planned_date" required="1"/>
+                                <field name="amount"/>
+                            </group>
+                            <group>
+                                <field name="company_id" readonly="1"/>
+                                <field name="paid_date" readonly="1"/>
+                                <field name="account_transaction_id" readonly="1"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="投资人分红明细" attrs="{'invisible': [('state', '=', 'draft')]}" optional="show">
+                                <field name="payout_ids" readonly="1" context="{'default_dividend_id': active_id}">
+                                    <tree string="投资人分红" create="0" edit="0" delete="0">
+                                        <field name="partner_id"/>
+                                        <field name="amount"/>
+                                        <field name="investment_amount"/>
+                                        <field name="allocation_ratio"/>
+                                        <field name="wallet_entry_reference"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_store_crowdfunding_dividends"
+                    name="众筹分红计划"
+                    res_model="store.crowdfunding.dividend"
+                    view_mode="tree,form"
+                    context="{'search_default_project_id': active_id}"/>
+
+        <record id="view_store_crowdfunding_dividend_payout_tree" model="ir.ui.view">
+            <field name="name">store.crowdfunding.dividend.payout.tree</field>
+            <field name="model">store.crowdfunding.dividend.payout</field>
+            <field name="arch" type="xml">
+                <tree string="众筹分红明细">
+                    <field name="dividend_id"/>
+                    <field name="partner_id"/>
+                    <field name="amount"/>
+                    <field name="investment_amount"/>
+                    <field name="allocation_ratio"/>
+                    <field name="wallet_entry_reference"/>
+                </tree>
+            </field>
+        </record>
+
+        <act_window id="action_store_crowdfunding_dividend_payouts"
+                    name="分红明细"
+                    res_model="store.crowdfunding.dividend.payout"
+                    view_mode="tree"
+                    context="{}"/>
+    </data>
+</odoo>

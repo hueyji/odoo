@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_store_performance_root" name="提成与业绩" parent="hr.menu_hr_root" sequence="30"/>
+
+    <menuitem
+        id="menu_store_performance_dashboard"
+        name="个人业绩看板"
+        parent="menu_store_performance_root"
+        action="action_store_performance_record"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_store_performance_target"
+        name="业绩目标"
+        parent="menu_store_performance_root"
+        action="action_store_performance_target"
+        sequence="20"
+    />
+</odoo>

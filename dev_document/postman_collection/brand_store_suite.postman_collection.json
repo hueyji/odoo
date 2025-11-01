@@ -1,0 +1,369 @@
+{
+  "info": {
+    "_postman_id": "c5a0df1d-6a32-4c1e-8b79-odoo16-suite",
+    "name": "Odoo16 多门店接口集合",
+    "description": "雪茄威士忌品牌多门店项目（Odoo 16.0）接口调试集合。使用中文变量与示例，配合 env_odoo16_template 环境。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00-认证",
+      "description": "登录并写入 session_id 供后续请求复用。",
+      "item": [
+        {
+          "name": "品牌管理员登录",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/web/session/authenticate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"call\",\n  \"params\": {\n    \"db\": \"{{db}}\",\n    \"login\": \"{{brand_admin_login}}\",\n    \"password\": \"{{brand_admin_password}}\"\n  }\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const payload = pm.response.json();",
+                  "const session = payload.result && payload.result.session_id;",
+                  "if (session) {",
+                  "    pm.environment.set('session_id', session);",
+                  "    console.log('session_id stored');",
+                  "} else {",
+                  "    pm.test('返回 session_id', () => pm.expect(session).to.exist);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "门店店长登录",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"call\",\n  \"params\": {\n    \"db\": \"{{db}}\",\n    \"login\": \"{{store_manager_login}}\",\n    \"password\": \"{{store_manager_password}}\"\n  }\n}"
+            },
+            "url": "{{base_url}}/web/session/authenticate",
+            "description": "用于门店场景接口鉴权，返回的 session_id 会写入 {{store_session_id}} 环境变量，不会覆盖品牌管理员会话。"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const payload = pm.response.json();",
+                  "const session = payload.result && payload.result.session_id;",
+                  "if (session) {",
+                  "    pm.environment.set('store_session_id', session);",
+                  "    console.log('store_session_id stored');",
+                  "    pm.test('返回 session_id', () => pm.expect(session).to.exist);",
+                  "} else {",
+                  "    pm.test('返回 session_id', () => pm.expect(session).to.exist);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Team A 互通基础",
+      "item": [
+        {
+          "name": "获取互通组列表",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/link-groups",
+            "description": "前置步骤：\n1. 执行《开发环境初始化指南.md》中的数据库准备并运行 seed_interface_data 脚本。\n2. 在「00-认证/品牌管理员登录」获取 {{session_id}}。\n关键字段说明：\n- `share_inventory/share_member/share_finance`：供 Team B/E/G 判断互通范围。\n- `state`：`draft`/`active`/`suspended`，与审批日志一致。\n- `application_count`：统计待审批数量，便于 48 小时内完成。"
+          }
+        },
+        {
+          "name": "提交互通申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/link-groups/apply",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": {{link_group_id}},\n  \"requested_member_ids\": [{{target_company_id}}],\n  \"share_inventory\": true,\n  \"share_member\": true,\n  \"share_finance\": false,\n  \"description\": \"申请共享库存与会员，供深圳门店审批\"\n}"
+            },
+            "description": "前置步骤：\n1. 使用「00-认证/门店店长登录」获取 {{store_session_id}}。\n2. 确认互通组处于 `active`，门店位于 `requested_member_ids` 中。\n调用结果：触发互通审批工作流，生成 `mail.activity` 待办并记录审批日志。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team B 库存与供应链",
+      "item": [
+        {
+          "name": "创建陈化批次",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/inventory/batches",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": {{inventory_product_id}},\n  \"qty_initial\": 50,\n  \"purchase_price\": 1680,\n  \"aging_start_date\": \"2025-11-01\",\n  \"company_id\": {{store_company_id}},\n  \"supplier_id\": {{supplier_partner_id}},\n  \"supplier_record_id\": {{supplier_record_id}},\n  \"note\": \"旗舰店示例陈化批次（供调拨/提成测试）\"\n}"
+            },
+            "description": "前置步骤：\n1. 门店店长或库存经理登录，使用 {{store_session_id}}。\n2. 变量 {{inventory_product_id}}、{{supplier_partner_id}}、{{supplier_record_id}} 由 seed 脚本生成。\n业务说明：创建批次后会自动写入 `store.inventory.move` 入库、同步 `store.account.transaction` 采购记录。"
+          }
+        },
+        {
+          "name": "互通调拨申请",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/inventory/transfers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"source_batch_id\": {{inventory_batch_id}},\n  \"target_company_id\": {{target_company_id}},\n  \"qty\": 12,\n  \"unit_price\": 1980,\n  \"memo\": \"互通调拨示例（含补差）\"\n}"
+            },
+            "description": "前置步骤：\n1. 已有可用批次 {{inventory_batch_id}}，互通目标公司 {{target_company_id}} 属于同一互通组。\n2. 使用门店会话 {{store_session_id}} 调用。\n联动效果：生成出入库 move、调拨补差流水，并向目标公司推送调拨通知。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team C 提成与业绩",
+      "item": [
+        {
+          "name": "计算订单提成",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/commissions/calculate",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": {{sale_order_id}},\n  \"force_recompute\": true,\n  \"with_breakdown\": true\n}"
+            },
+            "description": "前置步骤：\n1. 点单接口已创建订单 {{sale_order_id}}。\n2. 以门店会话 {{store_session_id}} 调用，具备提成查看权限。\n说明：返回提成拆分明细，不落地数据；供 Team F、Team D 联调提成验证。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team D 财务结算",
+      "item": [
+        {
+          "name": "写入交易流水",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/finance/transactions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transaction_type\": \"sale\",\n  \"amount\": 1680,\n  \"company_id\": {{store_company_id}},\n  \"channel_id\": {{finance_channel_cash}},\n  \"member_id\": {{member_id}},\n  \"origin\": \"POS/{{bar_order_id}}\",\n  \"description\": \"旗舰店吧台订单收款\"\n}"
+            },
+            "description": "前置步骤：\n1. 使用品牌管理员会话 {{session_id}}，具备财务写权限。\n2. {{finance_channel_cash}}、{{bar_order_id}} 来源于财务配置及点单接口响应。\n联动：确认后写入 `store.account.transaction` 并触发余额/互通清算。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team E 会员与互通体验",
+      "item": [
+        {
+          "name": "会员列表查询",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/members?keyword={{member_list_keyword}}&limit=10",
+            "description": "前置：使用门店或品牌 Session（{{store_session_id}}）。\n默认按更新时间倒序返回会员信息，可通过 `keyword`、`company_id` 等参数过滤。"
+          }
+        },
+        {
+          "name": "会员绑定（手机号）",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/members/bind",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"{{member_bind_phone}}\",\n  \"name\": \"{{member_bind_name}}\",\n  \"email\": \"{{member_bind_email}}\",\n  \"company_id\": {{store_company_id}}\n}"
+            },
+            "description": "用途：门店快速录入或绑定手机号为会员；若手机号存在则激活会员标记。\n变量：`member_bind_phone` 建议每次执行前更新，避免与真实会员冲突。"
+          }
+        },
+        {
+          "name": "会员充值",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/members/recharge",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"member_id\": {{member_id}},\n  \"amount\": 500,\n  \"channel_id\": {{finance_channel_stored}},\n  \"note\": \"旗舰店会员充值示例\"\n}"
+            },
+            "description": "前置：会话需具备充值权限；`finance_channel_stored` 指向储值渠道。调用成功后返回最新余额与钱包信息。"
+          }
+        },
+        {
+          "name": "会员余额查询",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/members/balance?member_id={{member_id}}",
+            "description": "通过 member_id 或 phone 获取最新会员余额与钱包详情，可供点单前置校验使用。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team F 吧台前台",
+      "item": [
+        {
+          "name": "创建吧台订单",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{store_session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/bar/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"table_id\": {{bar_table_id}},\n  \"company_id\": {{store_company_id}},\n  \"member_id\": {{member_id}},\n  \"payment_channel_id\": {{finance_channel_cash}},\n  \"responsible_employee_id\": {{bartender_employee_id}},\n  \"assistant_employee_ids\": [{{commission_employee_id}}],\n  \"lines\": [\n    {\n      \"product_id\": {{inventory_product_id}},\n      \"batch_id\": {{inventory_batch_id}},\n      \"quantity\": 2,\n      \"price_unit\": 880\n    }\n  ],\n  \"note\": \"桌台订单示例（同步库存/提成/会员）\"\n}"
+            },
+            "description": "前置步骤：\n1. 使用门店会话 {{store_session_id}}。\n2. 桌台、批次、员工变量来源于 seed 脚本。\n联动：下单同时锁定库存批次、创建调酒任务、推送提成预估，回调 `bus.bus` 通知提成模块。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team G 众筹与品牌洞察",
+      "item": [
+        {
+          "name": "创建众筹项目",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "session_id={{session_id}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/crowdfunding/projects",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"陈化仓扩建众筹\",\n  \"company_id\": {{store_company_id}},\n  \"link_group_id\": {{link_group_id}},\n  \"target_amount\": 500000,\n  \"min_invest_amount\": 1000,\n  \"max_invest_amount\": 50000,\n  \"start_date\": \"2025-11-10\",\n  \"end_date\": \"2025-12-31\",\n  \"description\": \"扩建陈化仓并升级会员体验，用于众筹投资演示。\"\n}"
+            },
+            "description": "前置步骤：\n1. 使用品牌管理员会话 {{session_id}}。\n2. 互通组与门店公司已存在。\n联动：创建项目后进入 `review` 状态，通知品牌审批并为会员门户生成草稿。"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": []
+}

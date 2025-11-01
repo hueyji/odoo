@@ -1,0 +1,17 @@
+<odoo>
+    <data>
+        <menuitem id="store_finance_menu_root" name="门店财务" sequence="20" groups="store_finance.group_store_finance_user"/>
+
+        <menuitem id="store_finance_menu_dashboard" name="财务仪表盘" parent="store_finance_menu_root" sequence="1" action="store_finance.action_store_finance_dashboard" groups="store_finance.group_store_finance_user"/>
+
+        <menuitem id="store_finance_menu_configuration" name="财务配置" parent="store_finance_menu_root" sequence="30" groups="store_finance.group_store_finance_user"/>
+
+        <menuitem id="store_finance_menu_transactions" name="流水记录" parent="store_finance_menu_root" sequence="10" action="store_finance.action_store_account_transaction" groups="store_finance.group_store_finance_user"/>
+
+        <menuitem id="store_finance_menu_payment_channel" name="支付渠道" parent="store_finance_menu_configuration" sequence="10" action="store_finance.action_store_finance_payment_channel" groups="store_finance.group_store_finance_manager"/>
+
+        <menuitem id="store_finance_menu_account_map" name="科目映射" parent="store_finance_menu_configuration" sequence="20" action="store_finance.action_store_finance_account_map" groups="store_finance.group_store_finance_manager"/>
+
+        <menuitem id="store_finance_menu_clearing" name="互通清算" parent="store_finance_menu_root" sequence="20" action="store_finance.action_store_finance_clearing" groups="store_finance.group_store_finance_manager"/>
+    </data>
+</odoo>

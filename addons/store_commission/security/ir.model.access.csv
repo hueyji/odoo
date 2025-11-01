@@ -1,0 +1,5 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_store_commission_rule_user","store_commission.rule.user","model_store_commission_rule","base.group_user",1,0,0,0
+"access_store_commission_rule_admin","store_commission.rule.admin","model_store_commission_rule","base.group_system",1,1,1,1
+"access_store_commission_log_user","store_commission.log.user","model_store_commission_log","base.group_user",1,0,0,0
+"access_store_commission_log_admin","store_commission.log.admin","model_store_commission_log","base.group_system",1,1,1,1

@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_crowdfunding" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='o_portal_my_home']" position="inside">
+            <div class="row o_portal_crowdfunding_summary my-3">
+                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                    <div class="o_portal_box text-center">
+                        <span class="o_portal_box_icon fa fa-line-chart" aria-hidden="true"/>
+                        <h4>众筹项目</h4>
+                        <p class="o_portal_stat_value">
+                            <t t-esc="portal_counters.get('crowdfunding_project_count', 0)"/>
+                        </p>
+                        <a class="btn btn-primary" href="/my/crowdfunding">查看项目</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                    <div class="o_portal_box text-center">
+                        <span class="o_portal_box_icon fa fa-credit-card" aria-hidden="true"/>
+                        <h4>我的众筹投资</h4>
+                        <p class="o_portal_stat_value">
+                            <t t-esc="portal_counters.get('crowdfunding_invest_count', 0)"/>
+                        </p>
+                        <a class="btn btn-secondary" href="/my/crowdfunding">进入众筹中心</a>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="portal_crowdfunding_no_permission" name="众筹权限提示">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_container">
+                <h2 class="mb-3">众筹权限未开通</h2>
+                <p>抱歉，您的账号暂未开通众筹投资权限，请联系品牌方或所属门店进行授权。</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_crowdfunding_projects" name="众筹项目列表">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_container">
+                <h2 class="mb-3">众筹项目</h2>
+                <p class="text-muted">以下项目由品牌审核发布，金额均以人民币计价。</p>
+                <t t-if="has_inconsistency">
+                    <div class="alert alert-warning" role="alert">
+                        投资数据正在校验中，如列表金额与统计存在差异，请联系品牌运营确认。
+                    </div>
+                </t>
+                <div class="row mb-4">
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">累计投资</h6>
+                                <p class="fs-4 fw-bold">
+                                    <t t-esc="currency._format(summary.get('stored_amount', 0.0))"/>
+                                </p>
+                                <small class="text-muted">共 <t t-esc="summary.get('investment_count', 0)"/> 笔投资</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">累计分红收益</h6>
+                                <p class="fs-4 fw-bold text-success">
+                                    <t t-esc="currency._format(summary.get('dividend_amount', 0.0))"/>
+                                </p>
+                                <small class="text-muted">共 <t t-esc="summary.get('dividend_count', 0)"/> 次发放</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">最近投资时间</h6>
+                                <p class="fs-5">
+                                    <t t-esc="summary.get('stored_amount') and (partner.crowdfunding_last_invest_date or '—')"/>
+                                </p>
+                                <small class="text-muted">保持投资记录实时同步</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <t t-foreach="projects" t-as="project">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <t t-esc="project.name"/>
+                                    </h5>
+                                    <p class="card-subtitle mb-2 text-muted">
+                                        状态：
+                                        <span class="badge bg-primary">
+                                            <t t-esc="project.get_state_label()"/>
+                                        </span>
+                                    </p>
+                                    <p class="mb-2">
+                                        目标金额：
+                                        <strong>
+                                            <t t-esc="project.currency_id._format(project.goal_amount)"/>
+                                        </strong>
+                                    </p>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar"
+                                             t-att-style="'width: %s%%;' % int(project.progress_rate)"/>
+                                    </div>
+                                    <p class="mb-2">
+                                        募集进度：<t t-esc="int(project.progress_rate)"/>%
+                                        （已募集 <t t-esc="project.currency_id._format(project.total_invest_amount)"/>）
+                                    </p>
+                                    <p t-if="project.fundraising_deadline" class="text-muted">
+                                        募集截止：<t t-esc="project.fundraising_deadline"/>
+                                    </p>
+                                    <a t-attf-href="/my/crowdfunding/{{ project.id }}" class="btn btn-outline-primary">
+                                        查看详情
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <t t-if="pager">
+                    <div class="o_portal_pager">
+                        <t t-call="portal.pager">
+                            <t t-set="pager" t-value="pager"/>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_crowdfunding_project_detail" name="众筹项目详情">
+        <t t-call="portal.portal_layout">
+            <div class="o_portal_container">
+                <a href="/my/crowdfunding" class="btn btn-link">&larr; 返回项目列表</a>
+                <h2 class="mb-2">
+                    <t t-esc="project.name"/>
+                </h2>
+                <p class="text-muted mb-3">
+                    项目编号：<t t-esc="project.code"/><br/>
+                    状态：<span class="badge bg-info"><t t-esc="project.get_state_label()"/></span>
+                </p>
+                <t t-if="has_inconsistency">
+                    <div class="alert alert-warning" role="alert">
+                        系统检测到投资统计存在差异，请稍后刷新或联系品牌运营确认具体金额。
+                    </div>
+                </t>
+                <div class="row mb-3">
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">我的累计投资</h6>
+                                <p class="fs-4 fw-bold">
+                                    <t t-esc="currency._format(summary.get('stored_amount', 0.0))"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">累计收益</h6>
+                                <p class="fs-4 fw-bold text-success">
+                                    <t t-esc="currency._format(summary.get('dividend_amount', 0.0))"/>
+                                </p>
+                                <small class="text-muted">含已发放分红</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <h6 class="text-muted mb-2">投资笔数</h6>
+                                <p class="fs-4 fw-bold">
+                                    <t t-esc="summary.get('investment_count', 0)"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="mb-3">
+                            <h5>项目概述</h5>
+                            <p t-if="project.summary"><t t-esc="project.summary"/></p>
+                            <p t-else class="text-muted">暂无项目概述。</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>分红规则</h5>
+                            <div t-if="project.dividend_rule" t-raw="project.dividend_rule"/>
+                            <p t-else class="text-muted">未提供分红规则说明。</p>
+                        </div>
+                        <div class="mb-3">
+                            <h5>投资亮点</h5>
+                            <p t-if="project.investor_highlight"><t t-esc="project.investor_highlight"/></p>
+                            <p t-else class="text-muted">暂无投资亮点描述。</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="border rounded-3 p-3 mb-3">
+                            <h5>募集信息</h5>
+                            <p>目标金额：<strong><t t-esc="project.currency_id._format(project.goal_amount)"/></strong></p>
+                            <p>已募集：<strong><t t-esc="project.currency_id._format(project.total_invest_amount)"/></strong></p>
+                            <p>投资人数：<strong><t t-esc="project.investor_count"/></strong></p>
+                            <p t-if="project.fundraising_deadline">
+                                募集截止：<strong><t t-esc="project.fundraising_deadline"/></strong>
+                            </p>
+                            <div class="progress mb-3" style="height: 12px;">
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     t-att-style="'width: %s%%;' % int(project.progress_rate)"/>
+                            </div>
+                            <t t-if="project.state in ('fundraising', 'in_progress')">
+                                <form t-att-action="'/my/crowdfunding/%s/invest' % project.id" method="post" class="o_portal_invest_form">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="crowdfunding_amount">投资金额（元）</label>
+                                        <input type="number" name="amount" id="crowdfunding_amount" class="form-control" step="0.01" min="0.01" required="required"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="crowdfunding_note">备注（可选）</label>
+                                        <textarea name="note" id="crowdfunding_note" class="form-control" rows="2"/>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">确认投资</button>
+                                </form>
+                            </t>
+                            <t t-else="">
+                                <div class="alert alert-info mb-0">
+                                    项目当前状态不支持追加投资。
+                                </div>
+                            </t>
+                        </div>
+                        <div class="border rounded-3 p-3">
+                            <h5>我的投资记录</h5>
+                            <t t-set="records" t-value="project.investment_ids.filtered(lambda inv: inv.partner_id == partner)"/>
+                            <t t-if="records">
+                                <ul class="list-group">
+                                    <t t-foreach="records" t-as="record">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div><strong><t t-esc="record.currency_id._format(record.amount)"/></strong></div>
+                                                <small class="text-muted">确认时间：<t t-esc="record.confirm_date"/></small>
+                                            </div>
+                                            <span class="badge bg-success">已确认</span>
+                                        </li>
+                                    </t>
+                                </ul>
+                            </t>
+                            <p t-else="" class="text-muted mb-0">您尚未对该项目投资。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

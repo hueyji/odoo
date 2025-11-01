@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_brand_company_init_form" model="ir.ui.view">
+        <field name="name">brand.core.company.init.wizard.form</field>
+        <field name="model">brand.core.company.init.wizard</field>
+        <field name="arch" type="xml">
+            <form string="品牌多公司初始化" create="false" edit="false">
+                <sheet>
+                    <group string="品牌基础信息">
+                        <field name="brand_name"/>
+                        <field name="store_names" placeholder="每行一个门店名称"/>
+                    </group>
+                    <group string="可选配置" col="2">
+                        <field name="create_investor_company"/>
+                        <field name="investor_company_name" attrs="{'invisible': [('create_investor_company', '=', False)], 'required': [('create_investor_company', '=', True)]}"/>
+                        <field name="assign_current_user"/>
+                    </group>
+                    <footer>
+                        <button string="开始初始化" name="action_initialize" type="object" class="btn-primary"/>
+                        <button string="取消" special="cancel" class="btn-secondary"/>
+                    </footer>
+                    <separator string="操作说明"/>
+                    <p>
+                        系统会按名称创建品牌总部与门店公司，并将其组织为父子结构。
+                        勾选“将当前用户加入新公司”后，当前用户的默认公司将更新为品牌总部。
+                    </p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_brand_company_init_wizard" model="ir.actions.act_window">
+        <field name="name">多公司初始化向导</field>
+        <field name="res_model">brand.core.company.init.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_brand_company_init_wizard"
+        name="多公司初始化"
+        parent="brand_core.menu_brand_core_root"
+        sequence="5"
+        action="brand_core.action_brand_company_init_wizard"
+        groups="brand_core.group_brand_platform_admin"
+    />
+</odoo>

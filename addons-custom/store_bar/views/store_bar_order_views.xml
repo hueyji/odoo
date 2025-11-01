@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_store_bar_order_tree" model="ir.ui.view">
+        <field name="name">store.bar.order.tree</field>
+        <field name="model">store.bar.order</field>
+        <field name="arch" type="xml">
+            <tree string="吧台订单" default_order="create_date desc">
+                <field name="name"/>
+                <field name="table_id"/>
+                <field name="employee_id"/>
+                <field name="member_id"/>
+                <field name="state"/>
+                <field name="amount_total"/>
+                <field name="locked_at"/>
+                <field name="billed_at"/>
+                <field name="company_id" groups="store_bar.group_bar_manager"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_store_bar_order_form" model="ir.ui.view">
+        <field name="name">store.bar.order.form</field>
+        <field name="model">store.bar.order</field>
+        <field name="arch" type="xml">
+            <form string="吧台订单">
+                <header>
+                    <button name="action_lock" string="锁定订单" type="object" class="oe_highlight" states="draft"/>
+                    <button name="action_start_serving" string="开始出品" type="object" states="locked"/>
+                    <button name="action_request_billing" string="请求结账" type="object" states="locked,serving"/>
+                    <button name="action_set_billed" string="完成结账" type="object" states="locked,serving,billing"/>
+                    <button name="action_cancel" string="取消" type="object" states="draft,locked,serving,billing"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,locked,serving,billing,billed,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="company_id" groups="store_bar.group_bar_manager"/>
+                        <field name="table_id"/>
+                        <field name="employee_id"/>
+                        <field name="member_id"/>
+                    </group>
+                    <group>
+                        <field name="amount_subtotal" readonly="1"/>
+                        <field name="amount_total" readonly="1"/>
+                        <field name="locked_at" readonly="1"/>
+                        <field name="billed_at" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="点单明细">
+                            <field name="order_line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle" optional="hide"/>
+                                    <field name="product_id"/>
+                                    <field name="combo_id" optional="show"/>
+                                    <field name="product_uom_id" readonly="1" optional="show"/>
+                                    <field name="quantity"/>
+                                    <field name="batch_id"/>
+                                    <field name="price_unit" attrs="{'readonly': [('is_combo_component', '=', True)]}"/>
+                                    <field name="price_subtotal" readonly="1"/>
+                                    <field name="is_combo_component" invisible="1"/>
+                                    <field name="note" optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="备注">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_bar_order" model="ir.actions.act_window">
+        <field name="name">吧台订单</field>
+        <field name="res_model">store.bar.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+    </record>
+</odoo>

@@ -1,0 +1,89 @@
+<odoo>
+    <data>
+        <!-- Actions -->
+        <record id="action_store_member_partner" model="ir.actions.act_window">
+            <field name="name">会员档案</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_store_member', '=', True)]</field>
+            <field name="context">{'default_is_store_member': True, 'search_default_is_store_member': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    创建首位会员，记录消费与储值情况。
+                </p>
+            </field>
+        </record>
+
+        <record id="action_store_member_wallet" model="ir.actions.act_window">
+            <field name="name">会员余额</field>
+            <field name="res_model">store.member.wallet</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_store_member_balance_log" model="ir.actions.act_window">
+            <field name="name">余额变动日志</field>
+            <field name="res_model">store.member.balance.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_store_member_level" model="ir.actions.act_window">
+            <field name="name">会员等级</field>
+            <field name="res_model">store.member.level</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_store_member_preference" model="ir.actions.act_window">
+            <field name="name">偏好标签</field>
+            <field name="res_model">store.member.preference</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- 菜单 -->
+        <menuitem id="menu_store_member_root"
+                  name="会员互通"
+                  parent="contacts.menu_contacts"
+                  sequence="40"
+                  groups="store_member.group_store_member_user,store_member.group_store_member_admin"/>
+
+        <menuitem id="menu_store_member_partner"
+                  name="会员档案"
+                  parent="menu_store_member_root"
+                  action="action_store_member_partner"
+                  sequence="10"
+                  groups="store_member.group_store_member_user,store_member.group_store_member_admin"/>
+
+        <menuitem id="menu_store_member_wallet"
+                  name="会员余额"
+                  parent="menu_store_member_root"
+                  action="action_store_member_wallet"
+                  sequence="20"
+                  groups="store_member.group_store_member_user,store_member.group_store_member_admin"/>
+
+        <menuitem id="menu_store_member_balance_log"
+                  name="余额变动日志"
+                  parent="menu_store_member_root"
+                  action="action_store_member_balance_log"
+                  sequence="30"
+                  groups="store_member.group_store_member_user,store_member.group_store_member_admin"/>
+
+        <menuitem id="menu_store_member_config"
+                  name="会员配置"
+                  parent="menu_store_member_root"
+                  sequence="100"
+                  groups="store_member.group_store_member_admin"/>
+
+        <menuitem id="menu_store_member_level"
+                  name="会员等级"
+                  parent="menu_store_member_config"
+                  action="action_store_member_level"
+                  sequence="10"
+                  groups="store_member.group_store_member_admin"/>
+
+        <menuitem id="menu_store_member_preference"
+                  name="偏好标签"
+                  parent="menu_store_member_config"
+                  action="action_store_member_preference"
+                  sequence="20"
+                  groups="store_member.group_store_member_admin"/>
+    </data>
+</odoo>

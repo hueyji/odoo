@@ -1,0 +1,49 @@
+<odoo>
+    <data noupdate="1">
+        <!-- 会员管理管理员 -->
+        <record id="group_store_member_admin" model="res.groups">
+            <field name="name">会员管理管理员</field>
+            <field name="category_id" ref="base.module_category_sales"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- 会员管理专员 -->
+        <record id="group_store_member_user" model="res.groups">
+            <field name="name">会员管理专员</field>
+            <field name="category_id" ref="base.module_category_sales"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+    </data>
+
+    <data>
+        <!-- 余额账户规则 -->
+        <record id="store_member_wallet_rule_user" model="ir.rule">
+            <field name="name">会员余额访问限制</field>
+            <field name="model_id" ref="model_store_member_wallet"/>
+            <field name="groups" eval="[(4, ref('group_store_member_user'))]"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="store_member_wallet_rule_admin" model="ir.rule">
+            <field name="name">会员余额管理员访问</field>
+            <field name="model_id" ref="model_store_member_wallet"/>
+            <field name="groups" eval="[(4, ref('group_store_member_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- 余额日志 -->
+        <record id="store_member_balance_log_rule_user" model="ir.rule">
+            <field name="name">会员余额日志访问限制</field>
+            <field name="model_id" ref="model_store_member_balance_log"/>
+            <field name="groups" eval="[(4, ref('group_store_member_user'))]"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="store_member_balance_log_rule_admin" model="ir.rule">
+            <field name="name">会员余额日志管理员访问</field>
+            <field name="model_id" ref="model_store_member_balance_log"/>
+            <field name="groups" eval="[(4, ref('group_store_member_admin'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+    </data>
+</odoo>

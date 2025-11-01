@@ -1,0 +1,9 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_store_link_group_admin","store.link.group 管理员","model_store_link_group","brand_core.group_brand_platform_admin",1,1,1,1
+"access_store_link_group_portal_manager","store.link.group 门户经理","model_store_link_group","brand_core.group_brand_portal_manager",1,1,1,0
+"access_store_link_group_system","store.link.group 系统管理员","model_store_link_group","base.group_system",1,1,1,1
+"access_store_link_group_application_admin","store.link.group.application 管理员","model_store_link_group_application","brand_core.group_brand_platform_admin",1,1,1,1
+"access_store_link_group_application_user","store.link.group.application 内部用户","model_store_link_group_application","base.group_user",1,0,1,0
+"access_brand_core_cellar_admin","brand.core.cellar 管理员","model_brand_core_cellar","brand_core.group_brand_platform_admin",1,1,1,1
+"access_brand_core_cellar_portal_manager","brand.core.cellar 门户经理","model_brand_core_cellar","brand_core.group_brand_portal_manager",1,0,0,0
+"access_brand_core_cellar_system","brand.core.cellar 系统管理员","model_brand_core_cellar","base.group_system",1,1,1,1

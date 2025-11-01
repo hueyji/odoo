@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="store_performance_target_demo" model="store.performance.target">
+        <field name="name">演示调酒师 2024-12 目标</field>
+        <field name="employee_id" ref="store_commission.store_commission_demo_employee_bartender"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="period_type">monthly</field>
+        <field name="period_start">2024-12-01</field>
+        <field name="target_amount">20000</field>
+        <field name="note">演示用目标，自动同步到业绩看板。</field>
+    </record>
+
+    <record id="store_performance_record_demo" model="store.performance.record">
+        <field name="employee_id" ref="store_commission.store_commission_demo_employee_bartender"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="period_type">monthly</field>
+        <field name="period_start">2024-12-01</field>
+        <field name="period_end">2024-12-31</field>
+        <field name="confirmed_sales_amount">1300</field>
+        <field name="confirmed_commission_amount">65</field>
+        <field name="pending_sales_amount">0</field>
+        <field name="pending_commission_amount">0</field>
+        <field name="confirmed_order_count">1</field>
+        <field name="pending_order_count">0</field>
+        <field name="target_amount">20000</field>
+    </record>
+</odoo>

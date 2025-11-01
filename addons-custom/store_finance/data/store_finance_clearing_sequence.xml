@@ -1,0 +1,12 @@
+<odoo>
+    <data noupdate="1">
+        <record id="sequence_store_finance_clearing" model="ir.sequence">
+            <field name="name">互通清算编号</field>
+            <field name="code">store.finance.clearing</field>
+            <field name="prefix">CLR/%(company_id)s/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>
+

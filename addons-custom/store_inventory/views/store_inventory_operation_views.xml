@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_store_inventory_operation_tree" model="ir.ui.view">
+            <field name="name">store.inventory.operation.tree</field>
+            <field name="model">store.inventory.operation</field>
+            <field name="arch" type="xml">
+                <tree string="库存操作" default_order="create_date desc">
+                    <field name="name"/>
+                    <field name="operation_type"/>
+                    <field name="batch_id"/>
+                    <field name="requested_qty"/>
+                    <field name="counted_qty"/>
+                    <field name="state"/>
+                    <field name="scheduled_date"/>
+                    <field name="approver_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_inventory_operation_form" model="ir.ui.view">
+            <field name="name">store.inventory.operation.form</field>
+            <field name="model">store.inventory.operation</field>
+            <field name="arch" type="xml">
+                <form string="库存操作" create="true">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved,done"/>
+                        <button name="action_submit" type="object" string="提交审批" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_approve" type="object" string="审批通过" attrs="{'invisible': [('state', '!=', 'submitted')]}"/>
+                        <button name="action_execute" type="object" string="执行操作" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'approved')]}"/>
+                        <button name="action_cancel" type="object" string="取消" attrs="{'invisible': [('state', 'in', ['cancelled','done'])]}"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="batch_id" domain="[('company_id', '=', company_id)]"/>
+                                <field name="product_id" readonly="1"/>
+                                <field name="operation_type"/>
+                                <field name="requested_qty"/>
+                                <field name="counted_qty" attrs="{'invisible': [('operation_type', '!=', 'inventory')]}"/>
+                            </group>
+                            <group>
+                                <field name="source_location_id" attrs="{'required': [('operation_type', 'in', ['transfer', 'loss'])]}"/>
+                                <field name="dest_location_id" attrs="{'required': [('operation_type', 'in', ['incoming', 'transfer', 'inventory'])]}"/>
+                                <field name="scrap_location_id" attrs="{'invisible': [('operation_type', '!=', 'loss')]}"/>
+                                <field name="scheduled_date"/>
+                                <field name="company_id"/>
+                                <field name="approver_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="关联记录">
+                            <field name="picking_id" readonly="1"/>
+                        </group>
+                        <group string="备注">
+                            <field name="note"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_store_inventory_operation_search" model="ir.ui.view">
+            <field name="name">store.inventory.operation.search</field>
+            <field name="model">store.inventory.operation</field>
+            <field name="arch" type="xml">
+                <search string="搜索库存操作">
+                    <field name="name"/>
+                    <field name="operation_type"/>
+                    <field name="state"/>
+                    <filter string="待审批" name="filter_submitted" domain="[('state', '=', 'submitted')]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_store_inventory_operation" model="ir.actions.act_window">
+            <field name="name">库存操作</field>
+            <field name="res_model">store.inventory.operation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_store_inventory_operation_search"/>
+            <field name="context">{'default_company_id': user.company_id.id}</field>
+        </record>
+    </data>
+</odoo>

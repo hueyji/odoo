@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- store.link.group views -->
+    <record id="view_store_link_group_tree" model="ir.ui.view">
+        <field name="name">store.link.group.tree</field>
+        <field name="model">store.link.group</field>
+        <field name="arch" type="xml">
+            <tree string="互通组">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="owner_id"/>
+                <field name="share_inventory"/>
+                <field name="share_member"/>
+                <field name="share_finance"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_store_link_group_search" model="ir.ui.view">
+        <field name="name">store.link.group.search</field>
+        <field name="model">store.link.group</field>
+        <field name="arch" type="xml">
+            <search string="互通组搜索">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="owner_id"/>
+                <filter string="待审批" name="filter_pending" domain="[('state', '=', 'pending')]"/>
+                <filter string="已生效" name="filter_active" domain="[('state', '=', 'active')]"/>
+                <separator/>
+                <filter string="共享库存" name="filter_inventory" domain="[('share_inventory', '=', True)]"/>
+                <filter string="共享会员" name="filter_member" domain="[('share_member', '=', True)]"/>
+                <filter string="共享财务" name="filter_finance" domain="[('share_finance', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_store_link_group_form" model="ir.ui.view">
+        <field name="name">store.link.group.form</field>
+        <field name="model">store.link.group</field>
+        <field name="arch" type="xml">
+            <form string="互通组" class="o_form_configuration">
+                <sheet>
+                    <header>
+                        <button name="action_submit" type="object" string="提交审批" class="btn-primary" states="draft,rejected"/>
+                        <button name="action_approve" type="object" string="审批通过" class="btn-primary" states="pending" groups="brand_core.group_brand_platform_admin"/>
+                        <button name="action_reject" type="object" string="驳回" class="btn-secondary" states="pending" groups="brand_core.group_brand_platform_admin"/>
+                        <button name="action_reset_to_draft" type="object" string="重新编辑" class="btn-secondary" states="active,rejected"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,active,rejected"/>
+                    </header>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_applications" type="object" class="oe_stat_button" icon="fa-list">
+                            <field name="request_count" widget="statinfo" string="待审批"/>
+                        </button>
+                    </div>
+                    <group string="基本信息">
+                        <field name="name"/>
+                        <field name="company_id" readonly="1"/>
+                        <field name="owner_id"/>
+                        <field name="description" colspan="2"/>
+                    </group>
+                    <group string="共享范围" col="4">
+                        <field name="share_inventory"/>
+                        <field name="share_member"/>
+                        <field name="share_finance"/>
+                    </group>
+                    <group string="互通门店">
+                        <field name="member_company_ids" widget="many2many_tags" domain="['|', ('id', '=', company_id), ('parent_id', '=', company_id)]" options="{'no_create_edit': True}"/>
+                    </group>
+                    <notebook>
+                        <page string="申请记录">
+                            <field name="application_ids" readonly="1">
+                                <tree string="互通申请">
+                                    <field name="create_date"/>
+                                    <field name="request_company_id"/>
+                                    <field name="requested_member_ids" widget="many2many_tags"/>
+                                    <field name="share_inventory"/>
+                                    <field name="share_member"/>
+                                    <field name="share_finance"/>
+                                    <field name="state"/>
+                                    <field name="approver_id"/>
+                                    <field name="approved_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_link_group" model="ir.actions.act_window">
+        <field name="name">互通组</field>
+        <field name="res_model">store.link.group</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="brand_core.view_store_link_group_search"/>
+    </record>
+
+    <menuitem
+        id="menu_store_link_group"
+        name="互通组管理"
+        parent="brand_core.menu_brand_core_root"
+        sequence="15"
+        action="brand_core.action_store_link_group"
+        groups="brand_core.group_brand_platform_admin,brand_core.group_brand_portal_manager"
+    />
+
+    <!-- store.link.group.application views -->
+    <record id="view_store_link_group_application_tree" model="ir.ui.view">
+        <field name="name">store.link.group.application.tree</field>
+        <field name="model">store.link.group.application</field>
+        <field name="arch" type="xml">
+            <tree string="互通申请">
+                <field name="name"/>
+                <field name="group_id"/>
+                <field name="request_company_id"/>
+                <field name="share_inventory"/>
+                <field name="share_member"/>
+                <field name="share_finance"/>
+                <field name="state"/>
+                <field name="approver_id"/>
+                <field name="approved_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_store_link_group_application_form" model="ir.ui.view">
+        <field name="name">store.link.group.application.form</field>
+        <field name="model">store.link.group.application</field>
+        <field name="arch" type="xml">
+            <form string="互通申请">
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="group_id" readonly="1"/>
+                        <field name="company_id" readonly="1"/>
+                        <field name="request_company_id" readonly="1"/>
+                        <field name="state" readonly="1"/>
+                        <field name="approver_id" readonly="1"/>
+                        <field name="approved_date" readonly="1"/>
+                    </group>
+                    <group string="共享范围">
+                        <field name="share_inventory" readonly="1"/>
+                        <field name="share_member" readonly="1"/>
+                        <field name="share_finance" readonly="1"/>
+                    </group>
+                    <group string="互通门店">
+                        <field name="requested_member_ids" widget="many2many_tags" readonly="1"/>
+                    </group>
+                    <group string="说明">
+                        <field name="reason" readonly="1"/>
+                        <field name="reject_reason" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_store_link_group_application" model="ir.actions.act_window">
+        <field name="name">互通申请</field>
+        <field name="res_model">store.link.group.application</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,96 @@
+<odoo>
+    <data>
+        <record id="view_store_account_transaction_tree" model="ir.ui.view">
+            <field name="name">store.account.transaction.tree</field>
+            <field name="model">store.account.transaction</field>
+            <field name="arch" type="xml">
+                <tree string="财务流水" create="true" delete="false">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="transaction_type"/>
+                    <field name="amount" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="payment_channel_id"/>
+                    <field name="account_id"/>
+                    <field name="journal_id"/>
+                    <field name="related_model"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_account_transaction_search" model="ir.ui.view">
+            <field name="name">store.account.transaction.search</field>
+            <field name="model">store.account.transaction</field>
+            <field name="arch" type="xml">
+                <search string="财务流水搜索">
+                    <field name="name"/>
+                    <field name="transaction_type"/>
+                    <field name="payment_channel_id"/>
+                    <field name="account_id"/>
+                    <field name="state"/>
+                    <filter string="草稿" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="已确认" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter string="已取消" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                    <group expand="0" string="分组">
+                        <filter string="按类型" name="group_transaction_type" context="{'group_by': 'transaction_type'}"/>
+                        <filter string="按渠道" name="group_payment_channel" context="{'group_by': 'payment_channel_id'}"/>
+                        <filter string="按日记账" name="group_journal" context="{'group_by': 'journal_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_store_account_transaction_form" model="ir.ui.view">
+            <field name="name">store.account.transaction.form</field>
+            <field name="model">store.account.transaction</field>
+            <field name="arch" type="xml">
+                <form string="财务流水">
+                    <sheet>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="date"/>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                        </group>
+                        <group>
+                            <field name="transaction_type"/>
+                            <field name="amount" widget="monetary"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="payment_channel_id"/>
+                            <field name="account_map_id" readonly="1"/>
+                            <field name="account_id" readonly="1"/>
+                            <field name="journal_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="related_model"/>
+                            <field name="reference"/>
+                            <field name="account_move_id"/>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                        <group attrs="{'invisible': [('company_id', '=', False)]}">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_confirm" type="object" string="确认" class="btn-primary" states="draft"/>
+                        <button name="action_cancel" type="object" string="取消" class="btn-secondary" states="confirmed"/>
+                        <button name="action_reset_to_draft" type="object" string="恢复草稿" class="btn-secondary" states="cancelled"/>
+                        <button string="关闭" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_store_account_transaction" model="ir.actions.act_window">
+            <field name="name">财务流水</field>
+            <field name="res_model">store.account.transaction</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_transaction_type': 1}</field>
+        </record>
+    </data>
+</odoo>

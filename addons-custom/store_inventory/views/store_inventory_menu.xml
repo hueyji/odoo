@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <menuitem
+            id="menu_store_inventory_root"
+            name="门店运营"
+            parent="stock.menu_stock_root"
+            groups="store_inventory.group_store_inventory_user"
+            sequence="40"
+        />
+
+        <menuitem
+            id="menu_store_inventory_dashboard"
+            name="陈化看板"
+            parent="store_inventory.menu_store_inventory_root"
+            action="store_inventory.action_store_inventory_aging_dashboard"
+            groups="store_inventory.group_store_inventory_user"
+            sequence="5"
+        />
+
+        <menuitem
+            id="menu_store_inventory_batch"
+            name="陈化批次"
+            parent="store_inventory.menu_store_inventory_root"
+            action="store_inventory.action_store_inventory_batch"
+            groups="store_inventory.group_store_inventory_user"
+            sequence="10"
+        />
+
+        <menuitem
+            id="menu_store_inventory_operation"
+            name="库存操作"
+            parent="store_inventory.menu_store_inventory_root"
+            action="store_inventory.action_store_inventory_operation"
+            groups="store_inventory.group_store_inventory_user"
+            sequence="20"
+        />
+    </data>
+</odoo>

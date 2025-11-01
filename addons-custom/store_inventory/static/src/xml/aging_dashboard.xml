@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="store_inventory.AgingDashboard">
+        <div class="o_store_inventory_dashboard o_controller">
+            <div class="d-flex align-items-center mb-3">
+                <h2 class="me-3 mb-0">陈化看板</h2>
+                <button class="btn btn-primary me-2" type="button" t-on-click="refresh" t-att-disabled="state.loading">
+                    <i class="fa fa-refresh me-1"/>
+                    刷新
+                </button>
+                <button class="btn btn-secondary" type="button" t-on-click="exportReport" t-if="!state.loading">
+                    <i class="fa fa-download me-1"/>
+                    导出报表
+                </button>
+                <span class="text-muted ms-auto" t-if="state.generated_on">
+                    <i class="fa fa-clock-o me-1"/>生成时间：<t t-esc="state.generated_on"/>
+                </span>
+            </div>
+            <t t-if="state.loading">
+                <div class="text-center py-5">
+                    <i class="fa fa-spinner fa-spin fa-2x text-muted"/>
+                    <p class="mt-3 text-muted">正在加载陈化数据...</p>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">批次数量</h5>
+                                <p class="display-6 mb-0" t-esc="formatNumber(state.total_batches)"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-muted">现存数量</h5>
+                                <p class="display-6 mb-0">
+                                    <t t-esc="formatNumber(state.total_qty)"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <t t-foreach="state.summary" t-as="bucket" t-key="bucket.bucket_key">
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header text-white" t-att-class="'card-header text-white ' + bucketColor(bucket.bucket_key)">
+                                    <span t-esc="bucket.bucket_label"/>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">批次数</span>
+                                        <span class="fw-semibold" t-esc="formatNumber(bucket.batch_count)"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">库存数量</span>
+                                        <span class="fw-semibold" t-esc="formatNumber(bucket.qty_available)"/>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-muted">平均陈化天数</span>
+                                        <span class="fw-semibold" t-esc="bucket.avg_aging_days"/>
+                                    </div>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <t t-foreach="topBatches(bucket.bucket_key)" t-as="item" t-key="item.name">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div class="fw-semibold" t-esc="item.name"/>
+                                                <div class="text-muted small">
+                                                    <t t-esc="item.product"/>
+                                                    <t t-if="item.location"> · <t t-esc="item.location"/></t>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-light text-dark mb-1" t-esc="formatNumber(item.qty_available)"/>
+                                                <div class="text-muted small">陈化 <t t-esc="item.aging_days"/> 天</div>
+                                            </div>
+                                        </li>
+                                    </t>
+                                    <t t-if="topBatches(bucket.bucket_key).length === 0">
+                                        <li class="list-group-item text-center text-muted">暂无数据</li>
+                                    </t>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

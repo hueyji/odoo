@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_store_member_code" model="ir.sequence">
+            <field name="name">会员编号序列</field>
+            <field name="code">store.member.code</field>
+            <field name="prefix">HY%(y)s%(month)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="ref('base.main_company')"/>
+        </record>
+    </data>
+</odoo>

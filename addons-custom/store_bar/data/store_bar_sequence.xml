@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sequence_store_bar_order" model="ir.sequence">
+        <field name="name">吧台订单序列</field>
+        <field name="code">store.bar.order</field>
+        <field name="prefix">BAR%(y)s</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

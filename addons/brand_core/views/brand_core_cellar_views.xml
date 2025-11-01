@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_brand_core_cellar_tree" model="ir.ui.view">
+        <field name="name">brand.core.cellar.tree</field>
+        <field name="model">brand.core.cellar</field>
+        <field name="arch" type="xml">
+            <tree string="陈化仓">
+                <field name="name"/>
+                <field name="company_id"/>
+                <field name="manager_id"/>
+                <field name="temperature_target"/>
+                <field name="humidity_target"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_brand_core_cellar_form" model="ir.ui.view">
+        <field name="name">brand.core.cellar.form</field>
+        <field name="model">brand.core.cellar</field>
+        <field name="arch" type="xml">
+            <form string="陈化仓">
+                <sheet>
+                    <group string="基础信息">
+                        <field name="name"/>
+                        <field name="company_id" options="{'no_create': True}"/>
+                        <field name="manager_id"/>
+                    </group>
+                    <group string="环境指标" col="2">
+                        <field name="temperature_target"/>
+                        <field name="humidity_target"/>
+                    </group>
+                    <group string="备注">
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_brand_core_cellar" model="ir.actions.act_window">
+        <field name="name">陈化仓</field>
+        <field name="res_model">brand.core.cellar</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_brand_core_cellar"
+        name="陈化仓配置"
+        parent="brand_core.menu_brand_core_root"
+        sequence="18"
+        action="brand_core.action_brand_core_cellar"
+        groups="brand_core.group_brand_platform_admin,brand_core.group_brand_portal_manager"
+    />
+</odoo>

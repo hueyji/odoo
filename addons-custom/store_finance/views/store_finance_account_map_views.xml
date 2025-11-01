@@ -1,0 +1,49 @@
+<odoo>
+    <data>
+        <record id="view_store_finance_account_map_tree" model="ir.ui.view">
+            <field name="name">store.finance.account.map.tree</field>
+            <field name="model">store.finance.account.map</field>
+            <field name="arch" type="xml">
+                <tree string="科目映射" create="true" edit="true">
+                    <field name="transaction_type"/>
+                    <field name="payment_channel_id"/>
+                    <field name="account_id"/>
+                    <field name="journal_id"/>
+                    <field name="active"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_finance_account_map_form" model="ir.ui.view">
+            <field name="name">store.finance.account.map.form</field>
+            <field name="model">store.finance.account.map</field>
+            <field name="arch" type="xml">
+                <form string="科目映射">
+                    <sheet>
+                        <group>
+                            <field name="transaction_type"/>
+                            <field name="payment_channel_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="account_id"/>
+                            <field name="journal_id"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_store_finance_account_map" model="ir.actions.act_window">
+            <field name="name">科目映射</field>
+            <field name="res_model">store.finance.account.map</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
+

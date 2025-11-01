@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_store_crowdfunding_investment_tree" model="ir.ui.view">
+            <field name="name">store.crowdfunding.investment.tree</field>
+            <field name="model">store.crowdfunding.investment</field>
+            <field name="arch" type="xml">
+                <tree string="众筹投资">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="partner_id"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+                    <field name="investment_date"/>
+                    <field name="confirm_date"/>
+                    <field name="account_transaction_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_store_crowdfunding_investment_form" model="ir.ui.view">
+            <field name="name">store.crowdfunding.investment.form</field>
+            <field name="model">store.crowdfunding.investment</field>
+            <field name="arch" type="xml">
+                <form string="众筹投资">
+                    <header>
+                        <button name="action_confirm" type="object" string="确认投资" class="btn-primary"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_cancel" type="object" string="取消" class="btn-secondary"
+                                attrs="{'invisible': [('state', '=', 'cancelled')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="project_id" required="1"/>
+                                <field name="partner_id" required="1"/>
+                                <field name="amount"/>
+                                <field name="payment_channel_id"/>
+                            </group>
+                            <group>
+                                <field name="company_id" readonly="1"/>
+                                <field name="investment_date"/>
+                                <field name="confirm_date" readonly="1"/>
+                                <field name="account_transaction_id" readonly="1"/>
+                                <field name="note"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_store_crowdfunding_investments"
+                    name="众筹投资"
+                    res_model="store.crowdfunding.investment"
+                    view_mode="tree,form"
+                    context="{'search_default_project_id': active_id}"/>
+    </data>
+</odoo>

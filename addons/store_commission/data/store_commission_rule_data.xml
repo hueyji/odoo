@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_store_commission_log" model="ir.sequence">
+        <field name="name">提成日志编号</field>
+        <field name="code">store.commission.log</field>
+        <field name="prefix">COM%(y)s%(month)s</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

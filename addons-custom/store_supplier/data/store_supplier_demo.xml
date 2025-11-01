@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="store_supplier_partner_havana_leaf" model="res.partner">
+            <field name="name">哈瓦那雪茄叶有限公司</field>
+            <field name="company_type">company</field>
+            <field name="street">古巴大道 18 号</field>
+            <field name="phone">+53 1234 5670</field>
+            <field name="email">sales@havana-leaf.com</field>
+            <field name="supplier_rank">1</field>
+            <field name="country_id" ref="base.us"/>
+        </record>
+
+        <record id="store_supplier_profile_havana" model="store.supplier">
+            <field name="name">哈瓦那雪茄叶有限公司</field>
+            <field name="partner_id" ref="store_supplier.store_supplier_partner_havana_leaf"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="score_delivery">4.5</field>
+            <field name="score_quality">4.8</field>
+            <field name="score_service">4.2</field>
+            <field name="risk_level">low</field>
+            <field name="contact_user_id" ref="base.user_admin"/>
+            <field name="note">主营雪茄原叶，提供长期陈化库存。</field>
+        </record>
+
+        <record id="store_supplier_partner_highland" model="res.partner">
+            <field name="name">高地威士忌酒庄</field>
+            <field name="company_type">company</field>
+            <field name="street">苏格兰高地 25 号</field>
+            <field name="phone">+44 9876 1234</field>
+            <field name="email">contact@highlandwhisky.com</field>
+            <field name="supplier_rank">1</field>
+            <field name="country_id" ref="base.uk"/>
+        </record>
+
+        <record id="store_supplier_profile_highland" model="store.supplier">
+            <field name="name">高地威士忌酒庄</field>
+            <field name="partner_id" ref="store_supplier.store_supplier_partner_highland"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="score_delivery">3.5</field>
+            <field name="score_quality">4.6</field>
+            <field name="score_service">3.8</field>
+            <field name="risk_level">medium</field>
+            <field name="is_blacklisted">True</field>
+            <field name="blacklist_reason">多次延迟发货且未提供补偿方案。</field>
+            <field name="blacklist_date">2024-10-15</field>
+            <field name="blacklist_user_id" ref="base.user_admin"/>
+        </record>
+
+        <record id="store_supplier_partner_branch" model="res.partner">
+            <field name="name">湾区精品酒类供应</field>
+            <field name="company_type">company</field>
+            <field name="street">湾区大道 56 号</field>
+            <field name="phone">+1 202 889 9523</field>
+            <field name="email">service@bayarea-supply.com</field>
+            <field name="supplier_rank">1</field>
+            <field name="country_id" ref="base.us"/>
+        </record>
+
+        <record id="store_supplier_profile_branch" model="store.supplier">
+            <field name="name">湾区精品酒类供应</field>
+            <field name="partner_id" ref="store_supplier.store_supplier_partner_branch"/>
+            <field name="company_id" ref="store_inventory.store_inventory_company_branch"/>
+            <field name="score_delivery">4.0</field>
+            <field name="score_quality">4.1</field>
+            <field name="score_service">4.3</field>
+            <field name="risk_level">low</field>
+            <field name="contact_user_id" ref="base.user_root"/>
+            <field name="note">分店专属供应商，负责小批量定制货源。</field>
+        </record>
+    </data>
+</odoo>

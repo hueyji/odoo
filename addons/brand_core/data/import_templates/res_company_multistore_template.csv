@@ -1,0 +1,4 @@
+name,parent_id/id,phone,street
+品牌总部,,021-00000000,上海市黄浦区示范路1号
+加盟门店一,base.main_company,021-10000001,上海市徐汇区示范路2号
+投资人虚拟公司,base.main_company,,虚拟公司

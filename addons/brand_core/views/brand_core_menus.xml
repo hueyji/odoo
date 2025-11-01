@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_brand_company_overview" model="ir.actions.act_window">
+            <field name="name">品牌公司概览</field>
+            <field name="res_model">res.company</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    配置品牌总部、加盟门店与投资人虚拟公司结构。
+                </p>
+            </field>
+        </record>
+
+        <record id="action_brand_portal_security" model="ir.actions.act_window">
+            <field name="name">互通权限配置</field>
+            <field name="res_model">res.groups</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('category_id', '=', ref('brand_core.module_category_brand_core'))]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    核对品牌平台访问组与门户权限映射，确保互通安全。
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="menu_brand_core_root"
+            name="品牌平台"
+            parent="base.menu_management"
+            sequence="20"
+            groups="brand_core.group_brand_platform_admin,brand_core.group_brand_portal_manager"
+        />
+
+        <menuitem
+            id="menu_brand_core_company"
+            name="多公司结构"
+            parent="brand_core.menu_brand_core_root"
+            sequence="10"
+            action="brand_core.action_brand_company_overview"
+            groups="brand_core.group_brand_platform_admin"
+        />
+
+        <menuitem
+            id="menu_brand_core_access"
+            name="互通权限"
+            parent="brand_core.menu_brand_core_root"
+            sequence="20"
+            action="brand_core.action_brand_portal_security"
+            groups="brand_core.group_brand_platform_admin,brand_core.group_brand_portal_manager"
+        />
+    </data>
+</odoo>

@@ -1,0 +1,42 @@
+<odoo>
+    <data noupdate="1">
+        <record id="level_bronze" model="store.member.level">
+            <field name="name">银卡会员</field>
+            <field name="code">silver</field>
+            <field name="sequence">10</field>
+            <field name="threshold_amount">0</field>
+            <field name="benefit_note">享受基础积分与生日祝福。</field>
+        </record>
+
+        <record id="level_gold" model="store.member.level">
+            <field name="name">金卡会员</field>
+            <field name="code">gold</field>
+            <field name="sequence">20</field>
+            <field name="threshold_amount">10000</field>
+            <field name="benefit_note">预约专属储藏柜、优先陈化推荐。</field>
+        </record>
+
+        <record id="level_platinum" model="store.member.level">
+            <field name="name">黑金会员</field>
+            <field name="code">platinum</field>
+            <field name="sequence">30</field>
+            <field name="threshold_amount">50000</field>
+            <field name="benefit_note">享受品牌活动优先席位、众筹专属额度。</field>
+        </record>
+
+        <record id="preference_single_malt" model="store.member.preference">
+            <field name="name">单一麦芽威士忌</field>
+            <field name="description">偏好单一麦芽风味，适合推出陈年酒款。</field>
+        </record>
+
+        <record id="preference_cigar_mild" model="store.member.preference">
+            <field name="name">轻柔型雪茄</field>
+            <field name="description">偏好香气柔和的雪茄，适合推荐入门级产品。</field>
+        </record>
+
+        <record id="preference_crowdfunding" model="store.member.preference">
+            <field name="name">门店众筹</field>
+            <field name="description">关注品牌扩张与众筹活动。</field>
+        </record>
+    </data>
+</odoo>
