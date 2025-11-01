@@ -72,8 +72,8 @@
                         <group>
                             <field name="description"/>
                         </group>
-                        <group attrs="{'invisible': [('company_id', '=', False)]}">
-                            <field name="company_id" groups="base.group_multi_company"/>
+                        <group groups="base.group_multi_company">
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                     <footer>

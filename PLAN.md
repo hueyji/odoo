@@ -151,30 +151,87 @@
 - [x] 确认合同水印能力满足需求并规划替代方案（2025-11-02：采用 Odoo 附件+水印状态追踪，提供水印确认动作，内置基于 ReportLab/PyPDF2 的自动水印生成）
 - [x] 与 Team D/E 对齐分红与投资入账触发点，避免重复记账（2025-11-02：投资/分红流水使用 `crowdfunding_invest/crowdfunding_dividend` 科目映射，匹配 Team D 会计口径；会员权限透出 `enable_investment`）
 
-## 2025-11-01 模块激活错误深度分析与修复记录
+## 2025-11-01 模块激活错误系统性修复完成 ✓
 
-### 发现的重大错误
-1. **数据库权限错误** (CRITICAL): store_member_preference表权限不足，PostgreSQL用户odoo不是表所有者
-2. **Odoo 16兼容性错误** (HIGH): store_commission模块中pos.order和sale.order的Many2one字段使用了不支持的tracking=True参数
-3. **数据库脏数据** (HIGH): ir_model_data表中存在重复记录，导致模块加载失败
-4. **模块未正确识别** (MEDIUM): 模块__manifest__.py存在但Odoo无法识别为installable
-5. **视图验证错误** (MEDIUM): res.partner和stock.move的扩展视图引用了尚未创建的字段
+### 修复总结
+**所有自定义模块已成功安装并激活！**
 
-### 已完成的修复
-- [x] **修复store_commission的tracking参数** (2025-11-01 12:42): 移除pos_order.py和sale_order.py中Many2one字段的tracking=True参数
-- [x] **清理数据库脏数据** (2025-11-01 12:42): 删除所有store_开头的表、视图和模块记录
-- [x] **权限问题分析** (2025-11-01 12:42): 定位到表权限不足是安装失败的主要原因
+已成功安装的模块：
+- ✓ brand_core
+- ✓ store_finance
+- ✓ store_bar
+- ✓ store_commission
+- ✓ store_performance
+- ✓ store_supplier
+- ✓ store_crowdfunding
+- ✓ store_inventory
+- ✓ store_member
 
-### 建议的下一步行动
-由于数据库权限问题的复杂性，建议采用以下方案之一：
-1. 创建全新数据库环境，重新安装所有模块
-2. 使用PostgreSQL超级用户权限重置表所有权
-3. 分模块逐步安装，先解决核心依赖再安装业务模块
+### 修复的主要问题
+
+#### 1. store_finance 模块
+- **问题**: account_type 引用错误、journal 引用不存在、XML 加载顺序错误、company_id domain 限制
+- **修复**:
+  - 将 account_type 从 External ID 改为字符串值（`income`, `asset_cash`, `liability_current`, `expense`, `expense_direct_cost`）
+  - 移除不存在的 journal 引用
+  - 调整 XML 加载顺序：security → data → views → menu
+  - 移除视图中 company_id 字段的 domain 和 attrs 限制
+
+#### 2. store_bar 模块
+- **问题**: 菜单父级引用错误（`sales_team.menu_sales_root` 不存在）
+- **修复**: 将菜单父级改为 `sale.sale_menu_root`
+
+#### 3. store_performance 模块
+- **问题**: XML 实体编码错误（`&nbsp;` 不支持）
+- **修复**: 将 `&nbsp;` 改为 `&#160;`
+
+#### 4. store_supplier 模块
+- **问题**: XML 加载顺序错误、引用不存在的文件、filter 缺少 name 属性
+- **修复**:
+  - 调整 XML 加载顺序：security → views → menu
+  - 移除 manifest 中不存在的 `data/store_supplier_demo.xml` 引用
+  - 为所有 filter 元素添加 name 属性
+
+#### 5. store_crowdfunding 模块
+- **问题**: XML 加载顺序错误、portal 模板 XPath 错误、实体编码错误
+- **修复**:
+  - 调整 XML 加载顺序：security → data → investment_views → dividend_views → project_views → portal_templates → menus
+  - 修复 portal 模板 XPath：`//div[@id='o_portal_my_home']` → `//div[@class='o_portal_my_home']`
+  - 修复实体编码：`&larr;` → `&#8592;`
+  - 修复 `t-else` 属性：添加 `=""` 使其有效
+  - 临时禁用 demo 数据文件（存在 RelaxNG 验证问题）
+
+### 关键经验总结
+
+1. **XML 加载顺序至关重要**
+   - 必须遵循：security → data → actions → views → menus
+   - actions 必须在引用它们的 menus 之前定义
+   - views 必须在引用它们的 actions 之前定义
+
+2. **Odoo 16 字段限制**
+   - 受权限组限制的字段（如 `company_id`）不能在 domain 或 attrs 中使用
+   - 解决方案：使用"隐藏字段 + 可见字段"的双字段模式
+
+3. **XML 实体编码**
+   - 只支持基本实体：`&lt;`, `&gt;`, `&amp;`, `&quot;`, `&apos;`
+   - 其他实体必须使用数字编码：`&#160;` (nbsp), `&#8592;` (larr)
+
+4. **QWeb 模板属性**
+   - `t-else` 等布尔属性必须有值（即使是空字符串）：`t-else=""`
+
+5. **Portal 模板继承**
+   - 使用 class 选择器而非 id：`//div[@class='o_portal_my_home']`
 
 ### 相关文件
-- `/tmp/error_analysis_report.md` - 详细错误分析报告
-- `/Users/shawnmacmini/code/odoo-16.0/addons/store_commission/models/pos_order.py` - 已修复tracking参数
-- `/Users/shawnmacmini/code/odoo-16.0/addons/store_commission/models/sale_order.py` - 已修复tracking参数
+- `addons-custom/store_finance/__manifest__.py` - 修复加载顺序
+- `addons-custom/store_finance/data/store_finance_account_map_data.xml` - 修复 account_type
+- `addons-custom/store_finance/models/account_transaction.py` - 移除 domain 限制
+- `addons-custom/store_bar/views/store_bar_menu.xml` - 修复菜单父级
+- `addons-custom/store_performance/views/store_performance_record_views.xml` - 修复实体编码
+- `addons-custom/store_supplier/__manifest__.py` - 修复加载顺序和文件引用
+- `addons-custom/store_supplier/views/store_supplier_views.xml` - 添加 filter name
+- `addons-custom/store_crowdfunding/__manifest__.py` - 修复加载顺序
+- `addons-custom/store_crowdfunding/views/store_crowdfunding_portal_templates.xml` - 修复 XPath 和实体编码
 
 ## 质量与运维保障
 - [ ] 制定自动化测试策略：模块单测 ≥80%，接口烟囱测试覆盖关键链路

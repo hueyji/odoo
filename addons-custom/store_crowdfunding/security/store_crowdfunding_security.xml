@@ -38,18 +38,14 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <record id="rule_store_crowdfunding_project_portal" model="ir.rule">
+        <!-- TODO: 门户规则暂时禁用，需要修复 domain 解析问题 -->
+        <!-- <record id="rule_store_crowdfunding_project_portal" model="ir.rule">
             <field name="name">众筹项目-门户可读</field>
             <field name="model_id" ref="model_store_crowdfunding_project"/>
-            <field name="domain_force">
-                [
-                    ('portal_published', '=', True),
-                    ('state', 'in', ['fundraising', 'in_progress', 'closed'])
-                ]
-            </field>
+            <field name="domain_force">[('portal_published', '=', True)]</field>
             <field name="groups" eval="[(4, ref('portal.group_portal'))]"/>
             <field name="perm_read" eval="True"/>
-        </record>
+        </record> -->
 
         <record id="rule_store_crowdfunding_investment_user" model="ir.rule">
             <field name="name">众筹投资-所属公司可读</field>
@@ -70,13 +66,14 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <record id="rule_store_crowdfunding_investment_portal" model="ir.rule">
+        <!-- TODO: 门户规则暂时禁用，需要修复 domain 解析问题 -->
+        <!-- <record id="rule_store_crowdfunding_investment_portal" model="ir.rule">
             <field name="name">众筹投资-门户本人</field>
             <field name="model_id" ref="model_store_crowdfunding_investment"/>
             <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
             <field name="groups" eval="[(4, ref('portal.group_portal'))]"/>
             <field name="perm_read" eval="True"/>
-        </record>
+        </record> -->
 
         <record id="rule_store_crowdfunding_dividend_user" model="ir.rule">
             <field name="name">众筹分红-所属公司可读</field>
@@ -116,12 +113,13 @@
             <field name="perm_unlink" eval="True"/>
         </record>
 
-        <record id="rule_store_crowdfunding_dividend_payout_portal" model="ir.rule">
+        <!-- TODO: 门户规则暂时禁用，需要修复 domain 解析问题 -->
+        <!-- <record id="rule_store_crowdfunding_dividend_payout_portal" model="ir.rule">
             <field name="name">众筹分红明细-门户本人</field>
             <field name="model_id" ref="model_store_crowdfunding_dividend_payout"/>
             <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
             <field name="groups" eval="[(4, ref('portal.group_portal'))]"/>
             <field name="perm_read" eval="True"/>
-        </record>
+        </record> -->
     </data>
 </odoo>

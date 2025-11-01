@@ -19,13 +19,11 @@ class StoreFinancePaymentChannel(models.Model):
     journal_id = fields.Many2one(
         "account.journal",
         string="默认日记账",
-        domain="[('company_id', '=', company_id)]",
         help="用于记录该渠道流水的日记账。",
     )
     account_id = fields.Many2one(
         "account.account",
         string="默认科目",
-        domain="[('company_id', '=', company_id)]",
         help="如未在科目映射中指定，将回退到此默认科目。",
     )
     description = fields.Text(string="说明")

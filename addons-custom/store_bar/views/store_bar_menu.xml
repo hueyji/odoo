@@ -3,7 +3,7 @@
     <menuitem
         id="menu_store_bar_root"
         name="吧台前台"
-        parent="sales_team.menu_sales_root"
+        parent="sale.sale_menu_root"
         sequence="20"
         groups="store_bar.group_bar_user"
     />

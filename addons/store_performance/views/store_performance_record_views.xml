@@ -72,7 +72,7 @@
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_record_head">
                                 <strong t-esc="record.employee_id.raw_value"/>
-                                <span class="o_stat_value">&nbsp;</span>
+                                <span class="o_stat_value">&#160;</span>
                             </div>
                             <div>
                                 <div>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="portal_my_home_crowdfunding" inherit_id="portal.portal_my_home">
-        <xpath expr="//div[@id='o_portal_my_home']" position="inside">
+    <data>
+        <template id="portal_my_home_crowdfunding" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@class='o_portal_my_home']" position="inside">
             <div class="row o_portal_crowdfunding_summary my-3">
                 <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
                     <div class="o_portal_box text-center">
@@ -134,7 +135,7 @@
     <template id="portal_crowdfunding_project_detail" name="众筹项目详情">
         <t t-call="portal.portal_layout">
             <div class="o_portal_container">
-                <a href="/my/crowdfunding" class="btn btn-link">&larr; 返回项目列表</a>
+                <a href="/my/crowdfunding" class="btn btn-link">&#8592; 返回项目列表</a>
                 <h2 class="mb-2">
                     <t t-esc="project.name"/>
                 </h2>
@@ -185,17 +186,17 @@
                         <div class="mb-3">
                             <h5>项目概述</h5>
                             <p t-if="project.summary"><t t-esc="project.summary"/></p>
-                            <p t-else class="text-muted">暂无项目概述。</p>
+                            <p t-else="" class="text-muted">暂无项目概述。</p>
                         </div>
                         <div class="mb-3">
                             <h5>分红规则</h5>
                             <div t-if="project.dividend_rule" t-raw="project.dividend_rule"/>
-                            <p t-else class="text-muted">未提供分红规则说明。</p>
+                            <p t-else="" class="text-muted">未提供分红规则说明。</p>
                         </div>
                         <div class="mb-3">
                             <h5>投资亮点</h5>
                             <p t-if="project.investor_highlight"><t t-esc="project.investor_highlight"/></p>
-                            <p t-else class="text-muted">暂无投资亮点描述。</p>
+                            <p t-else="" class="text-muted">暂无投资亮点描述。</p>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -252,5 +253,6 @@
                 </div>
             </div>
         </t>
-    </template>
+        </template>
+    </data>
 </odoo>

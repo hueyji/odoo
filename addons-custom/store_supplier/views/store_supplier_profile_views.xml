@@ -96,11 +96,11 @@
                     <field name="risk_level"/>
                     <filter string="黑名单" name="filter_blacklist" domain="[('is_blacklisted', '=', True)]"/>
                     <filter string="高风险" name="filter_high_risk" domain="[('risk_level', '=', 'high')]"/>
-                    <filter string="综合评分 ≥4" name="filter_high_rating" domain="[('rating_overall', '>=', 4)]"/>
+                    <filter string="综合评分 ≥4" name="filter_high_rating" domain="[('rating_overall', '&gt;=', 4)]"/>
                     <group expand="0" string="分组">
-                        <filter string="按风险" context="{'group_by': 'risk_level'}"/>
-                        <filter string="按标签" context="{'group_by': 'category_ids'}"/>
-                        <filter string="按对接人" context="{'group_by': 'contact_user_id'}"/>
+                        <filter string="按风险" name="group_by_risk" context="{'group_by': 'risk_level'}"/>
+                        <filter string="按标签" name="group_by_category" context="{'group_by': 'category_ids'}"/>
+                        <filter string="按对接人" name="group_by_contact" context="{'group_by': 'contact_user_id'}"/>
                     </group>
                 </search>
             </field>
@@ -162,8 +162,8 @@
                     <field name="risk_level"/>
                     <field name="is_blacklisted"/>
                     <group expand="0" string="分组">
-                        <filter string="按风险" context="{'group_by': 'risk_level'}"/>
-                        <filter string="按黑名单" context="{'group_by': 'is_blacklisted'}"/>
+                        <filter string="按风险" name="group_by_risk_report" context="{'group_by': 'risk_level'}"/>
+                        <filter string="按黑名单" name="group_by_blacklist" context="{'group_by': 'is_blacklisted'}"/>
                     </group>
                 </search>
             </field>

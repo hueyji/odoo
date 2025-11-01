@@ -40,7 +40,6 @@ class StoreAccountTransaction(models.Model):
     payment_channel_id = fields.Many2one(
         "store.finance.payment.channel",
         string="支付渠道",
-        domain="[('company_id', '=', company_id)]",
     )
     account_map_id = fields.Many2one(
         "store.finance.account.map",
@@ -109,6 +108,17 @@ class StoreAccountTransaction(models.Model):
     _sql_constraints = [
         ("company_name_unique", "unique(name, company_id)", "同一公司内流水编号已存在。"),
     ]
+
+    @api.onchange("company_id")
+    def _onchange_company_id(self):
+        """当公司改变时，返回支付渠道的 domain"""
+        if self.company_id:
+            return {
+                'domain': {
+                    'payment_channel_id': [('company_id', '=', self.company_id.id)]
+                }
+            }
+        return {'domain': {'payment_channel_id': []}}
 
     @api.depends("transaction_type", "payment_channel_id", "company_id")
     def _compute_account_map(self):

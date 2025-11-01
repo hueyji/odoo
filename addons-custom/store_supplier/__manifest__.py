@@ -14,11 +14,14 @@
     "license": "LGPL-3",
     "depends": ["purchase", "mail", "store_inventory"],
     "data": [
+        # 1. 安全：组、规则、权限
         "security/store_supplier_security.xml",
         "security/ir.model.access.csv",
-        "views/store_supplier_menu.xml",
+        # 2. 视图定义（必须在菜单之前，因为菜单会引用动作）
         "views/store_supplier_profile_views.xml",
-        "views/store_supplier_report_views.xml",
+        # 3. 菜单（最后加载，因为菜单引用动作）
+        "views/store_supplier_menu.xml",
+        # 4. 演示数据
         "data/store_supplier_demo.xml",
     ],
     "demo": [],

@@ -14,18 +14,22 @@
     "license": "LGPL-3",
     "depends": ["account"],
     "data": [
+        # 1. 安全：组、规则、权限
         "security/store_finance_security.xml",
         "security/ir.model.access.csv",
+        # 2. 基础数据：序列
         "data/store_finance_sequence.xml",
         "data/store_finance_clearing_sequence.xml",
         "data/store_finance_payment_channel_data.xml",
         "data/store_finance_account_map_data.xml",
-        "views/store_finance_menu.xml",
+        # 3. 视图定义（必须在菜单之前，因为菜单会引用动作）
         "views/store_account_transaction_views.xml",
         "views/store_finance_payment_channel_views.xml",
         "views/store_finance_account_map_views.xml",
         "views/store_finance_clearing_views.xml",
         "views/store_finance_report_views.xml",
+        # 4. 菜单（最后加载，因为菜单引用动作）
+        "views/store_finance_menu.xml",
     ],
     "demo": [
         "data/store_finance_demo_transaction.xml",

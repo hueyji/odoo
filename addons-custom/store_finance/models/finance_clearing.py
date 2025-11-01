@@ -148,7 +148,7 @@ class StoreFinanceClearingLine(models.Model):
         "store.account.transaction",
         string="财务流水",
         required=True,
-        domain="[('state', '=', 'confirmed'), ('company_id', '=', parent.company_id)]",
+        domain="[('state', '=', 'confirmed')]",
     )
     company_id = fields.Many2one(
         related="clearing_id.company_id",

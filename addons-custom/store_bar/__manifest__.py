@@ -16,7 +16,7 @@
         "product",
         "hr",
         "store_inventory",
-        "sales_team",
+        "sale",
     ],
     "data": [
         # 1. 基础数据：序列

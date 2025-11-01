@@ -1,94 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <record id="crowdfunding_project_demo_001" model="store.crowdfunding.project">
-            <field name="name">旗舰店扩建计划</field>
-            <field name="code">CFP2025DEMO</field>
-            <field name="company_id" ref="base.main_company"/>
-            <field name="applicant_id" ref="base.user_admin"/>
-            <field name="approval_user_id" ref="base.user_admin"/>
-            <field name="goal_amount">500000</field>
-            <field name="minimum_amount">350000</field>
-            <field name="summary">旗舰店新增雪茄品鉴区、威士忌吧台，覆盖品牌标准体验。</field>
-            <field name="investor_highlight">品牌直营旗舰店，客流稳定，预计 14 个月回本。</field>
-            <field name="dividend_rule" type="html">
+    <record id="crowdfunding_attachment_demo_contract" model="ir.attachment">
+        <field name="name">旗舰店扩建合同.pdf</field>
+        <field name="datas">5LyX56255ZCI5ZCM56S65L6L</field>
+        <field name="mimetype">text/plain</field>
+        <field name="res_model">store.crowdfunding.project</field>
+    </record>
+
+    <record id="crowdfunding_project_demo_001" model="store.crowdfunding.project">
+        <field name="name">旗舰店扩建计划</field>
+        <field name="code">CFP2025DEMO</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="applicant_id" ref="base.user_admin"/>
+        <field name="approval_user_id" ref="base.user_admin"/>
+        <field name="goal_amount">500000</field>
+        <field name="minimum_amount">350000</field>
+        <field name="summary">旗舰店新增雪茄品鉴区、威士忌吧台，覆盖品牌标准体验。</field>
+        <field name="investor_highlight">品牌直营旗舰店，客流稳定，预计 14 个月回本。</field>
+        <field name="dividend_rule" type="html">
                 <![CDATA[
-                    <p>1. 募集完成后 30 日内启动装修。</p>
-                    <p>2. 按季度发放分红，预计年化收益 12%。</p>
-                    <p>3. 发生重大变更时由品牌运营提前 15 日通知投资人。</p>
+                <p>1. 募集完成后 30 日内启动装修。</p>
+                <p>2. 按季度发放分红，预计年化收益 12%。</p>
+                <p>3. 发生重大变更时由品牌运营提前 15 日通知投资人。</p>
                 ]]>
-            </field>
-            <field name="fundraising_start_date">2025-10-01</field>
-            <field name="fundraising_deadline">2025-11-30</field>
-            <field name="state">fundraising</field>
-            <field name="contract_watermark_status">ready</field>
-            <field name="portal_published">True</field>
-            <field name="submit_date">2025-09-25 10:00:00</field>
-            <field name="approval_date">2025-09-26 15:00:00</field>
-        </record>
+        </field>
+        <field name="fundraising_start_date">2025-10-01</field>
+        <field name="fundraising_deadline">2025-11-30</field>
+        <field name="state">fundraising</field>
+        <field name="contract_watermark_status">ready</field>
+        <field name="portal_published">True</field>
+        <field name="submit_date">2025-09-25 10:00:00</field>
+        <field name="approval_date">2025-09-26 15:00:00</field>
+        <field name="contract_attachment_ids" eval="[(4, ref('crowdfunding_attachment_demo_contract'))]"/>
+    </record>
 
-        <record id="crowdfunding_attachment_demo_contract" model="ir.attachment">
-            <field name="name">旗舰店扩建合同.pdf</field>
-            <field name="datas">5LyX56255ZCI5ZCM56S65L6L</field>
-            <field name="mimetype">text/plain</field>
-            <field name="res_model">store.crowdfunding.project</field>
-            <field name="res_id" eval="ref('store_crowdfunding.crowdfunding_project_demo_001')"/>
-        </record>
+    <record id="crowdfunding_dividend_demo_q1" model="store.crowdfunding.dividend">
+        <field name="name">2026Q1 分红</field>
+        <field name="project_id" ref="store_crowdfunding.crowdfunding_project_demo_001"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="planned_date">2026-03-31</field>
+        <field name="amount">30000</field>
+        <field name="state">pending</field>
+    </record>
 
-        <record id="crowdfunding_project_demo_001_attachment_rel" model="store.crowdfunding.project">
-            <field name="id" eval="ref('store_crowdfunding.crowdfunding_project_demo_001')"/>
-            <field name="contract_attachment_ids" eval="[(4, ref('store_crowdfunding.crowdfunding_attachment_demo_contract'))]"/>
-        </record>
+    <record id="crowdfunding_dividend_demo_q2" model="store.crowdfunding.dividend">
+        <field name="name">2026Q2 分红</field>
+        <field name="project_id" ref="store_crowdfunding.crowdfunding_project_demo_001"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="planned_date">2026-06-30</field>
+        <field name="amount">32000</field>
+        <field name="state">draft</field>
+    </record>
 
-        <record id="crowdfunding_dividend_demo_q1" model="store.crowdfunding.dividend">
-            <field name="name">2026Q1 分红</field>
-            <field name="project_id" ref="store_crowdfunding.crowdfunding_project_demo_001"/>
-            <field name="company_id" ref="base.main_company"/>
-            <field name="planned_date">2026-03-31</field>
-            <field name="amount">30000</field>
-            <field name="state">pending</field>
-        </record>
+    <record id="crowdfunding_investment_demo" model="store.crowdfunding.investment">
+        <field name="name">CFI2025DEMO</field>
+        <field name="project_id" ref="store_crowdfunding.crowdfunding_project_demo_001"/>
+        <field name="partner_id" ref="base.partner_demo"/>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="amount">120000</field>
+        <field name="state">confirmed</field>
+        <field name="investment_date">2025-10-08 10:00:00</field>
+        <field name="confirm_date">2025-10-08 10:10:00</field>
+    </record>
 
-        <record id="crowdfunding_dividend_demo_q2" model="store.crowdfunding.dividend">
-            <field name="name">2026Q2 分红</field>
-            <field name="project_id" ref="store_crowdfunding.crowdfunding_project_demo_001"/>
-            <field name="company_id" ref="base.main_company"/>
-            <field name="planned_date">2026-06-30</field>
-            <field name="amount">32000</field>
-            <field name="state">draft</field>
-        </record>
+    <record id="crowdfunding_account_transaction_demo" model="store.account.transaction">
+        <field name="name">CFINV-DEMO-0001</field>
+        <field name="company_id" ref="base.main_company"/>
+        <field name="transaction_type">crowdfunding_invest</field>
+        <field name="currency_id" ref="base.main_company_currency"/>
+        <field name="amount">120000</field>
+        <field name="state">confirmed</field>
+        <field name="description">门店旗舰店扩建计划示例投资</field>
+        <field name="date">2025-10-08 10:00:00</field>
+        <field name="related_model" eval="'store.crowdfunding.investment,%s' % ref('crowdfunding_investment_demo')"/>
+    </record>
 
-        <record id="crowdfunding_partner_demo_investor" model="res.partner">
-            <field name="id" ref="base.partner_demo"/>
-            <field name="enable_investment">True</field>
-        </record>
-
-        <record id="crowdfunding_account_transaction_demo" model="store.account.transaction">
-            <field name="name">CFINV-DEMO-0001</field>
-            <field name="company_id" ref="base.main_company"/>
-            <field name="transaction_type">crowdfunding_invest</field>
-            <field name="currency_id" ref="base.main_company_currency"/>
-            <field name="amount">120000</field>
-            <field name="state">confirmed</field>
-            <field name="description">门店旗舰店扩建计划示例投资</field>
-            <field name="date">2025-10-08 10:00:00</field>
-        </record>
-
-        <record id="crowdfunding_investment_demo" model="store.crowdfunding.investment">
-            <field name="name">CFI2025DEMO</field>
-            <field name="project_id" ref="store_crowdfunding.crowdfunding_project_demo_001"/>
-            <field name="partner_id" ref="base.partner_demo"/>
-            <field name="company_id" ref="base.main_company"/>
-            <field name="amount">120000</field>
-            <field name="state">confirmed</field>
-            <field name="investment_date">2025-10-08 10:00:00</field>
-            <field name="confirm_date">2025-10-08 10:10:00</field>
-            <field name="account_transaction_id" ref="store_crowdfunding.crowdfunding_account_transaction_demo"/>
-        </record>
-
-        <record id="crowdfunding_account_transaction_demo_rel" model="store.account.transaction">
-            <field name="id" eval="ref('store_crowdfunding.crowdfunding_account_transaction_demo')"/>
-            <field name="related_model" eval="'store.crowdfunding.investment,%s' % ref('store_crowdfunding.crowdfunding_investment_demo')"/>
-        </record>
-    </data>
+    <!-- 更新投资记录以关联财务流水 -->
+    <record id="crowdfunding_investment_demo" model="store.crowdfunding.investment">
+        <field name="account_transaction_id" ref="crowdfunding_account_transaction_demo"/>
+    </record>
 </odoo>

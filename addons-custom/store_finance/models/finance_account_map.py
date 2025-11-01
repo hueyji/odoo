@@ -15,7 +15,6 @@ class StoreFinanceAccountMap(models.Model):
     payment_channel_id = fields.Many2one(
         "store.finance.payment.channel",
         string="支付渠道",
-        domain="[('company_id', '=', company_id)]",
     )
     company_id = fields.Many2one(
         "res.company",
@@ -27,12 +26,10 @@ class StoreFinanceAccountMap(models.Model):
         "account.account",
         string="会计科目",
         required=True,
-        domain="[('company_id', '=', company_id)]",
     )
     journal_id = fields.Many2one(
         "account.journal",
         string="默认日记账",
-        domain="[('company_id', '=', company_id)]",
     )
     active = fields.Boolean(string="启用", default=True)
     note = fields.Text(string="备注")
